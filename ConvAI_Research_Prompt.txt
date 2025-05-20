@@ -1,0 +1,58 @@
+
+**📌 Prompt to Perplexity Pro (or similar AI assistant):**
+
+> We are building a **domain-specific AI system** for **form automation through human-like voice conversations** in HR and healthcare. The goal is to replace manual form-filling and interviews with a **natural, dynamic, voice-based AI agent** that understands context, asks follow-up questions, extracts structured data, and either fills hospital intake forms or evaluates job seekers.
+>
+> **We are seeking detailed research, guidance, and tools** to develop our own **lightweight, scalable LLM/NLP model** and pipeline focused on:
+>
+> ### 🔍 Areas of Research & Support Needed:
+>
+> 1. **LLM & NLP Foundation (Custom Model)**:
+>
+>    * How to train or fine-tune a lightweight domain-specific LLM (for HR and healthcare).
+>    * Dataset preparation guidelines for conversational form filling.
+>    * Approaches for building a retrieval-augmented model (for dynamic follow-ups).
+>    * Benchmarks or pretrained models best suited for dynamic Q\&A, short-turn conversations, and contextual memory.
+> 2. **Conversational AI Design**:
+>
+>    * Mapping between natural responses and structured form fields.
+>    * Methods for maintaining multi-turn memory and context flow.
+>    * Dynamic question generation based on user answers and missing fields.
+>    * Conversational scoring systems (for HR evaluation).
+> 3. **Speech-to-Text (STT) & Voice Processing**:
+>
+>    * Best open-source tools for accurate real-time STT (Whisper vs others).
+>    * Optimizing latency and accuracy for real-time conversational UX.
+>    * Architecture for combining STT input with dynamic NLP response generation.
+> 4. **Machine Learning Architecture**:
+>
+>    * How to make the AI "self-learn" from failed conversations (adaptive retraining loop).
+>    * Structuring user feedback and analytics to improve question flow and form completion.
+>    * Confidence scoring, field prioritization, and ambiguity detection logic.
+> 5. **Form Filling Engine**:
+>
+>    * Mapping free-form speech responses to pre-structured form templates.
+>    * Handling missing, unclear, or ambiguous answers.
+>    * Sample JSON schemas or form templates for HR and medical use cases.
+> 6. **Deployment Stack**:
+>
+>    * How to deploy this system as a lightweight web app (React/Flutter + FastAPI/Node.js).
+>    * How to host and optimize a small custom model on cloud or edge (low-latency).
+>    * WebRTC or browser-based tools for real-time voice input.
+> 7. **Testing & Edge Cases** (TBD):
+>
+>    * Frameworks to simulate real-world speech variation and test AI under stress.
+>    * Tools for evaluating LLM response accuracy, hallucination, and failure modes.
+>    * Suggestions for creating robust test cases and QA workflows.
+>
+> ### 📦 Deliverables or Output Requested:
+>
+> * Concrete technical guides or GitHub repos relevant to each component.
+> * Pretrained models or research papers on dynamic conversational form filling.
+> * Suggested open datasets for HR interviews and patient intake scenarios.
+> * Tools for fine-tuning or evaluating custom NLP models for task-specific language understanding.
+> * Ethical considerations and user consent flows for data handling (esp. for healthcare).
+
+> ⚠️ Focus: Conversational NLP, self-learning loop, speech input, dynamic Q\&A, and context-based form automation.
+
+---
