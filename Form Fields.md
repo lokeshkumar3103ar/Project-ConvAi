@@ -20,7 +20,6 @@
 - Tools & technologies 
 - Domain expertise (if applicable)
 ### Work Experience
-*Complete if Experienced, otherwise leave blank*
 - Company name
 - Role
 - Time period
