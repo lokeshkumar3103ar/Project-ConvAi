@@ -21,18 +21,12 @@
 - Domain expertise (if applicable)
 ### Work Experience
 *Complete if Experienced, otherwise leave blank*
-- Total years of experience
-- Current/previous role
 - Company name
-- Time period
-- Key responsibilities & achievements
-
-### Internships
-- Organization name
 - Role
 - Time period
+- Total years of experience
 - Skills gained
-- Key responsibilities
+- Key responsibilities & achievements
 ### Projects
 - Project name
 - Technology/tools used
