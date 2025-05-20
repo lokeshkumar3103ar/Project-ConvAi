@@ -43,5 +43,6 @@
 - Preferred location
 - Willingness to relocate
 - Work environment preference (remote/hybrid/on-site)
+- Expected Salary Range
 
 
