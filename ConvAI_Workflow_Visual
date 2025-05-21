@@ -1,0 +1,84 @@
+import { Card, CardContent } from "@/components/ui/card";
+import { Mic, User, Bot, Brain, ClipboardList, ClipboardCheck, FileText, Send } from "lucide-react";
+import { motion } from "framer-motion";
+
+const steps = [
+  {
+    title: "1️⃣ User Enters the Room",
+    description:
+      "The interaction begins either virtually (through an app or website) or physically (in-person interview room). This mimics a real-world HR setting to maintain user comfort.",
+    icon: <User className="w-6 h-6 text-blue-600" />,
+  },
+  {
+    title: "2️⃣ Voice Recording Starts",
+    description:
+      "The system activates the device microphone and begins recording user speech in real-time. This initiates the interaction pipeline.",
+    icon: <Mic className="w-6 h-6 text-red-500" />,
+  },
+  {
+    title: "3️⃣ ConvAI Greets and Asks",
+    description:
+      "The LLM (Large Language Model) greets the user with: 'Tell me about yourself'. This is the natural starting point of an HR interview, prompted by AI.",
+    icon: <Bot className="w-6 h-6 text-green-600" />,
+  },
+  {
+    title: "4️⃣ User Responds Freely",
+    description:
+      "The user provides an open-ended self-introduction. No restrictions are placed on how they speak – allowing natural, spontaneous input.",
+    icon: <User className="w-6 h-6 text-purple-600" />,
+  },
+  {
+    title: "5️⃣ AI Analyzes Gaps and Asks Follow-ups",
+    description:
+      "The LLM checks for missing form fields and intelligently asks personalized follow-up questions like 'What’s your CGPA?' or 'Any certifications?'. There is no fixed script.",
+    icon: <Brain className="w-6 h-6 text-yellow-500" />,
+  },
+  {
+    title: "6️⃣ Live Speech-to-Text & NLP Processing",
+    description:
+      "The voice input is transcribed using Speech-to-Text (STT). Then NLP/LLM models extract entities like CGPA, college, location, degree, etc.",
+    icon: <ClipboardList className="w-6 h-6 text-teal-600" />,
+  },
+  {
+    title: "7️⃣ Data Mapping to Backend Form",
+    description:
+      "The structured form handler fills in backend fields. Example: 'I'm from Coimbatore' → maps to 'Hometown'. AI automates this mapping process.",
+    icon: <ClipboardCheck className="w-6 h-6 text-pink-600" />,
+  },
+  {
+    title: "8️⃣ Final Form Generation & Submission",
+    description:
+      "The completed form is generated in the required format (PDF/HTML/DB entry) and sent to HR. The user never touches the form – full AI assistance.",
+    icon: <Send className="w-6 h-6 text-indigo-600" />,
+  },
+];
+
+export default function ConvAIWorkflow() {
+  return (
+    <div className="p-6 space-y-10">
+      <h1 className="text-3xl font-bold text-center">🧭 ConvAI Workflow Guide</h1>
+      <p className="text-center text-gray-600 max-w-3xl mx-auto">
+        This interactive visual guide walks you through the entire AI-driven HR form automation process – from voice input to final form delivery. Ideal for onboarding new team members or stakeholders.
+      </p>
+
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {steps.map((step, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.15 }}
+          >
+            <Card className="shadow-md rounded-2xl border border-gray-200">
+              <CardContent className="flex flex-col items-start gap-4 p-4">
+                {step.icon}
+                <h3 className="text-lg font-semibold">{step.title}</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">{step.description}</p>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
