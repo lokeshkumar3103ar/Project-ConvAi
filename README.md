@@ -1,21 +1,74 @@
-# Project ConvAi
+🧠 ConvAI – Conversational AI for HR Interview Automation
+ConvAI (Conversational AI) is an AI-driven system that automates HR form filling and candidate profiling through a fully voice-enabled, natural conversation. It simulates a real-time HR interview using LLMs, speech recognition, and dynamic form mapping — removing the need for traditional form entry.
 
-## Project Overview
+🚀 Demo Walkthrough
+Interactive Workflow Guide
+View the step-by-step process with animations and icons.
 
-"Project ConvAi" is a comprehensive initiative dedicated to the design, development, and meticulous documentation of a sophisticated conversational AI system. The project aims to create an intelligent agent capable of engaging in meaningful and contextually aware conversations. It emphasizes a structured approach to defining the AI's core functionalities, knowledge base, and interaction protocols.
+Flowchart Visualization
+Understand how user voice is transformed into structured data using NLP and backend mapping.
 
-A key driver for this project is the development of an AI that is not only proficient in general conversation but also robust in handling a wide array of complex scenarios and edge cases. This includes a dedicated focus on specialized domains, with a notable exploration of applications within the healthcare sector. The project seeks to establish a framework for building conversational AI that is both versatile and reliable.
+📦 Features
+✅ Voice-to-Form Automation
+✅ Human-like Interviewing via LLM
+✅ Real-Time Speech Transcription
+✅ Intelligent Follow-up Questions
+✅ Automatic Entity Extraction
+✅ Structured Data Mapping (PDF/DB)
+✅ Fully Responsive UI + Walkthroughs
 
-## Key Aspects and Goals
+🧭 System Workflow Overview
+Here’s how ConvAI works in a real-time setting:
 
-*   **Advanced Conversational Logic:** Developing a deep understanding of natural language to enable fluid, intuitive, and intelligent interactions. This involves creating a comprehensive knowledge base and sophisticated dialogue management strategies.
-*   **Robust Edge Case Management:** Systematically identifying, documenting, and developing solutions for a wide spectrum of edge cases and challenging conversational scenarios. The project employs specific formats (e.g., "Two-Box Format") and detailed cataloging of these cases to ensure the AI's resilience and predictability.
-*   **Specialized Domain Application (Healthcare Focus):** Exploring and addressing the unique conversational challenges and requirements within the healthcare domain. This involves curating specific knowledge and handling sensitive or complex interactions pertinent to healthcare.
-*   **Prompt Engineering and Research:** Utilizing advanced prompt engineering techniques to guide the AI's behavior, learning, and responses. The project incorporates ongoing research to refine these prompts and enhance the AI's capabilities.
-*   **Structured Development and Documentation:** Adhering to a clear project timeline and employing systematic documentation for all aspects of the AI's design, development, and testing. This includes defining data structures (form fields) and maintaining a comprehensive "book" of the AI's features and functionalities.
-*   **Continuous Improvement:** The project is designed with an iterative approach, allowing for continuous refinement of the AI based on research, testing, and feedback.
+Step	Description
+1️⃣	User enters the room (virtually or physically)
+2️⃣	Microphone is activated, voice input begins
+3️⃣	AI greets with "Tell me about yourself"
+4️⃣	User responds freely
+5️⃣	LLM detects missing info and asks follow-ups
+6️⃣	STT transcribes speech, NLP extracts key info
+7️⃣	Data auto-maps to backend fields (e.g., CGPA)
+8️⃣	Final form is generated and submitted to HR
 
-The ultimate goal of Project ConvAi is to produce a well-engineered conversational AI that is thoroughly documented, capable of handling diverse and complex interactions, and potentially adaptable for critical applications such as those in healthcare.
+For a visual experience, visit the ConvAI Workflow Page.
 
----
-*This README was last updated on May 20, 2025. Information is based on the text-based files within the repository; .docx files were not processed.*
+🛠️ Tech Stack
+Layer	Technology
+🧠 AI	OpenAI LLM / Local LLMs
+🎙 Speech	Web Speech API / Whisper / Google STT
+📦 Backend	Node.js / Firebase / Express
+💻 Frontend	React + Tailwind + Framer Motion
+🧾 NLP	SpaCy / Transformers / LangChain
+📋 Form Mapping	Custom Handlers, Entity Extractors
+📊 Visualization	Mermaid.js / SVG / Framer Motion
+
+🧪 Example Use Case
+plaintext
+Copy
+Edit
+User: "Hi, I'm Lokesh from Coimbatore. I study at Hindustan University and my CGPA is 9.6..."
+⬇️
+AI → Transcribes voice → Extracts:
+{
+  "name": "Lokesh",
+  "hometown": "Coimbatore",
+  "college": "Hindustan University",
+  "cgpa": "9.6"
+}
+⬇️
+Form auto-fills and submits without any manual entry.
+
+#Architecture Diagram:
+
+[Mic Input]
+   ↓
+[Speech-to-Text Engine]
+   ↓
+[LLM Analysis & Question Generator]
+   ↓
+[NLP Parser & Entity Extractor]
+   ↓
+[Form Auto-Mapping]
+   ↓
+[Form Output: PDF/Database/API]
+
