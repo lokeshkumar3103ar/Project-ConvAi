@@ -41,7 +41,7 @@ Here’s how **ConvAI** works in a real-time setting:
 | 7️⃣   | Data auto-maps to backend fields (e.g., CGPA) |
 | 8️⃣   | Final form is generated and submitted to HR |
 
-📎 For a visual experience, visit the **ConvAI Workflow Page** *(Coming Soon)*.
+📎 For a visual experience, visit the [ConvAI Workflow Page](https://chatgpt.com/canvas/shared/682d750a865c81918d5aaf49e83b438c).
 
 ---
 
