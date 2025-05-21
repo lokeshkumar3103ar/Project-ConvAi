@@ -2,8 +2,6 @@
 ### Personal Details 
 - Name
 - Age
-- hometown
-- family background
 - languages known
 - personal achievements
 - Professional Status (Fresher/Experienced)

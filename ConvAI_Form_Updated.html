@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ConvAI Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    section {
+      margin-bottom: 30px;
+    }
+    h2 {
+      background-color: #f0f0f0;
+      padding: 10px;
+      border-left: 5px solid #007bff;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>ConvAI: HR/Placement Form</h1>
+
+  <section>
+    <h2>Personal Details</h2>
+    <label>Name</label>
+    <input type="text" />
+
+    <label>Age</label>
+    <input type="number" />
+
+    <label>Hometown (auto-filled if mentioned in intro)</label>
+    <input type="text" />
+
+    <label>Languages Known</label>
+    <input type="text" />
+
+    <label>Personal Achievements</label>
+    <textarea></textarea>
+
+    <label>Professional Status</label>
+    <select>
+      <option>Fresher</option>
+      <option>Experienced</option>
+    </select>
+  </section>
+
+  <section>
+    <h2>Education Background</h2>
+    <label>Degree & Specialization</label>
+    <input type="text" />
+
+    <label>College/University</label>
+    <input type="text" />
+
+    <label>Year of Graduation</label>
+    <input type="text" />
+
+    <label>CGPA</label>
+    <input type="text" />
+
+    <label>Certifications & Notable Achievements</label>
+    <textarea></textarea>
+  </section>
+
+  <section>
+    <h2>Skills</h2>
+    <label>Technical Skills</label>
+    <textarea></textarea>
+
+    <label>Soft Skills</label>
+    <textarea></textarea>
+
+    <label>Tools & Technologies</label>
+    <textarea></textarea>
+
+    <label>Domain Expertise (if applicable)</label>
+    <textarea></textarea>
+  </section>
+
+  <section>
+    <h2>Work Experience</h2>
+    <!-- Repeatable for multiple jobs -->
+    <label>Company Name</label>
+    <input type="text" />
+
+    <label>Role</label>
+    <input type="text" />
+
+    <label>Time Period</label>
+    <input type="text" />
+
+    <label>Total Years of Experience</label>
+    <select>
+      <option>&lt;1 year</option>
+      <option>1 - 3 years</option>
+      <option>3 - 5 years</option>
+      <option>5 - 7 years</option>
+      <option>7 - 10 years</option>
+      <option>10+ years</option>
+    </select>
+
+    <label>Skills Gained</label>
+    <textarea></textarea>
+
+    <label>Key Responsibilities & Achievements</label>
+    <textarea></textarea>
+  </section>
+
+  <section>
+    <h2>Projects</h2>
+    <label>Project Name</label>
+    <input type="text" />
+
+    <label>Technology/Tools Used</label>
+    <input type="text" />
+
+    <label>Problem Statement</label>
+    <textarea></textarea>
+
+    <label>Solution Implemented</label>
+    <textarea></textarea>
+
+    <label>Outcomes/Accomplishments</label>
+    <textarea></textarea>
+
+    <label>Your Role (if team project)</label>
+    <textarea></textarea>
+  </section>
+
+  <section>
+    <h2>Achievements & Activities</h2>
+    <label>Professional Achievements</label>
+    <textarea></textarea>
+
+    <label>Extracurricular Activities</label>
+    <textarea></textarea>
+
+    <label>Relevant Hobbies</label>
+    <textarea></textarea>
+  </section>
+
+  <section>
+    <h2>Career Preferences</h2>
+    <label>Career Goals</label>
+    <textarea></textarea>
+
+    <label>Preferred Location</label>
+    <select>
+      <option>Any</option>
+      <option>Chennai</option>
+      <option>Bangalore</option>
+      <option>Hyderabad</option>
+      <!-- etc. -->
+    </select>
+
+    <label>Willingness to Relocate</label>
+    <input type="radio" name="relocate" /> Yes
+    <input type="radio" name="relocate" /> No
+
+    <label>Work Environment Preference</label>
+    <input type="radio" name="work_env" /> Remote
+    <input type="radio" name="work_env" /> Hybrid
+    <input type="radio" name="work_env" /> On-site
+
+    <label>Expected Salary Range</label>
+    <select>
+      <option>&lt;3 LPA</option>
+      <option>3 - 5 LPA</option>
+      <option>5 - 7 LPA</option>
+      <option>7 - 10 LPA</option>
+      <option>10 - 15 LPA</option>
+      <option>15 - 20 LPA</option>
+      <option>20+ LPA</option>
+    </select>
+  </section>
+
+  <button type="submit">Submit</button>
+
+</body>
+</html>
