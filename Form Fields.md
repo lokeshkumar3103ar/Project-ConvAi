@@ -35,6 +35,11 @@
 - Professional achievements
 - Extracurricular activities
 - Relevant hobbies
+### Personal Traits
+- Personality Traits: Text area (e.g., adaptive, leader, quick learner, etc.)
+### Role Expectation
+- Target Job Role: Text input (e.g., Full Stack Developer, Data Analyst, etc.)
+
 
 ### Career Preferences
 - Career goals
