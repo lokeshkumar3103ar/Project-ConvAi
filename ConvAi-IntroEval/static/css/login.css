@@ -1,0 +1,164 @@
+html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      min-height: 100vh;
+      min-width: 100vw;
+      box-sizing: border-box;
+      background: #fff;
+      font-family: 'Oswald', Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .outer-frame {
+      /* Dotted grid background */
+      background-image: radial-gradient(rgba(0, 0, 0, 0.281) 1.2px, transparent 1.2px);
+      background-size: 18px 18px;
+      border: 2.5px solid #111;
+      border-radius: 20px;
+      width: 92vw;
+      height: 92vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+    .login-box {
+      background: #fff;
+      border: 3px solid #111;
+      border-radius: 20px;
+      width: 360px;
+      height: 400px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .tabs {
+        display: flex;
+        position: relative;
+        z-index: 2;
+    }
+
+    .tab-btn {
+        flex: 1;
+        text-align: center;
+        padding: 22px 0 14px 0;
+        font-size: 1.25em;
+        font-family: 'Oswald', Arial, sans-serif;
+        font-weight: 400;
+        letter-spacing: 0.17em;
+        border: none;
+        background: #fff;
+        color: #111;
+        cursor: pointer;
+        border-bottom: 3px solid #111;
+        outline: none;
+        transition: background 0.2s, color 0.2s;
+        border-right: 3px solid #111;
+    }
+
+    .tab-btn:first-child {
+        border-radius: 22px 0 0 0; /* Only top-left corner rounded */
+    }
+
+    .tab-btn:last-child {
+        border-right: none;
+        border-radius: 0 22px 0 0; /* Only top-right corner rounded */
+    }
+
+    .tab-btn:last-child {
+      border-right: none;
+    }
+    .tab-btn.active {
+      font-weight: 600;
+      background: #fff;
+      color: #111;
+      border-bottom: 3px solid #fff;
+      z-index: 2;
+    }
+    .form-section {
+      display: none;
+      padding: 28px;
+      flex-direction: column;
+      align-items: stretch;
+      margin-top: 0;
+    }
+    .form-section.active {
+      display: flex;
+      
+    }
+    label {
+      display: block;
+      
+      font-size: 1.05em;
+      color: #444;
+      letter-spacing: 0.04em;
+      font-family: 'Khand', sans-serif;
+      font-weight: 400;
+    }
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 9px 8px;
+      margin-bottom: 20px;
+      border: 2px solid #111;
+      border-radius: 10px;
+      background: #fff;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input[type="text"]:focus, input[type="password"]:focus {
+      border-color: #111;
+    }
+    button[type="submit"] {
+      width: 100%;
+      padding: 12px 0;
+      background: #111;
+      color: #fff;
+      border: 1px solid #111;
+      border-radius: 15px;
+      font-size: 1em;
+      font-family: 'Oswald', Arial, sans-serif;
+      font-weight: 500;
+      letter-spacing: 0.09em;
+      cursor: pointer;
+      margin-top: 25px;
+      transition: background 0.2s;
+    }
+    button[type="submit"]:hover {
+      /*background: #fff;
+      color: #111;*/
+      background: #444;
+    }
+    .form-message {
+      margin-top: 10px;
+      color: #d00;
+      text-align: center;
+    }
+    .forgot-link, .back-link {
+      display: block;
+      text-align: right;
+      margin-top: 8px;
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
+      font-size: 0.97em;
+      background: none;
+      border: none;
+      padding: 0;
+      outline: none;
+      font-family: Arial, sans-serif;
+    }
+    .back-link {
+      text-align: left;
+      margin: 30px 0 ;
+    }
+    /* Remove input outline on click for a cleaner look */
+    input:focus, button:focus {
+      outline: none;
+    }
