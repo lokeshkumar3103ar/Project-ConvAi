@@ -109,14 +109,36 @@ def get_latest_form_file(form_path=None):
             file_path = max(json_files, key=lambda x: x.stat().st_mtime)
         
         # Load the JSON data
+        print(f"📂 Attempting to load form file: {file_path}")
         with open(file_path, 'r', encoding='utf-8') as f:
             form_data = json.load(f)
         
         print(f"✅ Loaded form file: {file_path}")
+        print(f"📊 Form data keys: {list(form_data.keys() if isinstance(form_data, dict) else [])}")
+        
+        # Check if this is a reference file that points to the actual form
+        if isinstance(form_data, dict) and "file" in form_data and isinstance(form_data.get("file"), str):
+            referenced_file = form_data.get("file")
+            print(f"📄 This is a reference file pointing to: {referenced_file}")
+            
+            # Load the actual form file that's referenced
+            ref_file_path = Path(referenced_file)
+            if ref_file_path.exists():
+                print(f"📂 Attempting to load referenced form file: {ref_file_path}")
+                with open(ref_file_path, 'r', encoding='utf-8') as f:
+                    actual_form_data = json.load(f)
+                print(f"✅ Successfully loaded referenced form file: {ref_file_path}")
+                print(f"📊 Referenced form data keys: {list(actual_form_data.keys() if isinstance(actual_form_data, dict) else [])}")
+                return ref_file_path, actual_form_data
+            else:
+                print(f"❌ Referenced form file not found: {referenced_file}")
+        
         return file_path, form_data
     
     except Exception as e:
         print(f"❌ Error loading form file: {str(e)}")
+        import traceback
+        traceback.print_exc()  # Print the full stack trace for better debugging
         return None, None
 
 def get_latest_transcript_file(transcript_path: str = None):
@@ -234,24 +256,40 @@ def fix_json_and_rating_calculation(rating_text, rating_type="profile", enhance_
                 # Extract just the number before the slash
                 cleaned_rating = intro_rating_str.split("/")[0].strip()
                 print(f"⚠️ Fixing intro_rating format from '{intro_rating_str}' to '{cleaned_rating}'")
-                rating_data["intro_rating"] = cleaned_rating
-        
-        # Clean category values in grading_explanation (they're fine to display with slashes)
-        # No need to remove the slash format as it's part of the explanation
-        if "grading_explanation" in rating_data and isinstance(rating_data["grading_explanation"], dict):
-            print(f"✅ Found grading_explanation - ensuring category values are properly formatted")
-            # We don't remove slashes from grading_explanation values as they're descriptive text
-            # Just ensure they're all strings
-            for category, value in rating_data["grading_explanation"].items():
-                if not isinstance(value, str):
-                    rating_data["grading_explanation"][category] = str(value)
-                    print(f"  ⚠️ Converted {category} value to string: {value}")
-
-        # Basic sum check and correction
+                rating_data["intro_rating"] = cleaned_rating            # Clean category values in grading_explanation (they're fine to display with slashes)
+            # No need to remove the slash format as it's part of the explanation
+            if "grading_explanation" in rating_data and isinstance(rating_data["grading_explanation"], dict):
+                print(f"✅ Found grading_explanation - ensuring category values are properly formatted")
+                # We don't remove slashes from grading_explanation values as they're descriptive text
+                # Just ensure they're all strings
+                for category, value in rating_data["grading_explanation"].items():
+                    if not isinstance(value, str):
+                        rating_data["grading_explanation"][category] = str(value)
+                        print(f"  ⚠️ Converted {category} value to string: {value}")
+                      # Check for completeness format in grading_explanation
+                    if category == "completeness" and "/" in value:
+                        parts = value.split("/", 1)  # Split at first slash
+                        score_part = parts[0].strip()
+                        try:
+                            score_value = float(score_part)
+                            if score_value > 3.0:
+                                # Fix the completeness value in the explanation
+                                corrected_value = "3.0/" + parts[1]
+                                rating_data["grading_explanation"]["completeness"] = corrected_value
+                                print(f"  ⚠️ Fixed completeness in grading_explanation: {value} -> {corrected_value}")
+                        except ValueError:
+                            pass# Basic sum check and correction
         if rating_type == "profile":
             debug_info = rating_data.get("grading_debug", {})
-            try:
-                completeness_score = extract_numeric_score(debug_info.get("completeness_score", 0.0))
+            try:                # Fix completeness score if it exceeds max 3.0 points
+                if "completeness_score" in debug_info:
+                    original_completeness = extract_numeric_score(debug_info.get("completeness_score", 0.0))
+                    if original_completeness > 3.0:
+                        print(f"⚠️ Completeness score {original_completeness} exceeds max 3.0, capping to 3.0")
+                        debug_info["completeness_score"] = "3.0"
+                
+                # Recalculate with proper completeness capping
+                completeness_score = min(3.0, extract_numeric_score(debug_info.get("completeness_score", 0.0)))
                 relevance_score = extract_numeric_score(debug_info.get("relevance_score", 0.0))
                 projects_score = extract_numeric_score(debug_info.get("projects_score", 0.0))
                 achievements_score = extract_numeric_score(debug_info.get("achievements_score", 0.0))
