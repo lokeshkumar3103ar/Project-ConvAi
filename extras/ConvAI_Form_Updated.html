@@ -31,170 +31,175 @@
   </style>
 </head>
 <body>
-
   <h1>ConvAI: HR/Placement Form</h1>
   <section>
     <h2>Personal Details</h2>
     <label>Name</label>
-    <input type="text" />
+    <input type="text" id="name" name="name" />
 
     <label>Age</label>
-    <input type="number" />
+    <input type="number" id="age" name="age" />
 
     <label>Hometown (auto-filled if mentioned in intro)</label>
-    <input type="text" />
+    <input type="text" id="hometown" name="hometown" />
 
     <label>Languages Known</label>
-    <input type="text" />
+    <input type="text" id="languages" name="languages" />
 
     <label>Personal Achievements</label>
-    <textarea></textarea>
+    <textarea id="personal_achievements" name="personal_achievements"></textarea>
 
     <label>Professional Status</label>
-    <select>
-      <option>Fresher</option>
-      <option>Experienced</option>
+    <select id="professional_status" name="professional_status">
+      <option value="">Select...</option>
+      <option value="Fresher">Fresher</option>
+      <option value="Experienced">Experienced</option>
     </select>
   </section>
 
   <section>
     <h2>Personal Traits</h2>
     <label>Personality Traits</label>
-    <textarea placeholder="e.g., adaptive, leader, quick learner, etc."></textarea>
+    <textarea id="personality_traits" name="personality_traits" placeholder="e.g., adaptive, leader, quick learner, etc."></textarea>
   </section>
 
   <section>
     <h2>Education Background</h2>
     <label>Degree & Specialization</label>
-    <input type="text" />
+    <input type="text" id="degree" name="degree" />
 
     <label>College/University</label>
-    <input type="text" />
+    <input type="text" id="college" name="college" />
 
     <label>Year of Graduation</label>
-    <input type="text" />
+    <input type="text" id="graduation_year" name="graduation_year" />
 
     <label>CGPA</label>
-    <input type="text" />
+    <input type="text" id="cgpa" name="cgpa" />
 
     <label>Certifications & Notable Achievements</label>
-    <textarea></textarea>
+    <textarea id="certifications" name="certifications"></textarea>
   </section>
 
   <section>
     <h2>Skills</h2>
     <label>Technical Skills</label>
-    <textarea></textarea>
+    <textarea id="technical_skills" name="technical_skills"></textarea>
 
     <label>Soft Skills</label>
-    <textarea></textarea>
+    <textarea id="soft_skills" name="soft_skills"></textarea>
 
     <label>Tools & Technologies</label>
-    <textarea></textarea>
+    <textarea id="tools_technologies" name="tools_technologies"></textarea>
 
     <label>Domain Expertise (if applicable)</label>
-    <textarea></textarea>
+    <textarea id="domain_expertise" name="domain_expertise"></textarea>
   </section>
 
   <section>
     <h2>Work Experience</h2>
-    <!-- Repeatable for multiple jobs -->
     <label>Company Name</label>
-    <input type="text" />
+    <input type="text" id="company_name" name="company_name" />
 
     <label>Role</label>
-    <input type="text" />
+    <input type="text" id="role" name="role" />
 
     <label>Time Period</label>
-    <input type="text" />
+    <input type="text" id="time_period" name="time_period" />
 
     <label>Total Years of Experience</label>
-    <select>
-      <option>&lt;1 year</option>
-      <option>1 - 3 years</option>
-      <option>3 - 5 years</option>
-      <option>5 - 7 years</option>
-      <option>7 - 10 years</option>
-      <option>10+ years</option>
+    <select id="total_experience" name="total_experience">
+      <option value="">Select...</option>
+      <option value="<1 year">&lt;1 year</option>
+      <option value="1 - 3 years">1 - 3 years</option>
+      <option value="3 - 5 years">3 - 5 years</option>
+      <option value="5 - 7 years">5 - 7 years</option>
+      <option value="7 - 10 years">7 - 10 years</option>
+      <option value="10+ years">10+ years</option>
     </select>
 
     <label>Skills Gained</label>
-    <textarea></textarea>
+    <textarea id="skills_gained" name="skills_gained"></textarea>
 
     <label>Key Responsibilities & Achievements</label>
-    <textarea></textarea>
+    <textarea id="responsibilities_achievements" name="responsibilities_achievements"></textarea>
   </section>
+  
   <section>
     <h2>Projects</h2>
     <label>Project Name</label>
-    <input type="text" />
+    <input type="text" id="project_name" name="project_name" />
 
     <label>Technology/Tools Used</label>
-    <input type="text" />
+    <input type="text" id="project_technology" name="project_technology" />
 
     <label>Problem Statement</label>
-    <textarea></textarea>
+    <textarea id="problem_statement" name="problem_statement"></textarea>
 
     <label>Solution Implemented</label>
-    <textarea></textarea>
+    <textarea id="solution_implemented" name="solution_implemented"></textarea>
 
     <label>Outcomes/Accomplishments</label>
-    <textarea></textarea>
+    <textarea id="project_outcomes" name="project_outcomes"></textarea>
 
     <label>Your Role (if team project)</label>
-    <textarea></textarea>
+    <textarea id="project_role" name="project_role"></textarea>
   </section>
 
   <section>
     <h2>Role Expectation</h2>
     <label>Target Job Role</label>
-    <input type="text" placeholder="e.g., Full Stack Developer, Data Analyst, etc." />
+    <input type="text" id="target_job_role" name="target_job_role" placeholder="e.g., Full Stack Developer, Data Analyst, etc." />
   </section>
 
   <section>
     <h2>Achievements & Activities</h2>
     <label>Professional Achievements</label>
-    <textarea></textarea>
+    <textarea id="professional_achievements" name="professional_achievements"></textarea>
 
     <label>Extracurricular Activities</label>
-    <textarea></textarea>
+    <textarea id="extracurricular_activities" name="extracurricular_activities"></textarea>
 
     <label>Relevant Hobbies</label>
-    <textarea></textarea>
+    <textarea id="relevant_hobbies" name="relevant_hobbies"></textarea>
   </section>
 
   <section>
     <h2>Career Preferences</h2>
     <label>Career Goals</label>
-    <textarea></textarea>
+    <textarea id="career_goals" name="career_goals"></textarea>
 
     <label>Preferred Location</label>
-    <select>
-      <option>Any</option>
-      <option>Chennai</option>
-      <option>Bangalore</option>
-      <option>Hyderabad</option>
-      <!-- etc. -->
+    <select id="preferred_location" name="preferred_location">
+      <option value="">Select...</option>
+      <option value="Any">Any</option>
+      <option value="Chennai">Chennai</option>
+      <option value="Bangalore">Bangalore</option>
+      <option value="Hyderabad">Hyderabad</option>
+      <option value="Mumbai">Mumbai</option>
+      <option value="Delhi">Delhi</option>
+      <option value="Pune">Pune</option>
     </select>
 
     <label>Willingness to Relocate</label>
-    <input type="radio" name="relocate" /> Yes
-    <input type="radio" name="relocate" /> No
+    <input type="radio" id="relocate_yes" name="relocate" value="Yes" /> Yes
+    <input type="radio" id="relocate_no" name="relocate" value="No" /> No
 
     <label>Work Environment Preference</label>
-    <input type="radio" name="work_env" /> Remote
-    <input type="radio" name="work_env" /> Hybrid
-    <input type="radio" name="work_env" /> On-site
+    <input type="radio" id="work_env_remote" name="work_env" value="Remote" /> Remote
+    <input type="radio" id="work_env_hybrid" name="work_env" value="Hybrid" /> Hybrid
+    <input type="radio" id="work_env_onsite" name="work_env" value="On-site" /> On-site
 
     <label>Expected Salary Range</label>
-    <select>
-      <option>&lt;3 LPA</option>
-      <option>3 - 5 LPA</option>
-      <option>5 - 7 LPA</option>
-      <option>7 - 10 LPA</option>
-      <option>10 - 15 LPA</option>
-      <option>15 - 20 LPA</option>
-      <option>20+ LPA</option>
+    <select id="salary_range" name="salary_range">
+      <option value="">Select...</option>
+      <option value="<3 LPA">&lt;3 LPA</option>
+      <option value="3 - 5 LPA">3 - 5 LPA</option>
+      <option value="5 - 7 LPA">5 - 7 LPA</option>
+      <option value="7 - 10 LPA">7 - 10 LPA</option>
+      <option value="10 - 15 LPA">10 - 15 LPA</option>
+      <option value="15 - 20 LPA">15 - 20 LPA</option>
+      <option value="20+ LPA">20+ LPA</option>
     </select>
   </section>
 

@@ -3,7 +3,7 @@ import re
 from pathlib import Path
 import glob
 
-DISABLE_LLM = False # ✅ Set to False to enable LLM calls
+DISABLE_LLM = True # ✅ Set to False to enable LLM calls
 
 # Moved from call_llm.py
 def preprocess_llm_json_response(response_text):
