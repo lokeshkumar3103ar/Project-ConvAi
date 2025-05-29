@@ -19,8 +19,8 @@ def transcribe_file(file_path: Path, output_dir: Path) -> tuple[str, Path]:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Ensure we're working with the file in videos directory, not copying it
-    if not str(file_path).lower().startswith(str(Path(file_path).parent).lower()):
-        print(f"⚠️ Warning: File path should be in the videos directory")
+    if "videos" not in str(file_path).lower():
+        print(f"⚠️ Warning: Expected file to be inside videos directory: {file_path}")
 
     result = model.transcribe(str(file_path), verbose=False, language="en")
     formatted_text = format_transcription(result.get("segments", []))
@@ -29,5 +29,5 @@ def transcribe_file(file_path: Path, output_dir: Path) -> tuple[str, Path]:
     with open(output_file, "w", encoding="utf-8") as f:
         f.write(formatted_text)
 
-    print(f"✅ Transcription saved: {output_file}")
+    print(f"✅ Transcription ({model_size}) saved: {output_file}")
     return formatted_text, output_file

@@ -1,0 +1,62 @@
+/* Rating cards and categories */
+.rating-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.rating-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.rating-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.rating-score {
+    font-weight: 600;
+    color: #4285f4;
+}
+
+.rating-stars {
+    font-size: 32px;
+    color: #fbbc05;
+    margin-bottom: 15px;
+    letter-spacing: 3px;
+    line-height: 1.3;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.15);
+    display: block;
+    text-align: center;
+}
+
+.rating-comment {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.rating-subcategory {
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rating-subcategory-header {
+    font-weight: 500;
+}
+
+.rating-subcategory-score {
+    color: #4285f4;
+}
