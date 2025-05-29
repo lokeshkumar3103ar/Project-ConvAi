@@ -1,3 +1,96 @@
+/* Theme System - Light and Dark Mode Support */
+:root {
+    /* Light Theme (Default) */
+    --primary-color: #333;
+    --secondary-color: #34a853;
+    --danger-color: #ea4335;
+    --warning-color: #fbbc05;
+    --dark-color: #333;
+    --light-color: #fff;
+    --border-radius: 20px;
+    --box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    --transition: all 0.3s ease;
+    --input-bg: #fff;
+    --text-primary: #333;
+    --body-bg: #fff;
+    --outer-frame-border: #333;
+    --outer-frame-dots: rgba(0, 0, 0, 0.281);
+    --content-box-bg: #fff;
+    --content-box-border: #333;
+    --card-bg: #fff;
+    --card-border: #ddd;
+    --input-border: #ddd;
+    --button-primary-bg: #333;
+    --button-primary-color: #fff;
+    --button-secondary-bg: #6c757d;
+    --button-secondary-color: #fff;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+    --primary-color: #ffffff;
+    --secondary-color: #34a853;
+    --danger-color: #ea4335;
+    --warning-color: #fbbc05;
+    --dark-color: #ffffff;
+    --light-color: #111;
+    --box-shadow: 0 2px 12px rgba(255,255,255,0.03);
+    --input-bg: #222;
+    --text-primary: #ffffff;
+    --body-bg: #111;
+    --outer-frame-border: #fff;
+    --outer-frame-dots: rgba(255, 255, 255, 0.281);
+    --content-box-bg: #222;
+    --content-box-border: #fff;
+    --card-bg: #333;
+    --card-border: #555;
+    --input-border: #555;
+    --button-primary-bg: #ffffff;
+    --button-primary-color: #111;
+    --button-secondary-bg: #555;
+    --button-secondary-color: #fff;
+}
+
+/* Left Taskbar for Switches */
+.left-taskbar {
+    position: fixed;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Theme Toggle Button Styles */
+.theme-toggle-container {
+    display: flex;
+    align-items: center;
+}
+
+.theme-toggle-btn {
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--text-primary);
+    font-size: 1.2rem;
+}
+
+.theme-toggle-btn:hover {
+    background: var(--primary-color);
+    color: var(--button-primary-color);
+    border-color: var(--primary-color);
+    transform: scale(1.1);
+}
+
 html, body {
       height: 100%;
       margin: 0;
@@ -7,17 +100,19 @@ html, body {
       min-height: 100vh;
       min-width: 100vw;
       box-sizing: border-box;
-      background: #fff;
+      background: var(--body-bg);
       font-family: 'Oswald', Arial, sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
+      color: var(--text-primary);
+      transition: var(--transition);
     }
     .outer-frame {
       /* Dotted grid background */
-      background-image: radial-gradient(rgba(0, 0, 0, 0.281) 1.2px, transparent 1.2px);
+      background-image: radial-gradient(var(--outer-frame-dots) 1.2px, transparent 1.2px);
       background-size: 18px 18px;
-      border: 2.5px solid #111;
+      border: 2.5px solid var(--outer-frame-border);
       border-radius: 20px;
       width: 92vw;
       height: 92vh;
@@ -25,26 +120,27 @@ html, body {
       align-items: center;
       justify-content: center;
       box-sizing: border-box;
+      position: relative;
+      transition: var(--transition);
     }
     .login-box {
-      background: #fff;
-      border: 3px solid #111;
+      background: var(--content-box-bg);
+      border: 3px solid var(--content-box-border);
       border-radius: 20px;
       width: 360px;
       height: 400px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+      box-shadow: var(--box-shadow);
       position: relative;
       display: flex;
       flex-direction: column;
       align-items: stretch;
+      transition: var(--transition);
     }
     .tabs {
         display: flex;
         position: relative;
         z-index: 2;
-    }
-
-    .tab-btn {
+    }    .tab-btn {
         flex: 1;
         text-align: center;
         padding: 22px 0 14px 0;
@@ -53,13 +149,13 @@ html, body {
         font-weight: 400;
         letter-spacing: 0.17em;
         border: none;
-        background: #fff;
-        color: #111;
+        background: var(--card-bg);
+        color: var(--text-primary);
         cursor: pointer;
-        border-bottom: 3px solid #111;
+        border-bottom: 3px solid var(--primary-color);
         outline: none;
         transition: background 0.2s, color 0.2s;
-        border-right: 3px solid #111;
+        border-right: 3px solid var(--primary-color);
     }
 
     .tab-btn:first-child {
@@ -73,12 +169,11 @@ html, body {
 
     .tab-btn:last-child {
       border-right: none;
-    }
-    .tab-btn.active {
+    }    .tab-btn.active {
       font-weight: 600;
-      background: #fff;
-      color: #111;
-      border-bottom: 3px solid #fff;
+      background: var(--card-bg);
+      color: var(--text-primary);
+      border-bottom: 3px solid var(--card-bg);
       z-index: 2;
     }
     .form-section {
@@ -91,36 +186,34 @@ html, body {
     .form-section.active {
       display: flex;
       
-    }
-    label {
+    }    label {
       display: block;
       
       font-size: 1.05em;
-      color: #444;
+      color: var(--text-primary);
       letter-spacing: 0.04em;
       font-family: 'Khand', sans-serif;
       font-weight: 400;
-    }
-    input[type="text"], input[type="password"] {
+    }    input[type="text"], input[type="password"] {
       width: 100%;
       padding: 9px 8px;
       margin-bottom: 20px;
-      border: 2px solid #111;
+      border: 2px solid var(--input-border);
       border-radius: 10px;
-      background: #fff;
+      background: var(--input-bg);
+      color: var(--text-primary);
       box-sizing: border-box;
       outline: none;
       transition: border-color 0.2s;
     }
     input[type="text"]:focus, input[type="password"]:focus {
-      border-color: #111;
-    }
-    button[type="submit"] {
+      border-color: var(--primary-color);
+    }    button[type="submit"] {
       width: 100%;
       padding: 12px 0;
-      background: #111;
-      color: #fff;
-      border: 1px solid #111;
+      background: var(--button-primary-bg);
+      color: var(--button-primary-color);
+      border: 1px solid var(--button-primary-bg);
       border-radius: 15px;
       font-size: 1em;
       font-family: 'Oswald', Arial, sans-serif;
@@ -131,20 +224,18 @@ html, body {
       transition: background 0.2s;
     }
     button[type="submit"]:hover {
-      /*background: #fff;
-      color: #111;*/
-      background: #444;
-    }
-    .form-message {
+      background: var(--button-secondary-bg);
+      color: var(--button-secondary-color);
+    }    .form-message {
       margin-top: 10px;
-      color: #d00;
+      color: var(--danger-color);
       text-align: center;
     }
     .forgot-link, .back-link {
       display: block;
       text-align: right;
       margin-top: 8px;
-      color: #000;
+      color: var(--text-primary);
       text-decoration: none;
       cursor: pointer;
       font-size: 0.97em;

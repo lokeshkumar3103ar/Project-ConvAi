@@ -1,25 +1,214 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>    <meta charset="UTF-8">
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ConvAi - Introduction Evaluation System</title>
+    <!-- Google Fonts for consistency with login page -->
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Khand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../static/css/styles.css">
     <link rel="stylesheet" href="../static/css/rating-styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Fluid Transition Overlay Styles */        .fluid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(34, 34, 34, 0.95) 0%, rgba(153, 153, 153, 0.9) 50%, rgba(34, 34, 34, 0.85) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 1050;
+        }
+        
+        .fluid-wave {
+            position: absolute;
+            width: 0;
+            height: 0;            background: radial-gradient(circle, 
+                rgba(34, 34, 34, 0.8) 0%, 
+                rgba(85, 85, 85, 0.6) 20%, 
+                rgba(153, 153, 153, 0.4) 40%, 
+                rgba(68, 68, 68, 0.2) 60%, 
+                transparent 80%);
+            border-radius: 50%;
+            animation: wave-animation 6s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
+            transform: translate(-50%, -50%);
+            top: 50%;
+            left: 50%;
+        }
+        
+        .fluid-wave::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle,                transparent 0%, 
+                rgba(68, 68, 68, 0.1) 30%, 
+                rgba(153, 153, 153, 0.2) 50%, 
+                transparent 70%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: wave-secondary 8s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite reverse;
+        }
+          .fluid-logo {
+            position: relative;
+            font-size: 16rem;
+            font-weight: bold;
+            color: #111;
+            text-shadow: 0 0 30px rgba(85, 85, 85, 0.5), 0 0 60px rgba(68, 68, 68, 0.3);
+            pointer-events: auto;
+            z-index: 1060;
+            animation: logo-entrance 5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            opacity: 0;
+            transform: scale(0.5) rotateY(180deg);
+        }
+        
+        @keyframes wave-animation {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(0) rotate(0deg);
+            }
+            25% {
+                width: 80vw;
+                height: 80vh;
+                opacity: 0.8;
+                transform: translate(-50%, -50%) scale(0.8) rotate(90deg);
+            }
+            50% {
+                width: 150vw;
+                height: 150vh;
+                opacity: 0.6;
+                transform: translate(-50%, -50%) scale(1) rotate(180deg);
+            }
+            75% {
+                width: 220vw;
+                height: 220vh;
+                opacity: 0.3;
+                transform: translate(-50%, -50%) scale(1.2) rotate(270deg);
+            }
+            100% {
+                width: 300vw;
+                height: 300vh;
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1.5) rotate(360deg);
+            }
+        }
+        
+        @keyframes wave-secondary {
+            0% {
+                transform: translate(-50%, -50%) scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                transform: translate(-50%, -50%) scale(0.5) rotate(72deg);
+                opacity: 0.4;
+            }
+            40% {
+                transform: translate(-50%, -50%) scale(1) rotate(144deg);
+                opacity: 0.6;
+            }
+            60% {
+                transform: translate(-50%, -50%) scale(1.5) rotate(216deg);
+                opacity: 0.4;
+            }
+            80% {
+                transform: translate(-50%, -50%) scale(2) rotate(288deg);
+                opacity: 0.2;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(2.5) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes logo-entrance {
+            0% {
+                opacity: 0;
+                transform: scale(0.3) rotateY(180deg) translateY(100px);
+                filter: blur(20px);
+            }
+            20% {
+                opacity: 0.3;
+                transform: scale(0.6) rotateY(120deg) translateY(50px);
+                filter: blur(10px);
+            }
+            40% {
+                opacity: 0.6;
+                transform: scale(0.8) rotateY(60deg) translateY(20px);
+                filter: blur(5px);
+            }
+            60% {
+                opacity: 0.8;
+                transform: scale(0.95) rotateY(20deg) translateY(5px);
+                filter: blur(2px);
+            }
+            80% {
+                opacity: 1;
+                transform: scale(1.05) rotateY(0deg) translateY(0px);
+                filter: blur(0px);
+            }
+            90% {
+                opacity: 1;
+                transform: scale(1.02) rotateY(0deg) translateY(0px);
+                filter: blur(0px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotateY(0deg) translateY(0px);
+                filter: blur(0px);
+            }
+        }
+
+        /* Enhanced CSS-based transition */
+        .fluid-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+            transition: all 4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            backdrop-filter: blur(10px);
+        }
+    </style>
 </head>
 <body>
-    <div class="app-container">
-        <header>
-            <div class="container">
-                <h1><i class="fas fa-robot"></i> ConvAi Introduction Evaluation System</h1>
-                <p class="lead">Upload your audio/video introduction for comprehensive evaluation</p>
-            </div>
-        </header>
+    <!-- Fluid Transition Overlay -->
+    <div id="fluid-transition" class="fluid-overlay">
+        <div class="fluid-wave"></div>
+        <div class="fluid-logo">ConvAi</div>
+    </div>      
+    
+    <!-- Left Taskbar for Toggle Switches -->
+    <div class="left-taskbar">
+        <div class="theme-toggle-container">
+            <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+                <i class="fas fa-moon" id="theme-icon"></i>
+            </button>
+        </div>
+        <!-- Future switches can be added here -->
+    </div>
+    
+    <!-- Outer frame with dotted background (matching login page structure) -->
+        <!-- Single content box matching login page structure -->
+        <div class="main-content-box">            <header>
+                <div class="container">                    <div class="header-content">
+                        <h1><i class="fas fa-robot"></i> ConvAi Introduction Evaluation System</h1>
+                        <p class="lead">Upload your audio/video introduction for comprehensive evaluation</p>
+                    </div>
+                </div>
+            </header>
 
-        <main class="container">
-            <div class="row">
-                <div class="col-lg-8 mx-auto">
+            <main class="container">
+                        <div class="row">
+                            <div class="col-lg-8 mx-auto">
                     <!-- Progress Tracker -->
                     <div class="progress-tracker mb-4">
                         <div class="progress-step active" id="step-upload">
@@ -213,23 +402,23 @@
                                     </div>
                                 </div>
                             </div>
-                            
-                            <div class="mt-3">
+                              <div class="mt-3">
                                 <button type="button" class="btn btn-primary" id="start-new-button">
                                     <i class="fas fa-redo me-2"></i>Start New Evaluation
                                 </button>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </div>                </div>
             </div>
-        </main>
-
+        </main>        
+        
         <footer class="text-center py-3">
             <div class="container">
-                <p>© 2025 ConvAi Team | Project ConvAi-IntroEval</p>
+                <p>© Entity Creations | 2025 ConvAi Team | Project ConvAi-IntroEval</p>
             </div>
         </footer>
+        
+        </div> <!-- Close main-content-box -->
     </div>
 
     <!-- Modal for errors -->
@@ -250,5 +439,55 @@
         </div>    </div>    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../static/js/rating-utils.js"></script>
     <script src="../static/js/app.js"></script>
+    <script>    // Simple CSS-based fluid transition
+    document.addEventListener('DOMContentLoaded', function() {
+        const overlay = document.getElementById('fluid-transition');
+        
+        // Test function for manual triggering
+        window.testTransition = function() {
+            localStorage.setItem('showFluidTransition', 'true');
+            location.reload();
+        };
+        
+        if (localStorage.getItem('showFluidTransition')) {
+            localStorage.removeItem('showFluidTransition');
+            
+            // Show and start the transition
+            overlay.classList.add('active');
+            
+            // Hide the overlay after animation completes (extended duration)
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 5500); // Increased from 2000ms to 5500ms for smoother fade
+        }
+
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const html = document.documentElement;
+        
+        // Check for saved theme preference or default to dark
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        
+        themeToggle.addEventListener('click', function() {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+        
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.className = 'fas fa-sun'; // Show sun icon in dark mode
+            } else {
+                themeIcon.className = 'fas fa-moon'; // Show moon icon in light mode
+            }
+        }
+    });
+    </script>
 </body>
 </html>

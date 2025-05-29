@@ -5,10 +5,20 @@
   <!-- Google Fonts for the bold, spaced tab text -->
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Khand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../static/css/login.css">
-</head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../static/css/login.css">  </head>
 <body>
-  <div class="outer-frame">
+  <!-- Left Taskbar for Toggle Switches -->
+  <div class="left-taskbar">
+    <div class="theme-toggle-container">
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+        <i class="fas fa-moon" id="theme-icon"></i>
+      </button>
+    </div>
+    <!-- Future switches can be added here -->
+  </div>
+  
+  <div class="outer-frame">    
     <div class="login-box">
       <div class="tabs">
         <button class="tab-btn active" onclick="showSection('loginSection')">LOG IN</button>
@@ -44,8 +54,37 @@
         </form>
         <div id="forgotPasswordResult" class="form-message"></div>
       </div>
-    </div>
-  </div>
+    </div>  </div>
   <script src="../static/js/login.js"></script>
+  <script>
+    // Theme Toggle Functionality for Login Page
+    document.addEventListener('DOMContentLoaded', function() {
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const html = document.documentElement;
+        
+        // Check for saved theme preference or default to dark
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        
+        themeToggle.addEventListener('click', function() {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+        
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.className = 'fas fa-sun'; // Show sun icon in dark mode
+            } else {
+                themeIcon.className = 'fas fa-moon'; // Show moon icon in light mode
+            }
+        }
+    });
+  </script>
 </body>
 </html>

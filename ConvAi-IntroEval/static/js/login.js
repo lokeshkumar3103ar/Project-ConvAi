@@ -1,4 +1,4 @@
-    // Section switching logic
+// Section switching logic
     function showSection(sectionId) {
       document.querySelectorAll('.form-section').forEach(sec => sec.classList.remove('active'));
       document.getElementById(sectionId).classList.add('active');
@@ -21,6 +21,7 @@
       });
       const result = await response.json();
       if (response.ok) {
+        localStorage.setItem('showFluidTransition', 'true');
         window.location.href = "/index";
       } else {
         document.getElementById("loginResult").innerHTML = `<span style="color:red">${result.detail}</span>`;
