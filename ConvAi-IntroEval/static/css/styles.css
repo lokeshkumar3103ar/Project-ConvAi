@@ -446,6 +446,7 @@ label {
 .status-content h4 {
     margin-bottom: 0.25rem;
     font-size: 1.1rem;
+    color: var(--text-primary);
 }
 
 .status-content p {
@@ -609,6 +610,13 @@ label {
     z-index: 10;
     animation: logoFade 5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
     opacity: 0;
+}
+
+.modal-content {
+    background: var(--body-bg);
+}
+.modal-header, .modal-footer {
+    border: none;
 }
 
 @keyframes fluidTransition {
