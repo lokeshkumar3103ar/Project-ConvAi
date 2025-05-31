@@ -1341,6 +1341,13 @@ label {
     opacity: 0;
 }
 
+.modal-content {
+    background: var(--body-bg);
+}
+.modal-header, .modal-footer {
+    border: none;
+}
+
 @keyframes fluidTransition {
     0% { 
         opacity: 1; 
