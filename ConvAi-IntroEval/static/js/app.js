@@ -6,6 +6,67 @@
  * including file uploads, streaming API responses, and results display.
  */
 
+// Initialize global app state and handlers
+window.appState = {
+    file: null,
+    transcriptPath: null,
+    transcriptText: null,
+    extractedFields: null,
+    profileRating: null,
+    introRating: null,
+    eventSources: []
+};
+
+// Initialize file handling functions globally
+window.handleFileSelect = function(file) {
+    console.log('handleFileSelect called with file:', file);
+    if (!file) return false;
+    
+    // Check if file is audio or video
+    const fileType = file.type.split('/')[0];
+    if (fileType !== 'audio' && fileType !== 'video') {
+        console.error('Invalid file type:', fileType);
+        if (typeof window.showError === 'function') {
+            window.showError('Please select an audio or video file.');
+        } else {
+            console.error('Please select an audio or video file.');
+        }
+        return false;
+    }
+
+    // Update global state
+    window.appState = window.appState || {};
+    window.appState.file = file;
+    
+    // Get DOM elements - For recording we need to handle this synchronously
+    const fileInput = document.getElementById('file-input');
+    const fileName = document.getElementById('file-name');
+    const fileInfo = document.getElementById('file-info');
+    
+    if (fileInput && fileName && fileInfo) {
+        try {
+            // Create a DataTransfer object to update file input
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files;
+            
+            // Update file information display
+            fileName.textContent = file.name;
+            fileInfo.classList.remove('d-none');
+            
+            return true;
+        } catch (error) {
+            console.error('Error updating file input:', error);
+            return false;
+        }
+    } else {
+        // If DOM elements aren't ready, still save the file but return false
+        // This allows the recording functionality to know there was an issue
+        console.warn('DOM elements not ready for file display, but file is saved');
+        return false;
+    }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     // DOM Elements
     const uploadForm = document.getElementById('upload-form');
@@ -33,8 +94,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const extractedFieldsContent = document.getElementById('extracted-fields-content');
     const profileRatingContent = document.getElementById('profile-rating-content');
     const introRatingContent = document.getElementById('intro-rating-content');
+      const startNewButton = document.getElementById('start-new-button');
+      // Tips modal elements
+    const tipsToggle = document.getElementById('tips-toggle');
+    const tipsModal = document.getElementById('tips-modal');
+    const tipsCloseBtn = document.getElementById('tips-close-btn');
     
-    const startNewButton = document.getElementById('start-new-button');
+    // Rubrics modal elements
+    const rubricsToggle = document.getElementById('rubrics-toggle');
+    const rubricsModal = document.getElementById('rubrics-modal');
+    const rubricsCloseBtn = document.getElementById('rubrics-close-btn');
+    const rubricsTabs = document.querySelectorAll('.rubrics-tab');
+    const rubricsTabContents = document.querySelectorAll('.rubrics-tab-content');
     
     const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
     const errorMessage = document.getElementById('error-message');
@@ -44,17 +115,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const stepTranscribe = document.getElementById('step-transcribe');
     const stepExtract = document.getElementById('step-extract');
     const stepRate = document.getElementById('step-rate');
-    
-    // Application state
-    let appState = {
-        file: null,
-        transcriptPath: null,
-        transcriptText: null,
-        extractedFields: null,
-        profileRating: null,
-        introRating: null,
-        eventSources: []
-    };
+      // Use the global app state
+    const appState = window.appState;
     
     // Reset the application
     function resetApp() {
@@ -125,29 +187,14 @@ document.addEventListener('DOMContentLoaded', function() {
             progressBar.style.width = `${progress}%`;
         }
     }
-    
-    // Show an error message
+      // Show an error message
     function showError(message) {
         errorMessage.textContent = message;
         errorModal.show();
     }
     
-    // Handle file selection
-    function handleFileSelect(file) {
-        if (!file) return;
-        
-        // Check if file is audio or video
-        const fileType = file.type.split('/')[0];
-        if (fileType !== 'audio' && fileType !== 'video') {
-            showError('Please select an audio or video file.');
-            return;
-        }
-        
-        // Update file information display
-        appState.file = file;
-        fileName.textContent = file.name;
-        fileInfo.classList.remove('d-none');
-    }
+    // Make showError function globally available for recording functionality
+    window.showError = showError;// Handle file selection is now defined globally
     
     // Display extracted fields in a formatted way
     function displayExtractedFields(fields) {
@@ -732,24 +779,31 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error displaying rating:', error);
             container.innerHTML = `<div class="alert alert-danger">Error displaying rating: ${error.message}</div>`;
         }
-    }
-    
-    // Upload the file and handle the full processing pipeline
-    async function uploadAndProcess() {
+    }    // Upload the file and handle the full processing pipeline
+    window.uploadAndProcess = async function() {
         try {
-            if (!appState.file) {
-                showError('Please select a file first.');
+            // Check both fileInput and global state
+            let fileToProcess = null;
+            
+            if (fileInput.files && fileInput.files[0]) {
+                fileToProcess = fileInput.files[0];
+            } else if (window.appState && window.appState.file) {
+                fileToProcess = window.appState.file;
+            }
+            
+            if (!fileToProcess) {
+                showError('Please select a file or record an introduction first.');
                 return;
             }
+            
+            // Ensure file is set in both states
+            window.appState = window.appState || {};
+            window.appState.file = fileToProcess;
+            appState.file = fileToProcess;
             
             // Update UI for processing
             uploadSection.classList.add('d-none');
             processingSection.classList.remove('d-none');
-            
-            // Disable form elements
-            uploadButton.disabled = true;
-            extractFieldsCheckbox.disabled = true;
-            generateRatingsCheckbox.disabled = true;
             
             // Update progress steps
             stepUpload.classList.remove('active');
@@ -767,7 +821,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Create form data for upload
             const formData = new FormData();
-            formData.append('file', appState.file);
+            formData.append('file', fileToProcess);
             formData.append('extract_fields', extractFieldsCheckbox.checked);
             formData.append('generate_ratings', generateRatingsCheckbox.checked);
             
@@ -800,7 +854,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Check if fields were extracted directly in the transcribe endpoint
             if (data.extracted_fields && data.extracted_fields.status === 'saved' && data.extracted_fields.data) {
-                // Fields were already extracted
+                // Handle directly returned field data
+                appState.extractedFields = data.extracted_fields.data;
                 stepTranscribe.classList.remove('active');
                 stepTranscribe.classList.add('completed');
                 stepExtract.classList.add('completed');
@@ -808,33 +863,41 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateStatusElement(
                     extractionStatus, 
                     'completed', 
-                    'Information Extracted', 
+                    'Information Extraction Complete', 
                     'Successfully extracted information from transcript', 
                     100
                 );
                 
-                appState.extractedFields = data.extracted_fields.data;
-                displayExtractedFields(data.extracted_fields.data);
+                displayExtractedFields(appState.extractedFields);
                 
-                // If ratings are being generated in the background
-                if (data.extracted_fields.ratings_status === 'generating_in_background') {
+                if (data.ratings && data.ratings.status === 'saved' && data.ratings.data) {
+                    // Handle directly returned ratings
+                    appState.profileRating = data.ratings.data.profile_rating;
+                    appState.introRating = data.ratings.data.intro_rating;
+                    
+                    stepRate.classList.add('completed');
+                    
                     updateStatusElement(
                         ratingStatus, 
-                        'processing', 
-                        'Generating Ratings', 
-                        'Evaluating your introduction...', 
-                        50
+                        'completed', 
+                        'Rating Generation Complete', 
+                        'Generated profile and introduction ratings', 
+                        100
                     );
+                      displayRating(appState.profileRating, profileRatingContent);
+                    displayRating(appState.introRating, introRatingContent);
                     
-                    // Poll for rating status
-                    pollRatingStatus();
+                    // Show results
+                    showResults();                } else if (generateRatingsCheckbox.checked) {
+                    // Start rating generation using polling method
+                    await pollRatingStatus();
+                    // Show results
+                    showResults();
+                } else {
+                    // Show results without ratings
+                    showResults();
                 }
             } else if (extractFieldsCheckbox.checked) {
-                // Need to extract fields through streaming
-                stepTranscribe.classList.remove('active');
-                stepTranscribe.classList.add('completed');
-                stepExtract.classList.add('active');
-                
                 // Start field extraction streaming
                 await streamFieldExtraction();
             } else {
@@ -921,20 +984,15 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                             
                             // Close the event source
-                            eventSource.close();
-                            
-                            // Move to ratings step if requested
+                            eventSource.close();                            // Move to ratings step if requested
                             if (generateRatingsCheckbox.checked) {
                                 stepExtract.classList.remove('active');
                                 stepExtract.classList.add('completed');
                                 stepRate.classList.add('active');
                                 
-                                // Start streaming ratings
-                                streamProfileRating()
-                                    .then(() => streamIntroRating())
+                                // Start rating generation using polling method
+                                pollRatingStatus()
                                     .then(() => {
-                                        stepRate.classList.remove('active');
-                                        stepRate.classList.add('completed');
                                         showResults();
                                         resolve();
                                     })
@@ -1020,214 +1078,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Field extraction setup error:', error);
                 reject(error);
             }
-        });
-    }
-    
-    // Stream profile rating
-    async function streamProfileRating() {
-        return new Promise((resolve, reject) => {
-            try {
-                updateStatusElement(
-                    ratingStatus, 
-                    'processing', 
-                    'Generating Profile Rating', 
-                    'Evaluating your profile...', 
-                    25
-                );
-                
-                const eventSource = new EventSource('/profile-rating-stream');
-                appState.eventSources.push(eventSource);
-                
-                eventSource.onmessage = function(event) {
-                    try {
-                        const data = JSON.parse(event.data);
-                        console.log('Profile rating stream data:', data); // Debug logging
-                        
-                        // Handle different status messages
-                        if (data.status === 'processing') {
-                            // Update progress
-                            updateStatusElement(
-                                ratingStatus, 
-                                'processing', 
-                                'Generating Profile Rating', 
-                                data.message || 'Evaluating your profile...', 
-                                50
-                            );
-                        } else if (data.status === 'completed' || data.status === 'done') {
-                            // Rating completed
-                            updateStatusElement(
-                                ratingStatus, 
-                                'processing', 
-                                'Profile Rating Complete', 
-                                'Successfully evaluated your profile', 
-                                75
-                            );
-                            
-                            // Save and display the profile rating
-                            if (data.data) {
-                                appState.profileRating = data.data;
-                                displayRating(data.data, profileRatingContent);
-                                console.log('Displayed profile rating data:', data.data); // Debug logging
-                            }
-                            
-                            // Close the event source
-                            eventSource.close();
-                            resolve();
-                        } else if (data.status === 'error') {
-                            // Handle error
-                            updateStatusElement(
-                                ratingStatus, 
-                                'error', 
-                                'Profile Rating Failed', 
-                                data.message || 'Failed to generate profile rating', 
-                                100
-                            );
-                            
-                            eventSource.close();
-                            reject(new Error(data.message || 'Profile rating generation failed'));
-                        } else if (data.status === 'disabled') {
-                            // LLM functionality disabled
-                            updateStatusElement(
-                                ratingStatus, 
-                                'completed', 
-                                'Rating Generation Disabled', 
-                                'LLM functionality is currently disabled', 
-                                100
-                            );
-                            
-                            eventSource.close();
-                            resolve();
-                        }
-                    } catch (error) {
-                        console.error('Error processing profile rating event:', error);
-                    }
-                };
-                
-                eventSource.onerror = function(error) {
-                    console.error('Profile rating stream error:', error);
-                    eventSource.close();
-                    
-                    updateStatusElement(
-                        ratingStatus, 
-                        'error', 
-                        'Profile Rating Failed', 
-                        'Stream connection error', 
-                        100
-                    );
-                    
-                    reject(new Error('Profile rating stream connection failed'));
-                };
-                
-            } catch (error) {
-                console.error('Profile rating setup error:', error);
-                reject(error);
-            }
-        });
-    }
-    
-    // Stream introduction rating
-    async function streamIntroRating() {
-        return new Promise((resolve, reject) => {
-            try {
-                updateStatusElement(
-                    ratingStatus, 
-                    'processing', 
-                    'Generating Intro Rating', 
-                    'Evaluating your introduction...', 
-                    75
-                );
-                
-                const eventSource = new EventSource('/intro-rating-stream');
-                appState.eventSources.push(eventSource);
-                
-                eventSource.onmessage = function(event) {
-                    try {
-                        const data = JSON.parse(event.data);
-                        console.log('Intro rating stream data:', data); // Debug logging
-                        
-                        // Handle different status messages
-                        if (data.status === 'processing') {
-                            // Update progress
-                            updateStatusElement(
-                                ratingStatus, 
-                                'processing', 
-                                'Generating Intro Rating', 
-                                data.message || 'Evaluating your introduction...', 
-                                85
-                            );
-                        } else if (data.status === 'completed' || data.status === 'done') {
-                            // Rating completed
-                            updateStatusElement(
-                                ratingStatus, 
-                                'completed', 
-                                'Ratings Complete', 
-                                'Successfully evaluated your introduction', 
-                                100
-                            );
-                            
-                            // Save and display the intro rating
-                            if (data.data) {
-                                appState.introRating = data.data;
-                                displayRating(data.data, introRatingContent);
-                                console.log('Displayed intro rating data:', data.data); // Debug logging
-                            }
-                            
-                            // Close the event source
-                            eventSource.close();
-                            resolve();
-                        } else if (data.status === 'error') {
-                            // Handle error
-                            updateStatusElement(
-                                ratingStatus, 
-                                'error', 
-                                'Intro Rating Failed', 
-                                data.message || 'Failed to generate intro rating', 
-                                100
-                            );
-                            
-                            eventSource.close();
-                            reject(new Error(data.message || 'Intro rating generation failed'));
-                        } else if (data.status === 'disabled') {
-                            // LLM functionality disabled
-                            updateStatusElement(
-                                ratingStatus, 
-                                'completed', 
-                                'Rating Generation Disabled', 
-                                'LLM functionality is currently disabled', 
-                                100
-                            );
-                            
-                            eventSource.close();
-                            resolve();
-                        }
-                    } catch (error) {
-                        console.error('Error processing intro rating event:', error);
-                    }
-                };
-                
-                eventSource.onerror = function(error) {
-                    console.error('Intro rating stream error:', error);
-                    eventSource.close();
-                    
-                    updateStatusElement(
-                        ratingStatus, 
-                        'error', 
-                        'Intro Rating Failed', 
-                        'Stream connection error', 
-                        100
-                    );
-                    
-                    reject(new Error('Intro rating stream connection failed'));
-                };
-                
-            } catch (error) {
-                console.error('Intro rating setup error:', error);
-                reject(error);
-            }
-        });
-    }
-    
-    // Poll for rating status
+        });    }    // Poll for rating status
     async function pollRatingStatus() {
         try {
             console.log("Starting rating status polling...");
@@ -1583,17 +1434,95 @@ document.addEventListener('DOMContentLoaded', function() {
         fileInput.value = '';
         appState.file = null;
         fileInfo.classList.add('d-none');
-    });
-    
-    // Form submission
+    });    // Form submission
     uploadForm.addEventListener('submit', function(e) {
         e.preventDefault();
         uploadAndProcess();
     });
-    
-    // Start new button
+      // Start new button
     startNewButton.addEventListener('click', function() {
         resetApp();
+    });
+    
+    // Tips modal functionality
+    if (tipsToggle) {
+        tipsToggle.addEventListener('click', function() {
+            tipsModal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        });
+    }
+    
+    if (tipsCloseBtn) {
+        tipsCloseBtn.addEventListener('click', function() {
+            tipsModal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restore scrolling
+        });
+    }
+    
+    // Close tips modal when clicking outside
+    if (tipsModal) {
+        tipsModal.addEventListener('click', function(e) {
+            if (e.target === tipsModal) {
+                tipsModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+    }
+      // Close tips modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && tipsModal && tipsModal.style.display === 'block') {
+            tipsModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        if (e.key === 'Escape' && rubricsModal && rubricsModal.style.display === 'block') {
+            rubricsModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Rubrics modal functionality
+    if (rubricsToggle) {
+        rubricsToggle.addEventListener('click', function() {
+            rubricsModal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        });
+    }
+    
+    if (rubricsCloseBtn) {
+        rubricsCloseBtn.addEventListener('click', function() {
+            rubricsModal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restore scrolling
+        });
+    }
+    
+    // Close rubrics modal when clicking outside
+    if (rubricsModal) {
+        rubricsModal.addEventListener('click', function(e) {
+            if (e.target === rubricsModal) {
+                rubricsModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+    }
+
+    // Rubrics tabs functionality
+    rubricsTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            const targetTab = this.getAttribute('data-tab');
+            
+            // Remove active class from all tabs and contents
+            rubricsTabs.forEach(t => t.classList.remove('active'));
+            rubricsTabContents.forEach(content => content.classList.remove('active'));
+            
+            // Add active class to clicked tab
+            this.classList.add('active');
+            
+            // Show corresponding content
+            const targetContent = document.getElementById(`${targetTab}-rubrics`);
+            if (targetContent) {
+                targetContent.classList.add('active');
+            }
+        });
     });
     
     // Health check on load

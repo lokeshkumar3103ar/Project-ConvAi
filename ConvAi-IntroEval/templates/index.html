@@ -58,12 +58,11 @@
             border-radius: 50%;
             transform: translate(-50%, -50%);
             animation: wave-secondary 8s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite reverse;
-        }
-          .fluid-logo {
+        }        .fluid-logo {
             position: relative;
             font-size: 16rem;
             font-weight: bold;
-            color: #111;
+            color: var(--text-primary);
             text-shadow: 0 0 30px rgba(85, 85, 85, 0.5), 0 0 60px rgba(68, 68, 68, 0.3);
             pointer-events: auto;
             z-index: 1060;
@@ -168,29 +167,1385 @@
                 transform: scale(1) rotateY(0deg) translateY(0px);
                 filter: blur(0px);
             }
-        }
-
-        /* Enhanced CSS-based transition */
+        }        /* Enhanced CSS-based transition */
         .fluid-overlay.active {
             opacity: 1;
             pointer-events: all;
             transition: all 4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             backdrop-filter: blur(10px);
         }
+
+        /* Voice Input Button Styles */
+        .voice-input-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .voice-input-btn {
+            background: var(--card-bg);
+            border: 2px solid var(--card-border);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-primary);
+            font-size: 1.2rem;
+        }
+
+        .voice-input-btn:hover {
+            background: var(--secondary-color);
+            color: #fff;
+            border-color: var(--secondary-color);
+            transform: scale(1.1);
+        }
+
+        .voice-input-btn.recording {
+            background: var(--danger-color);
+            color: #fff;
+            border-color: var(--danger-color);
+            animation: pulse-recording 2s infinite;
+        }
+
+        @keyframes pulse-recording {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(234, 67, 53, 0.7);
+            }
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(234, 67, 53, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(234, 67, 53, 0);
+            }
+        }        /* WhisperGate Voice Modal Styles - Full Screen Futuristic */
+        .voice-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--body-bg);
+            background-image: linear-gradient(135deg, 
+                var(--body-bg) 0%, 
+                var(--content-box-bg) 25%, 
+                var(--body-bg) 50%, 
+                var(--content-box-bg) 75%, 
+                var(--body-bg) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            backdrop-filter: blur(20px);
+            overflow: hidden;
+        }        .voice-modal-overlay::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(68, 139, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, var(--outer-frame-dots) 0%, transparent 50%),
+                radial-gradient(circle at 40% 70%, var(--outer-frame-dots) 0%, transparent 50%);
+            animation: floating-particles 20s ease-in-out infinite;
+        }
+
+        @keyframes floating-particles {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.3;
+            }
+            33% {
+                transform: translateY(-20px) rotate(120deg);
+                opacity: 0.6;
+            }
+            66% {
+                transform: translateY(10px) rotate(240deg);
+                opacity: 0.4;
+            }
+        }
+
+        .voice-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }        .voice-modal-card {
+            background: var(--content-box-bg);
+            background-image: linear-gradient(135deg, 
+                var(--content-box-bg) 0%, 
+                var(--card-bg) 100%);
+            border: 1px solid var(--content-box-border);
+            border-radius: 32px;
+            padding: 4rem 3rem;
+            width: 100%;
+            height: 100%;
+            max-width: none;
+            max-height: none;
+            box-shadow: 
+                0 0 100px rgba(52, 168, 83, 0.1),
+                var(--box-shadow);
+            transform: scale(0.8) rotateX(15deg);
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }        .voice-modal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(45deg, transparent 30%, rgba(68, 139, 255, 0.05) 50%, transparent 70%),
+                radial-gradient(circle at center, var(--outer-frame-dots) 0%, transparent 70%);
+            pointer-events: none;
+        }.voice-modal-overlay.active .voice-modal-card {
+            transform: scale(1) rotateX(0deg);
+        }
+
+        .voice-modal-content {
+            text-align: center;
+            color: var(--text-primary);
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .voice-status-indicator {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }        .voice-pulse-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(68, 139, 255, 0.2);
+            border-radius: 50%;
+            animation: futuristic-pulse 3s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+        }
+
+        .voice-pulse-ring::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            border: 1px solid rgba(68, 139, 255, 0.1);
+            border-radius: 50%;
+            animation: futuristic-pulse 3s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite reverse;
+        }
+
+        .voice-pulse-ring::after {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            right: 40px;
+            bottom: 40px;
+            border: 1px solid rgba(68, 139, 255, 0.05);
+            border-radius: 50%;
+            animation: futuristic-pulse 3s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+        }
+
+        .voice-pulse-ring.listening {
+            border-color: rgba(234, 67, 53, 0.4);
+            animation: futuristic-pulse-listening 2s ease-in-out infinite;
+        }
+
+        .voice-pulse-ring.listening::before {
+            border-color: rgba(234, 67, 53, 0.2);
+        }
+
+        .voice-pulse-ring.listening::after {
+            border-color: rgba(234, 67, 53, 0.1);
+        }        .voice-microphone-icon {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #448bff 0%, #2563eb 50%, #1d4ed8 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #fff;
+            transition: all 0.4s ease;
+            box-shadow: 
+                0 0 40px rgba(68, 139, 255, 0.4),
+                inset 0 0 40px rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 5;
+        }
+
+        .voice-microphone-icon::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, rgba(68, 139, 255, 0.1), transparent, rgba(68, 139, 255, 0.1));
+            border-radius: 50%;
+            animation: rotating-glow 4s linear infinite;
+        }
+
+        .voice-microphone-icon.listening {
+            background: linear-gradient(135deg, #ea4335 0%, #d33b2c 50%, #b71c1c 100%);
+            box-shadow: 
+                0 0 60px rgba(234, 67, 53, 0.6),
+                inset 0 0 40px rgba(255, 255, 255, 0.1);
+            animation: listening-glow 1.5s ease-in-out infinite;
+        }        .voice-microphone-icon.listening::before {
+            background: linear-gradient(45deg, rgba(234, 67, 53, 0.2), transparent, rgba(234, 67, 53, 0.2));
+        }
+
+        @keyframes futuristic-pulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.6;
+            }
+            100% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+        }
+
+        @keyframes futuristic-pulse-listening {
+            0% {
+                transform: scale(0.9);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(0.9);
+                opacity: 1;
+            }
+        }
+
+        @keyframes rotating-glow {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes listening-glow {
+            0% {
+                box-shadow: 0 0 60px rgba(234, 67, 53, 0.6), inset 0 0 40px rgba(255, 255, 255, 0.1);
+            }
+            50% {
+                box-shadow: 0 0 100px rgba(234, 67, 53, 0.8), inset 0 0 60px rgba(255, 255, 255, 0.15);
+            }
+            100% {
+                box-shadow: 0 0 60px rgba(234, 67, 53, 0.6), inset 0 0 40px rgba(255, 255, 255, 0.1);
+            }
+        }        .voice-modal-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #448bff, #60a5fa, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(68, 139, 255, 0.3);
+            letter-spacing: 0.05em;
+        }.voice-modal-message {
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            opacity: 0.8;
+            margin-bottom: 3rem;
+            min-height: 2rem;
+            font-weight: 300;
+            letter-spacing: 0.02em;
+        }
+
+        .voice-transcript-container {
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--box-shadow);
+        }
+
+        .voice-transcript {
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            line-height: 1.6;
+            text-align: center;
+            width: 100%;
+            min-height: 3rem;
+            font-weight: 300;
+        }
+
+        .voice-transcript.empty::before {
+            content: "Your transcript will appear here...";
+            color: var(--text-primary);
+            opacity: 0.6;
+            font-style: italic;
+            font-size: 1.1rem;
+        }
+
+        .voice-modal-controls {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }        .voice-control-btn {
+            background: var(--button-secondary-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 16px;
+            padding: 1rem 2rem;
+            color: var(--button-secondary-color);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .voice-control-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--outer-frame-dots), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .voice-control-btn:hover::before {
+            left: 100%;
+        }
+
+        .voice-control-btn:hover {
+            background: var(--primary-color);
+            color: var(--button-primary-color);
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: var(--box-shadow);
+        }        .voice-start-btn {
+            background: linear-gradient(135deg, #448bff 0%, #2563eb 50%, #1d4ed8 100%);
+            border-color: #448bff;
+            color: var(--light-color);
+            box-shadow: 0 0 20px rgba(68, 139, 255, 0.3);
+        }
+
+        .voice-start-btn:hover {
+            background: linear-gradient(135deg, #60a5fa 0%, #448bff 50%, #2563eb 100%);
+            filter: brightness(1.2);
+            border-color: #60a5fa;
+            box-shadow: 0 10px 40px rgba(68, 139, 255, 0.4);
+        }
+
+        .voice-stop-btn {
+            background: var(--danger-color);
+            border-color: var(--danger-color);
+            color: var(--light-color);
+            box-shadow: 0 0 20px rgba(234, 67, 53, 0.3);
+        }
+
+        .voice-stop-btn:hover {
+            background: var(--danger-color);
+            filter: brightness(1.2);
+            border-color: var(--danger-color);
+            box-shadow: 0 10px 40px rgba(234, 67, 53, 0.4);
+        }
+
+        .voice-close-btn {
+            background: var(--button-secondary-bg);
+            border-color: var(--button-secondary-bg);
+            color: var(--button-secondary-color);
+            box-shadow: 0 0 20px rgba(108, 117, 125, 0.2);
+        }
+
+        .voice-close-btn:hover {
+            background: var(--button-secondary-bg);
+            filter: brightness(1.2);            border-color: var(--button-secondary-bg);
+            box-shadow: 0 10px 40px rgba(108, 117, 125, 0.3);
+        }
+
+        /* Record and Upload Modal Styles */
+        .record-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--body-bg);
+            background-image: linear-gradient(135deg, 
+                var(--body-bg) 0%, 
+                var(--content-box-bg) 25%, 
+                var(--body-bg) 50%, 
+                var(--content-box-bg) 75%, 
+                var(--body-bg) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            backdrop-filter: blur(20px);
+            overflow: hidden;
+        }
+
+        .record-modal-overlay::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(68, 139, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, var(--outer-frame-dots) 0%, transparent 50%),
+                radial-gradient(circle at 50% 30%, var(--outer-frame-dots) 0%, transparent 50%);
+            animation: floating-particles 25s ease-in-out infinite;
+        }
+
+        .record-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .record-modal-card {
+            background: var(--content-box-bg);
+            background-image: linear-gradient(135deg, 
+                var(--content-box-bg) 0%, 
+                var(--card-bg) 100%);
+            border: 1px solid var(--content-box-border);
+            border-radius: 32px;
+            padding: 4rem 3rem;
+            width: 100%;
+            height: 100%;
+            max-width: none;
+            max-height: none;
+            box-shadow: 
+                0 0 100px rgba(68, 139, 255, 0.1),
+                var(--box-shadow);
+            transform: scale(0.8) rotateX(15deg);
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .record-modal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(45deg, transparent 30%, rgba(68, 139, 255, 0.05) 50%, transparent 70%),
+                radial-gradient(circle at center, var(--outer-frame-dots) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .record-modal-overlay.active .record-modal-card {
+            transform: scale(1) rotateX(0deg);
+        }
+
+        .record-modal-content {
+            text-align: center;
+            color: var(--text-primary);
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .record-status-indicator {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin: 0 auto 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .record-pulse-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(68, 139, 255, 0.3);
+            border-radius: 50%;
+            animation: record-pulse 3s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+        }
+
+        .record-pulse-ring-secondary {
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            border: 1px solid rgba(68, 139, 255, 0.2);
+            border-radius: 50%;
+            top: 10%;
+            left: 10%;
+            animation: record-pulse 3s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite reverse;
+        }
+
+        .record-pulse-ring.recording {
+            border-color: rgba(234, 67, 53, 0.4);
+            animation: record-pulse-recording 2s ease-in-out infinite;
+        }
+
+        .record-pulse-ring-secondary.recording {
+            border-color: rgba(234, 67, 53, 0.3);
+        }
+
+        .record-microphone-icon {
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(135deg, #448bff 0%, #2563eb 50%, #1d4ed8 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            color: #fff;
+            transition: all 0.4s ease;
+            box-shadow: 
+                0 0 40px rgba(68, 139, 255, 0.4),
+                inset 0 0 40px rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 5;
+        }
+
+        .record-microphone-icon::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            right: -15px;
+            bottom: -15px;
+            background: linear-gradient(45deg, rgba(68, 139, 255, 0.1), transparent, rgba(68, 139, 255, 0.1));
+            border-radius: 50%;
+            animation: record-rotating-glow 4s linear infinite;
+        }
+
+        .record-microphone-icon.recording {
+            background: linear-gradient(135deg, #ea4335 0%, #d33b2c 50%, #b71c1c 100%);
+            box-shadow: 
+                0 0 60px rgba(234, 67, 53, 0.6),
+                inset 0 0 40px rgba(255, 255, 255, 0.1);
+            animation: record-recording-glow 1.5s ease-in-out infinite;
+        }
+
+        .record-microphone-icon.recording::before {
+            background: linear-gradient(45deg, rgba(234, 67, 53, 0.2), transparent, rgba(234, 67, 53, 0.2));
+        }
+
+        .record-waveform {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 4px;
+            height: 40px;
+            align-items: flex-end;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .record-waveform.active {
+            opacity: 1;
+        }
+
+        .wave-bar {
+            width: 4px;
+            background: linear-gradient(to top, #448bff, #60a5fa);
+            border-radius: 2px;
+            height: 8px;
+            animation: wave-animation 1.5s ease-in-out infinite;
+        }
+
+        .wave-bar:nth-child(1) { animation-delay: 0.1s; }
+        .wave-bar:nth-child(2) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.3s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.4s; }
+        .wave-bar:nth-child(5) { animation-delay: 0.5s; }
+        .wave-bar:nth-child(6) { animation-delay: 0.6s; }
+        .wave-bar:nth-child(7) { animation-delay: 0.7s; }
+        .wave-bar:nth-child(8) { animation-delay: 0.8s; }
+
+        @keyframes wave-animation {
+            0%, 100% { height: 8px; }
+            50% { height: 32px; }
+        }
+
+        @keyframes record-pulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.6;
+            }
+            100% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+        }
+
+        @keyframes record-pulse-recording {
+            0% {
+                transform: scale(0.9);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(0.9);
+                opacity: 1;
+            }
+        }
+
+        @keyframes record-rotating-glow {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes record-recording-glow {
+            0% {
+                box-shadow: 0 0 60px rgba(234, 67, 53, 0.6), inset 0 0 40px rgba(255, 255, 255, 0.1);
+            }
+            50% {
+                box-shadow: 0 0 100px rgba(234, 67, 53, 0.8), inset 0 0 60px rgba(255, 255, 255, 0.15);
+            }
+            100% {
+                box-shadow: 0 0 60px rgba(234, 67, 53, 0.6), inset 0 0 40px rgba(255, 255, 255, 0.1);
+            }
+        }
+
+        .record-modal-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #448bff, #60a5fa, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(68, 139, 255, 0.3);
+            letter-spacing: 0.05em;
+        }
+
+        .record-modal-message {
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            opacity: 0.8;
+            margin-bottom: 2rem;
+            min-height: 2rem;
+            font-weight: 300;
+            letter-spacing: 0.02em;
+        }
+
+        .record-timer-container {
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .record-timer {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.1em;
+        }
+
+        .record-timer.recording {
+            color: #ea4335;
+            animation: timer-pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes timer-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .record-modal-controls {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .record-control-btn {
+            background: var(--button-secondary-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 16px;
+            padding: 1rem 2rem;
+            color: var(--button-secondary-color);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .record-control-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--outer-frame-dots), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .record-control-btn:hover::before {
+            left: 100%;
+        }
+
+        .record-control-btn:hover {
+            background: var(--primary-color);
+            color: var(--button-primary-color);
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+            box-shadow: var(--box-shadow);
+        }
+
+        .record-start-btn {
+            background: linear-gradient(135deg, #448bff 0%, #2563eb 50%, #1d4ed8 100%);
+            border-color: #448bff;
+            color: var(--light-color);
+            box-shadow: 0 0 20px rgba(68, 139, 255, 0.3);
+        }
+
+        .record-start-btn:hover {
+            background: linear-gradient(135deg, #60a5fa 0%, #448bff 50%, #2563eb 100%);
+            filter: brightness(1.2);
+            border-color: #60a5fa;
+            box-shadow: 0 10px 40px rgba(68, 139, 255, 0.4);
+        }
+
+        .record-stop-btn {
+            background: var(--danger-color);
+            border-color: var(--danger-color);
+            color: var(--light-color);
+            box-shadow: 0 0 20px rgba(234, 67, 53, 0.3);
+        }
+
+        .record-stop-btn:hover {
+            background: var(--danger-color);
+            filter: brightness(1.2);
+            border-color: var(--danger-color);
+            box-shadow: 0 10px 40px rgba(234, 67, 53, 0.4);
+        }
+
+        .record-upload-btn {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%);
+            border-color: #22c55e;
+            color: var(--light-color);
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+        }
+
+        .record-upload-btn:hover {
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 50%, #16a34a 100%);
+            filter: brightness(1.2);
+            border-color: #4ade80;
+            box-shadow: 0 10px 40px rgba(34, 197, 94, 0.4);
+        }
+
+        .record-close-btn {
+            background: var(--button-secondary-bg);
+            border-color: var(--button-secondary-bg);
+            color: var(--button-secondary-color);
+            box-shadow: 0 0 20px rgba(108, 117, 125, 0.2);
+        }
+
+        .record-close-btn:hover {
+            background: var(--button-secondary-bg);
+            filter: brightness(1.2);
+            border-color: var(--button-secondary-bg);
+            box-shadow: 0 10px 40px rgba(108, 117, 125, 0.3);
+        }
+
+        /* Record Upload Button Styling */
+        .record-upload-btn {
+            background: linear-gradient(135deg, #448bff 0%, #2563eb 50%, #1d4ed8 100%);
+            border: 2px solid #448bff;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .record-upload-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .record-upload-btn:hover::before {
+            left: 100%;
+        }
+
+        .record-upload-btn:hover {
+            background: linear-gradient(135deg, #60a5fa 0%, #448bff 50%, #2563eb 100%);
+            border-color: #60a5fa;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(68, 139, 255, 0.4);
+        }
     </style>
 </head>
-<body>
-    <!-- Fluid Transition Overlay -->
+<body>    <!-- Fluid Transition Overlay -->
     <div id="fluid-transition" class="fluid-overlay">
         <div class="fluid-wave"></div>
         <div class="fluid-logo">ConvAi</div>
-    </div>      
+    </div>
+
+    <!-- WhisperGate Voice Input Modal -->
+    <div id="voice-input-modal" class="voice-modal-overlay">
+        <div class="voice-modal-card">
+            <div class="voice-modal-content">
+                <div class="voice-status-indicator">
+                    <div class="voice-pulse-ring"></div>
+                    <div class="voice-microphone-icon">
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                </div>
+                <h2 class="voice-modal-title">Voice Input</h2>
+                <p class="voice-modal-message" id="voice-status-message">Tell me who you are...</p>
+                <div class="voice-transcript-container">
+                    <div class="voice-transcript" id="voice-transcript"></div>
+                </div>
+                <div class="voice-modal-controls">
+                    <button class="voice-control-btn voice-start-btn" id="voice-start-btn">
+                        <i class="fas fa-play"></i>
+                        Start Recording
+                    </button>
+                    <button class="voice-control-btn voice-stop-btn" id="voice-stop-btn" style="display: none;">
+                        <i class="fas fa-stop"></i>
+                        Stop Recording
+                    </button>
+                    <button class="voice-control-btn voice-close-btn" id="voice-close-btn">
+                        <i class="fas fa-times"></i>
+                        Close
+                    </button>
+                </div>
+            </div>        </div>
+    </div>
+
+    <!-- Record and Upload Modal -->
+    <div id="record-upload-modal" class="record-modal-overlay">
+        <div class="record-modal-card">
+            <div class="record-modal-content">
+                <div class="record-status-indicator">
+                    <div class="record-pulse-ring"></div>
+                    <div class="record-pulse-ring-secondary"></div>
+                    <div class="record-microphone-icon">
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                    <div class="record-waveform" id="record-waveform">
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                    </div>
+                </div>
+                <h2 class="record-modal-title">Record Your Introduction</h2>
+                <p class="record-modal-message" id="record-status-message">Ready to record your introduction...</p>
+                <div class="record-timer-container">
+                    <div class="record-timer" id="record-timer">00:00</div>
+                </div>
+                <div class="record-modal-controls">
+                    <button class="record-control-btn record-start-btn" id="record-start-btn">
+                        <i class="fas fa-play"></i>
+                        Start Recording
+                    </button>
+                    <button class="record-control-btn record-stop-btn" id="record-stop-btn" style="display: none;">
+                        <i class="fas fa-stop"></i>
+                        Stop Recording
+                    </button>
+                    <button class="record-control-btn record-upload-btn" id="record-upload-file-btn" style="display: none;">
+                        <i class="fas fa-upload"></i>
+                        Upload Recording
+                    </button>
+                    <button class="record-control-btn record-close-btn" id="record-close-btn">
+                        <i class="fas fa-times"></i>
+                        Close
+                    </button>
+                </div>
+            </div>        </div>
+    </div>
+
+    <!-- Tips Modal -->
+    <div id="tips-modal" class="tips-modal">
+        <div class="tips-modal-content">
+            <div class="tips-modal-header">
+                <h2><i class="fas fa-lightbulb"></i> Speaking Tips & Guidelines</h2>
+                <button class="tips-close-btn" id="tips-close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="tips-modal-body">
+                <div class="tips-section">
+                    <h3><i class="fas fa-microphone"></i> Speech Delivery</h3>
+                    <ul>
+                        <li><strong>Speak clearly and at a moderate pace</strong> - Ensure your words are easily understood</li>
+                        <li><strong>Use proper grammar and complete sentences</strong> - Avoid filler words and incomplete thoughts</li>
+                        <li><strong>Maintain a confident and professional tone</strong> - Sound enthusiastic but not overly casual</li>
+                        <li><strong>Structure your introduction logically</strong> - Follow a clear past-present-future progression</li>
+                    </ul>
+                </div>
+                
+                <div class="tips-section">
+                    <h3><i class="fas fa-user"></i> Essential Information to Include</h3>
+                    <ul>
+                        <li><strong>Your name and current status</strong> - Introduce yourself clearly</li>
+                        <li><strong>Educational background</strong> - Mention your degree, institution, and graduation year</li>
+                        <li><strong>Technical skills and expertise</strong> - Highlight your key competencies</li>
+                        <li><strong>Work experience or projects</strong> - Share relevant practical experience</li>
+                        <li><strong>Career goals and aspirations</strong> - Explain what you're looking for</li>
+                        <li><strong>Unique qualities or interests</strong> - What makes you stand out</li>
+                    </ul>
+                </div>
+                
+                <div class="tips-section">
+                    <h3><i class="fas fa-target"></i> Connect to Your Target Role</h3>
+                    <ul>
+                        <li><strong>Align your skills with job requirements</strong> - Show how your abilities match the role</li>
+                        <li><strong>Mention relevant technologies or tools</strong> - Demonstrate technical fit</li>
+                        <li><strong>Highlight problem-solving abilities</strong> - Share examples of challenges you've solved</li>
+                        <li><strong>Express genuine interest in the field</strong> - Show passion for your chosen career path</li>
+                    </ul>
+                </div>
+                
+                <div class="tips-section tips-example">
+                    <h3><i class="fas fa-comment-dots"></i> Example Structure</h3>
+                    <div class="example-text">
+                        <p><strong>Opening:</strong> "Hello, I'm [Name], a [current status] graduating from [Institution]..."</p>
+                        <p><strong>Background:</strong> "I've completed my [degree] with specialization in [field]..."</p>
+                        <p><strong>Skills & Experience:</strong> "I'm proficient in [technologies] and have worked on [projects/internships]..."</p>
+                        <p><strong>Goals:</strong> "I'm seeking opportunities in [field] where I can apply my skills in [specific areas]..."</p>
+                        <p><strong>Closing:</strong> "I'm excited about [specific aspect] and ready to contribute to [type of organization]."</p>
+                    </div>
+                </div>
+                
+                <div class="tips-section tips-reminder">
+                    <h3><i class="fas fa-exclamation-circle"></i> Remember</h3>
+                    <ul>
+                        <li>Keep it concise but comprehensive (2-3 minutes)</li>
+                        <li>Practice beforehand to sound natural</li>
+                        <li>Be authentic and genuine</li>
+                        <li>Focus on achievements and future potential</li>
+                    </ul>
+                </div>
+            </div>
+        </div>    </div>
+
+    <!-- Rubrics Modal -->
+    <div id="rubrics-modal" class="rubrics-modal">
+        <div class="rubrics-modal-content">
+            <div class="rubrics-modal-header">
+                <h2><i class="fas fa-clipboard-check"></i> Evaluation Rubrics - How You'll Be Graded</h2>
+                <button class="rubrics-close-btn" id="rubrics-close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="rubrics-modal-body">
+                <!-- Tabs for different evaluation types -->
+                <div class="rubrics-tabs">
+                    <button class="rubrics-tab active" data-tab="intro">
+                        <i class="fas fa-microphone"></i> Introduction Evaluation
+                    </button>
+                    <button class="rubrics-tab" data-tab="profile">
+                        <i class="fas fa-user"></i> Profile Evaluation
+                    </button>
+                </div>
+
+                <!-- Introduction Rubrics Tab -->
+                <div class="rubrics-tab-content active" id="intro-rubrics">
+                    <div class="rubrics-overview">
+                        <h3><i class="fas fa-info-circle"></i> Introduction Rating Overview</h3>
+                        <p>Your spoken introduction will be evaluated on <strong>4 key criteria</strong> for a total of <strong>10 points</strong>:</p>
+                    </div>
+
+                    <div class="rubrics-grid">
+                        <div class="rubric-card">
+                            <div class="rubric-header">
+                                <h4><i class="fas fa-spell-check"></i> Grammar & Clarity</h4>
+                                <span class="rubric-points">3.0 points</span>
+                            </div>
+                            <div class="rubric-description">
+                                <p>How clearly and grammatically you communicate</p>
+                                <div class="rubric-breakdown">
+                                    <div class="rubric-level excellent">
+                                        <span class="level-score">3.0</span>
+                                        <span class="level-desc">Fluent, grammatically perfect, clear and coherent</span>
+                                    </div>
+                                    <div class="rubric-level good">
+                                        <span class="level-score">2.5</span>
+                                        <span class="level-desc">Mostly fluent, minor errors that don't hinder understanding</span>
+                                    </div>
+                                    <div class="rubric-level average">
+                                        <span class="level-score">2.0</span>
+                                        <span class="level-desc">Understandable with noticeable grammatical errors</span>
+                                    </div>
+                                    <div class="rubric-level below">
+                                        <span class="level-score">1.0-1.5</span>
+                                        <span class="level-desc">Several errors making it difficult to follow</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rubric-card">
+                            <div class="rubric-header">
+                                <h4><i class="fas fa-list-ol"></i> Structure</h4>
+                                <span class="rubric-points">1.5 points</span>
+                            </div>
+                            <div class="rubric-description">
+                                <p>How well-organized and logical your introduction flows</p>
+                                <div class="rubric-breakdown">
+                                    <div class="rubric-level excellent">
+                                        <span class="level-score">1.5</span>
+                                        <span class="level-desc">Excellent logical flow (past-present-future), easy to follow</span>
+                                    </div>
+                                    <div class="rubric-level good">
+                                        <span class="level-score">1.0</span>
+                                        <span class="level-desc">Generally logical flow with minor organizational issues</span>
+                                    </div>
+                                    <div class="rubric-level average">
+                                        <span class="level-score">0.5</span>
+                                        <span class="level-desc">Some structure attempt but lacks clear organization</span>
+                                    </div>
+                                    <div class="rubric-level below">
+                                        <span class="level-score">0.0</span>
+                                        <span class="level-desc">No discernible structure, rambling or chaotic</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rubric-card">
+                            <div class="rubric-header">
+                                <h4><i class="fas fa-list-check"></i> Information Coverage</h4>
+                                <span class="rubric-points">3.5 points</span>
+                            </div>
+                            <div class="rubric-description">
+                                <p>How comprehensively you cover key professional information</p>
+                                <div class="info-areas">
+                                    <h5>Key Areas to Cover:</h5>
+                                    <ul>
+                                        <li><i class="fas fa-user"></i> Name/Introduction</li>
+                                        <li><i class="fas fa-graduation-cap"></i> Educational Background</li>
+                                        <li><i class="fas fa-cogs"></i> Skills & Expertise</li>
+                                        <li><i class="fas fa-project-diagram"></i> Work/Projects</li>
+                                        <li><i class="fas fa-bullseye"></i> Career Goals</li>
+                                        <li><i class="fas fa-star"></i> Personal Qualities</li>
+                                    </ul>
+                                </div>
+                                <div class="rubric-breakdown">
+                                    <div class="rubric-level excellent">
+                                        <span class="level-score">3.5</span>
+                                        <span class="level-desc">Covers ALL 6 areas comprehensively</span>
+                                    </div>
+                                    <div class="rubric-level good">
+                                        <span class="level-score">3.0</span>
+                                        <span class="level-desc">Covers 5 out of 6 areas thoroughly</span>
+                                    </div>
+                                    <div class="rubric-level average">
+                                        <span class="level-score">2.0-2.5</span>
+                                        <span class="level-desc">Covers 3-4 areas adequately</span>
+                                    </div>
+                                    <div class="rubric-level below">
+                                        <span class="level-score">1.0-1.5</span>
+                                        <span class="level-desc">Covers 1-2 areas, limited information</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rubric-card">
+                            <div class="rubric-header">
+                                <h4><i class="fas fa-bullseye"></i> Relevance to Role</h4>
+                                <span class="rubric-points">2.0 points</span>
+                            </div>
+                            <div class="rubric-description">
+                                <p>How well you connect your profile to your target job role</p>
+                                <div class="rubric-breakdown">
+                                    <div class="rubric-level excellent">
+                                        <span class="level-score">2.0</span>
+                                        <span class="level-desc">Clearly connects strengths and goals to target role</span>
+                                    </div>
+                                    <div class="rubric-level good">
+                                        <span class="level-score">1.5</span>
+                                        <span class="level-desc">Attempts connection but could be stronger</span>
+                                    </div>
+                                    <div class="rubric-level average">
+                                        <span class="level-score">1.0</span>
+                                        <span class="level-desc">Some relevant skills mentioned but no clear connection</span>
+                                    </div>
+                                    <div class="rubric-level below">
+                                        <span class="level-score">0.0-0.5</span>
+                                        <span class="level-desc">No clear connection to any professional role</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Rubrics Tab -->
+                <div class="rubrics-tab-content" id="profile-rubrics">
+                    <div class="rubrics-overview">
+                        <h3><i class="fas fa-info-circle"></i> Profile Rating Overview</h3>
+                        <p>Your extracted profile information will be evaluated on <strong>4 key criteria</strong> for a total of <strong>10 points</strong>:</p>
+                    </div>
+
+                    <div class="rubrics-grid">
+                        <div class="rubric-card">
+                            <div class="rubric-header">
+                                <h4><i class="fas fa-check-circle"></i> Completeness</h4>
+                                <span class="rubric-points">3.0 points</span>
+                            </div>
+                            <div class="rubric-description">
+                                <p>How many profile fields you provide information for</p>
+                                <div class="completeness-formula">
+                                    <h5>Scoring Formula:</h5>
+                                    <code>Score = min(3.0, (filled_fields / 35) × 3)</code>
+                                </div>
+                                <div class="field-categories">
+                                    <h5>35 Total Fields Across Categories:</h5>
+                                    <div class="category-grid">
+                                        <div class="category-item">
+                                            <span class="category-name">Personal Details</span>
+                                            <span class="category-count">4 fields</span>
+                                        </div>
+                                        <div class="category-item">
+                                            <span class="category-name">Education</span>
+                                            <span class="category-count">5 fields</span>
+                                        </div>
+                                        <div class="category-item">
+                                            <span class="category-name">Projects</span>
+                                            <span class="category-count">6 fields</span>
+                                        </div>
+                                        <div class="category-item">
+                                            <span class="category-name">Work Experience</span>
+                                            <span class="category-count">6 fields</span>
+                                        </div>
+                                        <div class="category-item">
+                                            <span class="category-name">Skills</span>
+                                            <span class="category-count">4 fields</span>
+                                        </div>
+                                        <div class="category-item">
+                                            <span class="category-name">Achievements</span>
+                                            <span class="category-count">3 fields</span>
+                                        </div>
+                                        <div class="category-item">
+                                            <span class="category-name">Career Preferences</span>
+                                            <span class="category-count">7 fields</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rubric-card">
+                            <div class="rubric-header">
+                                <h4><i class="fas fa-bullseye"></i> Relevance to Target Role</h4>
+                                <span class="rubric-points">2.0 points</span>
+                            </div>
+                            <div class="rubric-description">
+                                <p>How well your skills and experience align with your target job role</p>
+                                <div class="rubric-breakdown">
+                                    <div class="rubric-level excellent">
+                                        <span class="level-score">2.0</span>
+                                        <span class="level-desc">Strong alignment - skills directly match target role</span>
+                                    </div>
+                                    <div class="rubric-level good">
+                                        <span class="level-score">1.5</span>
+                                        <span class="level-desc">Good alignment - most key skills present</span>
+                                    </div>
+                                    <div class="rubric-level average">
+                                        <span class="level-score">1.0</span>
+                                        <span class="level-desc">Partial alignment - some relevant skills</span>
+                                    </div>
+                                    <div class="rubric-level below">
+                                        <span class="level-score">0.0-0.5</span>
+                                        <span class="level-desc">Minimal/no alignment with target role</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rubric-card">
+                            <div class="rubric-header">
+                                <h4><i class="fas fa-project-diagram"></i> Projects & Internships</h4>
+                                <span class="rubric-points">3.0 points</span>
+                            </div>
+                            <div class="rubric-description">
+                                <p>Quality and detail of your project and internship experiences</p>
+                                <div class="rubric-breakdown">
+                                    <div class="rubric-level excellent">
+                                        <span class="level-score">3.0</span>
+                                        <span class="level-desc">Multiple well-described projects with technologies, problems, solutions</span>
+                                    </div>
+                                    <div class="rubric-level good">
+                                        <span class="level-score">2.0-2.5</span>
+                                        <span class="level-desc">1+ projects with good detail and clear descriptions</span>
+                                    </div>
+                                    <div class="rubric-level average">
+                                        <span class="level-score">1.0-1.5</span>
+                                        <span class="level-desc">Projects mentioned with basic technologies or brief descriptions</span>
+                                    </div>
+                                    <div class="rubric-level below">
+                                        <span class="level-score">0.0-0.5</span>
+                                        <span class="level-desc">No projects or very vague project references</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rubric-card">
+                            <div class="rubric-header">
+                                <h4><i class="fas fa-trophy"></i> Achievements & Activities</h4>
+                                <span class="rubric-points">2.0 points</span>
+                            </div>
+                            <div class="rubric-description">
+                                <p>Quality and relevance of your achievements and extracurricular activities</p>
+                                <div class="rubric-breakdown">
+                                    <div class="rubric-level excellent">
+                                        <span class="level-score">2.0</span>
+                                        <span class="level-desc">Multiple significant achievements (certifications, awards, leadership)</span>
+                                    </div>
+                                    <div class="rubric-level good">
+                                        <span class="level-score">1.5</span>
+                                        <span class="level-desc">Several achievements with clear professional relevance</span>
+                                    </div>
+                                    <div class="rubric-level average">
+                                        <span class="level-score">1.0</span>
+                                        <span class="level-desc">At least 1 meaningful achievement mentioned</span>
+                                    </div>
+                                    <div class="rubric-level below">
+                                        <span class="level-score">0.0-0.5</span>
+                                        <span class="level-desc">No achievements or vague mentions without specifics</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rubrics-footer">
+                    <div class="rubrics-summary">
+                        <h3><i class="fas fa-calculator"></i> Total Score Calculation</h3>
+                        <p>Your final evaluation will combine both ratings:</p>
+                        <div class="score-breakdown">
+                            <div class="score-item">
+                                <span class="score-label">Introduction Rating:</span>
+                                <span class="score-value">0-10 points</span>
+                            </div>
+                            <div class="score-item">
+                                <span class="score-label">Profile Rating:</span>
+                                <span class="score-value">0-10 points</span>
+                            </div>
+                        </div>
+                        <p class="rubrics-note">
+                            <i class="fas fa-info-circle"></i>
+                            Both evaluations are generated automatically using AI analysis of your spoken introduction and extracted profile information.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <!-- Left Taskbar for Toggle Switches -->
     <div class="left-taskbar">
         <div class="theme-toggle-container">
             <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
                 <i class="fas fa-moon" id="theme-icon"></i>
+            </button>
+        </div>        <div class="voice-input-container">
+            <button id="voice-input-toggle" class="voice-input-btn" aria-label="Voice Input">
+                <i class="fas fa-microphone" id="voice-icon"></i>
+            </button>
+        </div>        <div class="tips-container">
+            <button id="tips-toggle" class="tips-btn" aria-label="Speaking Tips">
+                <i class="fas fa-lightbulb" id="tips-icon"></i>
+            </button>
+        </div>
+        <div class="rubrics-container">
+            <button id="rubrics-toggle" class="rubrics-btn" aria-label="Grading Rubrics">
+                <i class="fas fa-clipboard-check" id="rubrics-icon"></i>
             </button>
         </div>
         <!-- Future switches can be added here -->
@@ -264,10 +1619,14 @@
                                     <label class="form-check-label" for="generate-ratings">
                                         Generate profile and introduction ratings
                                     </label>
+                                </div>                                <div class="d-flex gap-3 flex-wrap">
+                                    <button type="submit" class="btn btn-primary" id="upload-button">
+                                        <i class="fas fa-upload me-2"></i>Upload and Process
+                                    </button>
+                                    <button type="button" class="btn btn-info record-upload-btn" id="record-upload-button">
+                                        <i class="fas fa-microphone me-2"></i>Record and Upload
+                                    </button>
                                 </div>
-                                <button type="submit" class="btn btn-primary" id="upload-button">
-                                    <i class="fas fa-upload me-2"></i>Upload and Process
-                                </button>
                             </form>
                         </div>
                     </div>
@@ -479,15 +1838,375 @@
             localStorage.setItem('theme', newTheme);
             updateThemeIcon(newTheme);
         });
-        
-        function updateThemeIcon(theme) {
+          function updateThemeIcon(theme) {
             if (theme === 'dark') {
                 themeIcon.className = 'fas fa-sun'; // Show sun icon in dark mode
             } else {
                 themeIcon.className = 'fas fa-moon'; // Show moon icon in light mode
             }
         }
+
+        // Voice Input Modal Functionality
+        const voiceInputToggle = document.getElementById('voice-input-toggle');
+        const voiceModal = document.getElementById('voice-input-modal');
+        const voiceStartBtn = document.getElementById('voice-start-btn');
+        const voiceStopBtn = document.getElementById('voice-stop-btn');
+        const voiceCloseBtn = document.getElementById('voice-close-btn');
+        const voiceStatusMessage = document.getElementById('voice-status-message');
+        const voiceTranscript = document.getElementById('voice-transcript');
+        const voiceIcon = document.getElementById('voice-icon');
+        const voicePulseRing = document.querySelector('.voice-pulse-ring');
+        const voiceMicIcon = document.querySelector('.voice-microphone-icon');
+
+        let isRecording = false;
+        let recognition = null;
+
+        // Initialize speech recognition if available
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+
+            recognition.onstart = function() {
+                voiceStatusMessage.textContent = "Listening... Speak now!";
+                voiceTranscript.classList.remove('empty');
+                voicePulseRing.classList.add('listening');
+                voiceMicIcon.classList.add('listening');
+            };
+
+            recognition.onresult = function(event) {
+                let finalTranscript = '';
+                let interimTranscript = '';
+
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalTranscript += transcript + ' ';
+                    } else {
+                        interimTranscript += transcript;
+                    }
+                }
+
+                voiceTranscript.innerHTML = finalTranscript + '<span style="color: #888;">' + interimTranscript + '</span>';
+            };
+
+            recognition.onerror = function(event) {
+                voiceStatusMessage.textContent = "Error occurred in recognition: " + event.error;
+                stopRecording();
+            };
+
+            recognition.onend = function() {
+                if (isRecording) {
+                    voiceStatusMessage.textContent = "Recording stopped. Click Start to record again.";
+                }
+                stopRecording();
+            };
+        }
+
+        // Open voice modal
+        voiceInputToggle.addEventListener('click', function() {
+            voiceModal.classList.add('active');
+            voiceStatusMessage.textContent = "Tell me who you are...";
+            voiceTranscript.textContent = "";
+            voiceTranscript.classList.add('empty');
+            resetModalState();
+        });
+
+        // Close voice modal
+        voiceCloseBtn.addEventListener('click', function() {
+            voiceModal.classList.remove('active');
+            if (isRecording) {
+                stopRecording();
+            }
+        });
+
+        // Start recording
+        voiceStartBtn.addEventListener('click', function() {
+            if (recognition) {
+                startRecording();
+            } else {
+                voiceStatusMessage.textContent = "Speech recognition not supported in this browser.";
+            }
+        });
+
+        // Stop recording
+        voiceStopBtn.addEventListener('click', function() {
+            stopRecording();
+        });
+
+        // Close modal when clicking outside
+        voiceModal.addEventListener('click', function(e) {
+            if (e.target === voiceModal) {
+                voiceModal.classList.remove('active');
+                if (isRecording) {
+                    stopRecording();
+                }
+            }
+        });
+
+        function startRecording() {
+            if (!isRecording && recognition) {
+                isRecording = true;
+                voiceInputToggle.classList.add('recording');
+                voiceStartBtn.style.display = 'none';
+                voiceStopBtn.style.display = 'flex';
+                voiceStatusMessage.textContent = "Starting recording...";
+                
+                try {
+                    recognition.start();
+                } catch (error) {
+                    console.error('Error starting recognition:', error);
+                    voiceStatusMessage.textContent = "Error starting recording. Please try again.";
+                    stopRecording();
+                }
+            }
+        }
+
+        function stopRecording() {
+            if (isRecording && recognition) {
+                isRecording = false;
+                recognition.stop();
+            }
+            
+            voiceInputToggle.classList.remove('recording');
+            voiceStartBtn.style.display = 'flex';
+            voiceStopBtn.style.display = 'none';
+            voicePulseRing.classList.remove('listening');
+            voiceMicIcon.classList.remove('listening');
+            
+            if (voiceTranscript.textContent.trim()) {
+                voiceStatusMessage.textContent = "Recording complete! You can start a new recording or close.";
+            } else {
+                voiceStatusMessage.textContent = "No speech detected. Try again.";
+            }
+        }
+
+        function resetModalState() {
+            isRecording = false;
+            voiceStartBtn.style.display = 'flex';
+            voiceStopBtn.style.display = 'none';
+            voicePulseRing.classList.remove('listening');
+            voiceMicIcon.classList.remove('listening');            voiceInputToggle.classList.remove('recording');
+        }
     });
+
+    // Record and Upload Modal Functionality
+    const recordUploadButton = document.getElementById('record-upload-button');
+    const recordModal = document.getElementById('record-upload-modal');
+    const recordStartBtn = document.getElementById('record-start-btn');
+    const recordStopBtn = document.getElementById('record-stop-btn');
+    const recordUploadFileBtn = document.getElementById('record-upload-file-btn');
+    const recordCloseBtn = document.getElementById('record-close-btn');
+    const recordStatusMessage = document.getElementById('record-status-message');
+    const recordTimer = document.getElementById('record-timer');
+    const recordWaveform = document.getElementById('record-waveform');
+    const recordPulseRing = document.querySelector('.record-pulse-ring');
+    const recordPulseRingSecondary = document.querySelector('.record-pulse-ring-secondary');
+    const recordMicIcon = document.querySelector('.record-microphone-icon');
+
+    let isRecordingAudio = false;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let startTime = null;
+    let timerInterval = null;
+    let recordedBlob = null;
+
+    // Check for MediaRecorder support
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        recordUploadButton.disabled = true;
+        recordUploadButton.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Recording Not Supported';
+    }
+
+    // Open record modal
+    recordUploadButton.addEventListener('click', function() {
+        recordModal.classList.add('active');
+        recordStatusMessage.textContent = "Ready to record your introduction...";
+        resetRecordingState();
+    });
+
+    // Close record modal
+    recordCloseBtn.addEventListener('click', function() {
+        recordModal.classList.remove('active');
+        if (isRecordingAudio) {
+            stopRecording();
+        }
+    });
+
+    // Close modal when clicking outside
+    recordModal.addEventListener('click', function(e) {
+        if (e.target === recordModal) {
+            recordModal.classList.remove('active');
+            if (isRecordingAudio) {
+                stopRecording();
+            }
+        }
+    });
+
+    // Start recording
+    recordStartBtn.addEventListener('click', async function() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                audio: {
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    sampleRate: 44100
+                }
+            });
+            
+            recordedChunks = [];
+            mediaRecorder = new MediaRecorder(stream, {
+                mimeType: 'audio/webm;codecs=opus'
+            });
+
+            mediaRecorder.ondataavailable = function(event) {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            };
+
+            mediaRecorder.onstop = function() {
+                recordedBlob = new Blob(recordedChunks, { type: 'audio/webm' });
+                stream.getTracks().forEach(track => track.stop());
+                
+                recordStatusMessage.textContent = "Recording completed! Click upload to process.";
+                recordUploadFileBtn.style.display = 'flex';
+            };
+
+            mediaRecorder.start();
+            startRecordingUI();
+
+        } catch (error) {
+            console.error('Error accessing microphone:', error);
+            recordStatusMessage.textContent = "Error accessing microphone. Please check permissions.";
+        }
+    });
+
+    // Stop recording
+    recordStopBtn.addEventListener('click', function() {
+        stopRecording();
+    });    // Upload recorded file
+    recordUploadFileBtn.addEventListener('click', async function() {
+        if (recordedBlob) {
+            try {
+                // Convert blob to file
+                const recordedFile = new File([recordedBlob], `recording_${Date.now()}.webm`, {
+                    type: 'audio/webm'
+                });
+                
+                console.log('Created recorded file:', recordedFile);
+                
+                // First ensure the file handler exists
+                if (typeof window.handleFileSelect !== 'function') {
+                    throw new Error('File handler not initialized. Please reload the page.');
+                }
+                
+                // Use the handler and check its result
+                const fileHandled = window.handleFileSelect(recordedFile);
+                if (!fileHandled) {
+                    throw new Error('Failed to process the recorded file.');
+                }
+                
+                // Close the modal
+                recordModal.classList.remove('active');
+                
+                // Submit the form to trigger normal file upload processing
+                const uploadForm = document.getElementById('upload-form');
+                if (uploadForm) {
+                    console.log('Submitting form with recorded file');
+                    uploadForm.dispatchEvent(new Event('submit', {
+                        bubbles: true,
+                        cancelable: true
+                    }));
+                } else {
+                    throw new Error('Upload form not found');
+                }
+            } catch (error) {
+                console.error('Error processing recording:', error);
+                recordStatusMessage.textContent = error.message || "Error processing recording. Please try again.";
+            }
+        }
+    });
+
+    function startRecordingUI() {
+        isRecordingAudio = true;
+        startTime = Date.now();
+        
+        // Update UI
+        recordStartBtn.style.display = 'none';
+        recordStopBtn.style.display = 'flex';
+        recordUploadFileBtn.style.display = 'none';
+        
+        // Add recording classes
+        recordPulseRing.classList.add('recording');
+        recordPulseRingSecondary.classList.add('recording');
+        recordMicIcon.classList.add('recording');
+        recordTimer.classList.add('recording');
+        recordWaveform.classList.add('active');
+        
+        // Start timer
+        timerInterval = setInterval(updateTimer, 100);
+        
+        recordStatusMessage.textContent = "Recording in progress... Speak clearly!";
+    }
+
+    function stopRecording() {
+        if (isRecordingAudio && mediaRecorder) {
+            isRecordingAudio = false;
+            mediaRecorder.stop();
+        }
+        
+        // Update UI
+        recordStartBtn.style.display = 'flex';
+        recordStopBtn.style.display = 'none';
+        
+        // Remove recording classes
+        recordPulseRing.classList.remove('recording');
+        recordPulseRingSecondary.classList.remove('recording');
+        recordMicIcon.classList.remove('recording');
+        recordTimer.classList.remove('recording');
+        recordWaveform.classList.remove('active');
+        
+        // Stop timer
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+    }
+
+    function updateTimer() {
+        if (startTime) {
+            const elapsed = Date.now() - startTime;
+            const minutes = Math.floor(elapsed / 60000);
+            const seconds = Math.floor((elapsed % 60000) / 1000);
+            recordTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+    }
+
+    function resetRecordingState() {
+        isRecordingAudio = false;
+        recordedChunks = [];
+        recordedBlob = null;
+        startTime = null;
+        
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        
+        // Reset UI
+        recordStartBtn.style.display = 'flex';
+        recordStopBtn.style.display = 'none';
+        recordUploadFileBtn.style.display = 'none';
+        
+        recordPulseRing.classList.remove('recording');
+        recordPulseRingSecondary.classList.remove('recording');
+        recordMicIcon.classList.remove('recording');
+        recordTimer.classList.remove('recording');
+        recordWaveform.classList.remove('active');
+          recordTimer.textContent = '00:00';
+    }
     </script>
 </body>
 </html>

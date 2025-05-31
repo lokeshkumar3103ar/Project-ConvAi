@@ -1,9 +1,31 @@
+/* GLOBAL TEXT CURSOR REMOVAL - Disable I-beam cursor for rating elements */
+
+/* Root level cursor override - remove text cursor globally */
+.rating-card,
+.rating-card *,
+.rating-header,
+.rating-title,
+.rating-score,
+.rating-stars,
+.rating-details,
+.rating-category,
+.category-title,
+.score-display {
+    cursor: default !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    -khtml-user-select: none !important;
+    -webkit-touch-callout: none !important;
+}
+
 /* Rating cards and categories */
 .rating-card {
-    background-color: #fff;
+    background-color: var(--card-bg);
     border-radius: 20px;
     box-shadow: 0 2px 12px rgba(0,0,0,0.03);
-    border: 3px solid #111;
+    border: 3px solid var(--card-border);
     padding: 16px;
     margin-bottom: 16px;
 }
@@ -19,12 +41,12 @@
     font-size: 18px;
     font-weight: 600;
     margin: 0;
-    color: #111;
+    color: var(--text-primary);
 }
 
 .rating-score {
     font-weight: 600;
-    color: #111;
+    color: var(--text-primary);
 }
 
 .rating-stars {
@@ -40,19 +62,19 @@
 }
 
 .rating-comment {
-    color: #111;
+    color: var(--text-primary);
     font-size: 14px;
     line-height: 1.5;
-    background: #fff;
+    background: var(--background-primary);
     border-radius: 12px;
-    border: 1.5px solid #eee;
+    border: 1.5px solid var(--border-color);
     padding: 10px 14px;
 }
 
 .rating-subcategory {
-    background-color: #fff;
+    background-color: var(--background-primary);
     border-radius: 12px;
-    border: 2px solid #111;
+    border: 2px solid var(--text-primary);
     padding: 12px;
     margin-bottom: 8px;
     display: flex;
@@ -62,9 +84,9 @@
 
 .rating-subcategory-header {
     font-weight: 500;
-    color: #111;
+    color: var(--text-primary);
 }
 
 .rating-subcategory-score {
-    color: #111;
+    color: var(--text-primary);
 }

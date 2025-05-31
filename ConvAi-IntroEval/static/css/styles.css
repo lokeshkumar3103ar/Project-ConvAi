@@ -23,10 +23,13 @@
     --button-primary-bg: #333;
     --button-primary-color: #fff;
     --button-secondary-bg: #6c757d;
-    --button-secondary-color: #fff;
-    --scrollbar-track: #f1f1f1;
+    --button-secondary-color: #fff;    --scrollbar-track: #f1f1f1;
     --scrollbar-thumb: #888;
     --scrollbar-thumb-hover: #555;
+    --text-secondary: #666;
+    --border-color: #ddd;
+    --border-color-focus: rgba(52, 168, 83, 0.2);
+    --background-primary: #fff;
 }
 
 /* Dark Theme */
@@ -51,10 +54,13 @@
     --button-primary-bg: #ffffff;
     --button-primary-color: #111;
     --button-secondary-bg: #555;
-    --button-secondary-color: #fff;
-    --scrollbar-track: #333;
+    --button-secondary-color: #fff;    --scrollbar-track: #333;
     --scrollbar-thumb: #fff;
     --scrollbar-thumb-hover: #ccc;
+    --text-secondary: #aaa;
+    --border-color: #555;
+    --border-color-focus: rgba(255, 255, 255, 0.2);
+    --background-primary: #222;
 }
 
 /* Left Taskbar for Switches */
@@ -97,6 +103,646 @@
     transform: scale(1.1);
 }
 
+/* Voice Input and Tips Button Styles */
+.voice-input-btn, .tips-btn, .rubrics-btn {
+    background: var(--card-bg) !important;
+    border: 2px solid var(--card-border) !important;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--text-primary) !important;
+    font-size: 1.2rem;
+}
+
+.voice-input-btn:hover, .tips-btn:hover, .rubrics-btn:hover {
+    background: var(--primary-color) !important;
+    color: var(--button-primary-color) !important;
+    border-color: var(--primary-color) !important;
+    transform: scale(1.1);
+}
+
+/* Specific voice input button styling to ensure it matches theme */
+.voice-input-btn {
+    background: var(--card-bg) !important;
+    border: 2px solid var(--card-border) !important;
+    color: var(--text-primary) !important;
+}
+
+.voice-input-btn:hover {
+    background: var(--primary-color) !important;
+    color: var(--button-primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+/* Ensure the microphone icon inherits the button color */
+.voice-input-btn i,
+#voice-icon {
+    color: inherit !important;
+}
+
+/* Tips Modal Styles */
+.tips-modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+}
+
+.tips-modal-content {
+    background: var(--card-bg);
+    margin: 3% auto;
+    border: 2px solid var(--card-border);
+    border-radius: 15px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tips-modal-header {
+    background: var(--primary-color);
+    color: var(--button-primary-color);
+    padding: 20px 25px;
+    border-radius: 13px 13px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tips-modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.tips-close-btn {
+    background: none;
+    border: none;
+    color: var(--button-primary-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+.tips-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.tips-modal-body {
+    padding: 25px;
+    color: var(--text-primary);
+}
+
+.tips-section {
+    margin-bottom: 25px;
+    padding: 20px;
+    background: var(--body-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+}
+
+.tips-section h3 {
+    margin: 0 0 15px 0;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tips-section ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.tips-section li {
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+.tips-section li strong {
+    color: var(--primary-color);
+}
+
+.tips-example {
+    background: linear-gradient(135deg, var(--body-bg), rgba(79, 70, 229, 0.05));
+    border-color: var(--primary-color);
+}
+
+.example-text p {
+    margin: 8px 0;
+    padding: 8px 12px;
+    background: var(--card-bg);
+    border-left: 3px solid var(--primary-color);
+    border-radius: 5px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.95rem;
+}
+
+.tips-reminder {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), var(--body-bg));
+    border-color: #3b82f6;
+}
+
+.tips-reminder h3 {
+    color: #3b82f6;
+}
+
+.tips-reminder li strong {
+    color: #3b82f6;
+}
+
+/* Rubrics Modal Styles */
+.rubrics-modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+}
+
+.rubrics-modal-content {
+    background: var(--card-bg);
+    margin: 2% auto;
+    padding: 0;
+    border: 2px solid var(--card-border);
+    border-radius: 15px;
+    width: 95%;
+    max-width: 1200px;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    animation: rubrics-modal-fade-in 0.3s ease-out;
+}
+
+@keyframes rubrics-modal-fade-in {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.rubrics-modal-header {
+    background: linear-gradient(135deg, var(--primary-color), rgba(79, 70, 229, 0.8));
+    color: var(--button-primary-color);
+    padding: 20px 30px;
+    border-radius: 15px 15px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rubrics-modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.rubrics-close-btn {
+    background: none;
+    border: none;
+    color: var(--button-primary-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: var(--transition);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rubrics-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.rubrics-modal-body {
+    padding: 0;
+    max-height: calc(90vh - 80px);
+    overflow-y: auto;
+}
+
+/* Rubrics Tabs */
+.rubrics-tabs {
+    display: flex;
+    background: var(--body-bg);
+    border-bottom: 2px solid var(--card-border);
+}
+
+.rubrics-tab {
+    flex: 1;
+    padding: 15px 20px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-bottom: 3px solid transparent;
+}
+
+.rubrics-tab:hover {
+    background: var(--card-bg);
+    color: var(--text-primary);
+}
+
+.rubrics-tab.active {
+    background: var(--card-bg);
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+.rubrics-tab-content {
+    display: none;
+    padding: 30px;
+}
+
+.rubrics-tab-content.active {
+    display: block;
+}
+
+.rubrics-overview {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, var(--body-bg), rgba(79, 70, 229, 0.05));
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+}
+
+.rubrics-overview h3 {
+    margin: 0 0 15px 0;
+    color: var(--primary-color);
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.rubrics-overview p {
+    margin: 0;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* Rubrics Grid */
+.rubrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.rubric-card {
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.rubric-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 20px rgba(79, 70, 229, 0.1);
+    transform: translateY(-2px);
+}
+
+.rubric-header {
+    background: linear-gradient(135deg, var(--primary-color), rgba(79, 70, 229, 0.9));
+    color: var(--button-primary-color);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rubric-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rubric-points {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.rubric-description {
+    padding: 20px;
+}
+
+.rubric-description > p {
+    margin: 0 0 15px 0;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.rubric-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rubric-level {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    transition: var(--transition);
+}
+
+.rubric-level:hover {
+    background: var(--body-bg);
+}
+
+.level-score {
+    background: var(--primary-color);
+    color: var(--button-primary-color);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    min-width: 50px;
+    text-align: center;
+}
+
+.level-desc {
+    flex: 1;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.excellent .level-score { background: #10b981; }
+.good .level-score { background: #3b82f6; }
+.average .level-score { background: #f59e0b; }
+.below .level-score { background: #ef4444; }
+
+/* Special sections */
+.info-areas {
+    margin: 15px 0;
+    padding: 15px;
+    background: var(--body-bg);
+    border-radius: 8px;
+}
+
+.info-areas h5 {
+    margin: 0 0 10px 0;
+    color: var(--primary-color);
+    font-size: 1rem;
+}
+
+.info-areas ul {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 8px;
+}
+
+.info-areas li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.info-areas li i {
+    color: var(--primary-color);
+    width: 16px;
+}
+
+.completeness-formula {
+    margin: 15px 0;
+    padding: 15px;
+    background: var(--body-bg);
+    border-radius: 8px;
+}
+
+.completeness-formula h5 {
+    margin: 0 0 10px 0;
+    color: var(--primary-color);
+}
+
+.completeness-formula code {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    display: block;
+}
+
+.field-categories {
+    margin: 15px 0;
+}
+
+.field-categories h5 {
+    margin: 0 0 12px 0;
+    color: var(--primary-color);
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+}
+
+.category-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.category-name {
+    font-weight: 500;
+}
+
+.category-count {
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+/* Footer */
+.rubrics-footer {
+    background: var(--body-bg);
+    border-top: 2px solid var(--card-border);
+    padding: 25px 30px;
+}
+
+.rubrics-summary h3 {
+    margin: 0 0 15px 0;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.rubrics-summary > p {
+    margin: 0 0 15px 0;
+    font-size: 1rem;
+}
+
+.score-breakdown {
+    display: flex;
+    gap: 30px;
+    margin: 15px 0;
+    flex-wrap: wrap;
+}
+
+.score-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+}
+
+.score-label {
+    font-weight: 500;
+}
+
+.score-value {
+    background: var(--primary-color);
+    color: var(--button-primary-color);
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.rubrics-note {
+    margin: 20px 0 0 0;
+    padding: 15px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), var(--card-bg));
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.rubrics-note i {
+    color: #3b82f6;
+    margin-top: 2px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .rubrics-modal-content {
+        width: 98%;
+        margin: 1% auto;
+        max-height: 95vh;
+    }
+    
+    .rubrics-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .rubrics-tabs {
+        flex-direction: column;
+    }
+    
+    .rubrics-tab {
+        border-bottom: none;
+        border-right: 3px solid transparent;
+    }
+    
+    .rubrics-tab.active {
+        border-right-color: var(--primary-color);
+        border-bottom-color: transparent;
+    }
+    
+    .score-breakdown {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .rubrics-modal-header {
+        padding: 15px 20px;
+    }
+    
+    .rubrics-modal-header h2 {
+        font-size: 1.3rem;
+    }
+    
+    .rubrics-tab-content {
+        padding: 20px;
+    }
+}
+
+/* Global Styles */
 html, body {
     height: 100%;
     margin: 0;
@@ -293,8 +939,8 @@ input:focus, select:focus, textarea:focus {
 [data-theme="dark"] input:focus, 
 [data-theme="dark"] select:focus, 
 [data-theme="dark"] textarea:focus {
-    border-color: #ccc;
-    box-shadow: 0 0 0 2px #cccccc33;
+    border-color: var(--border-color);
+    box-shadow: 0 0 0 2px var(--border-color-focus);
 }
 
 label {
@@ -340,7 +986,7 @@ label {
 
 .progress-step.completed .step-icon {
     background-color: var(--secondary-color);
-    color: #fff;
+    color: var(--button-secondary-color);
 }
 
 .step-label {
@@ -381,16 +1027,18 @@ label {
     align-items: center;
     justify-content: center;
     text-align: center;
-    cursor: pointer;
+    cursor: pointer !important;
     color: var(--text-primary);
     border: 2px dashed var(--content-box-border);
     border-radius: var(--border-radius);
     background: var(--input-bg);
     transition: var(--transition);
+    user-select: none !important;
 }
 
 .drop-zone:hover {
     border-color: var(--primary-color);
+    cursor: pointer !important;
 }
 
 .drop-zone.drop-zone--over {
@@ -403,7 +1051,88 @@ label {
 }
 
 .drop-zone__prompt {
-    color: #aaa;
+    color: var(--text-secondary);
+    cursor: pointer !important;
+    user-select: none !important;
+    pointer-events: none !important;
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+/* Force pointer cursor for all drop zone children */
+.drop-zone *,
+.drop-zone i,
+.drop-zone span,
+.drop-zone br {
+    cursor: pointer !important;
+    user-select: none !important;
+    pointer-events: none !important;
+}
+
+/* Ensure the drop zone itself can receive all pointer events */
+.drop-zone {
+    pointer-events: auto !important;
+}
+
+/* Additional fixes for text cursor override */
+.drop-zone__prompt,
+.drop-zone__prompt *,
+.drop-zone__prompt i,
+.drop-zone__prompt br {
+    cursor: pointer !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    pointer-events: none !important;
+}
+
+/* Override any default text cursor behavior */
+.drop-zone,
+.drop-zone:hover {
+    cursor: pointer !important;
+}
+
+/* Ultimate text cursor override for drop zone - highest specificity */
+#drop-zone,
+#drop-zone *,
+#drop-zone .drop-zone__prompt,
+#drop-zone .drop-zone__prompt *,
+#drop-zone i,
+#drop-zone span,
+#drop-zone br {
+    cursor: pointer !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    -khtml-user-select: none !important;
+    -webkit-touch-callout: none !important;
+}
+
+/* Prevent text selection in drop zone entirely */
+#drop-zone::selection,
+#drop-zone *::selection,
+#drop-zone .drop-zone__prompt::selection {
+    background: transparent !important;
+}
+
+/* Force drop zone to be treated as a button-like element */
+#drop-zone {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Prevent any font awesome icons from interfering with cursor */
+#drop-zone .fas,
+#drop-zone .fa,
+#drop-zone i.fas,
+#drop-zone i.fa {
+    cursor: pointer !important;
+    pointer-events: none !important;
 }
 
 /* Status Items */
@@ -430,12 +1159,12 @@ label {
 
 .status-icon.processing {
     background-color: var(--warning-color);
-    color: #fff;
+    color: var(--button-primary-color);
 }
 
 .status-icon.completed {
     background-color: var(--secondary-color);
-    color: #fff;
+    color: var(--button-secondary-color);
 }
 
 .status-icon.error {
@@ -446,6 +1175,7 @@ label {
 .status-content h4 {
     margin-bottom: 0.25rem;
     font-size: 1.1rem;
+    color: var(--text-primary);
 }
 
 .status-content p {
@@ -837,4 +1567,230 @@ label {
         padding: 0.5rem 0.75rem;
         font-size: 0.9rem;
     }
+}
+
+/* Navigation tabs cursor fix */
+.nav-tabs .nav-link {
+    cursor: pointer !important;
+    transition: var(--transition);
+    user-select: none;
+}
+
+.nav-tabs .nav-link:hover {
+    cursor: pointer !important;
+}
+
+/* Ensure all button elements have proper cursor */
+button {
+    cursor: pointer !important;
+}
+
+/* Fix for any elements that might be affecting tab clickability */
+.nav-tabs .nav-link i {
+    cursor: pointer !important;
+    pointer-events: none; /* Prevent icon from blocking clicks */
+}
+
+/* Additional cursor fixes for upload page and other areas */
+.nav-link, 
+.btn, 
+button, 
+[role="tab"], 
+[data-bs-toggle="tab"] {
+    cursor: pointer !important;
+    user-select: none;
+}
+
+/* Specific fixes for upload section elements */
+#upload-section .btn,
+#upload-section button,
+#upload-section .form-check-label,
+#upload-section label {
+    cursor: pointer !important;
+}
+
+/* Drop zone cursor fix - Force pointer cursor on all elements */
+.drop-zone {
+    cursor: pointer !important;
+}
+
+.drop-zone:hover {
+    cursor: pointer !important;
+}
+
+/* The duplicate drop zone rules have been consolidated above in the main drop zone section */
+
+/* Fix for any Bootstrap overrides */
+.nav-tabs .nav-item .nav-link {
+    cursor: pointer !important;
+}
+
+.nav-tabs .nav-item button.nav-link {
+    cursor: pointer !important;
+}
+
+/* Progress tracker elements */
+.progress-step {
+    cursor: default;
+}
+
+/* Form elements that should be clickable */
+.form-check-input,
+.form-check-label,
+label[for] {
+    cursor: pointer !important;
+}
+
+/* GLOBAL TEXT CURSOR REMOVAL - Disable I-beam cursor throughout the entire application */
+
+/* Root level cursor override - remove text cursor globally */
+* {
+    cursor: default !important;
+}
+
+/* Override specific elements that should be clickable */
+button,
+.btn,
+a,
+[role="button"],
+[data-bs-toggle],
+.nav-link,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+.clickable,
+.drop-zone {
+    cursor: pointer !important;
+}
+
+/* Input fields should have text cursor only when focused */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="url"],
+input[type="tel"],
+textarea,
+[contenteditable="true"] {
+    cursor: text !important;
+}
+
+/* But override text cursor when not focused or when in read-only state */
+input[readonly],
+textarea[readonly],
+.form-control[readonly] {
+    cursor: default !important;
+}
+
+/* File inputs should be pointer */
+input[type="file"] {
+    cursor: pointer !important;
+}
+
+/* Checkboxes and radio buttons */
+input[type="checkbox"],
+input[type="radio"],
+.form-check-input {
+    cursor: pointer !important;
+}
+
+/* Labels should be pointer when they're for form elements */
+label,
+.form-check-label,
+.form-label {
+    cursor: pointer !important;
+}
+
+/* Select dropdowns */
+select,
+.form-select {
+    cursor: pointer !important;
+}
+
+/* Disable text selection and I-beam cursor for all non-input text */
+p,
+span,
+div,
+h1, h2, h3, h4, h5, h6,
+.card-title,
+.card-text,
+.lead,
+.text-muted,
+.alert,
+.badge,
+.navbar-brand,
+.nav-item,
+.progress-step,
+.status-item {
+    cursor: default !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    -khtml-user-select: none !important;
+    -webkit-touch-callout: none !important;
+}
+
+/* Icons should never show text cursor */
+i,
+.fas,
+.fa,
+.icon {
+    cursor: inherit !important;
+    user-select: none !important;
+    pointer-events: none !important;
+}
+
+/* FINAL DROP ZONE CURSOR FIX - Maximum specificity override */
+body #upload-section #drop-zone,
+body #upload-section #drop-zone *,
+body #upload-section #drop-zone .drop-zone__prompt,
+body #upload-section #drop-zone .drop-zone__prompt *,
+body #upload-section #drop-zone span,
+body #upload-section #drop-zone i,
+body #upload-section #drop-zone br {
+    cursor: pointer !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    -khtml-user-select: none !important;
+    -webkit-touch-callout: none !important;
+    pointer-events: none !important;
+}
+
+/* Ensure the main drop zone can receive clicks */
+body #upload-section #drop-zone {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+/* Force browser to never show text cursor in drop zone */
+body #upload-section #drop-zone:hover {
+    cursor: pointer !important;
+}
+
+/* Global text selection prevention for better UX */
+body {
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    -khtml-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+}
+
+/* Allow text selection only in actual input areas */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="search"]:focus,
+input[type="url"]:focus,
+input[type="tel"]:focus,
+textarea:focus,
+[contenteditable="true"]:focus {
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
 }
