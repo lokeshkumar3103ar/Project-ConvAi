@@ -127,8 +127,8 @@ textarea:focus {
 
 /* Left Taskbar for Switches */
 .left-taskbar {
-    position: fixed;
-    left: 10px;
+    position: absolute;
+    left: -25px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1000;
@@ -145,7 +145,7 @@ textarea:focus {
 
 .theme-toggle-btn {
     background: var(--card-bg);
-    border: 2px solid var(--card-border);
+    border: 2px solid var(--outer-frame-border);
     border-radius: 50%;
     width: 50px;
     height: 50px;

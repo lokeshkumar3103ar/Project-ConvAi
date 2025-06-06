@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +13,8 @@
     <link rel="stylesheet" href="../static/css/rating-styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Fluid Transition Overlay Styles */        .fluid-overlay {
+        /* Fluid Transition Overlay Styles */
+        .fluid-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -27,23 +29,24 @@
             transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             z-index: 1050;
         }
-        
+
         .fluid-wave {
             position: absolute;
             width: 0;
-            height: 0;            background: radial-gradient(circle, 
-                rgba(34, 34, 34, 0.8) 0%, 
-                rgba(85, 85, 85, 0.6) 20%, 
-                rgba(153, 153, 153, 0.4) 40%, 
-                rgba(68, 68, 68, 0.2) 60%, 
-                transparent 80%);
+            height: 0;
+            background: radial-gradient(circle,
+                    rgba(34, 34, 34, 0.8) 0%,
+                    rgba(85, 85, 85, 0.6) 20%,
+                    rgba(153, 153, 153, 0.4) 40%,
+                    rgba(68, 68, 68, 0.2) 60%,
+                    transparent 80%);
             border-radius: 50%;
             animation: wave-animation 6s cubic-bezier(0.165, 0.84, 0.44, 1) infinite;
             transform: translate(-50%, -50%);
             top: 50%;
             left: 50%;
         }
-        
+
         .fluid-wave::before {
             content: '';
             position: absolute;
@@ -51,14 +54,16 @@
             left: 50%;
             width: 120%;
             height: 120%;
-            background: radial-gradient(circle,                transparent 0%, 
-                rgba(68, 68, 68, 0.1) 30%, 
-                rgba(153, 153, 153, 0.2) 50%, 
-                transparent 70%);
+            background: radial-gradient(circle, transparent 0%,
+                    rgba(68, 68, 68, 0.1) 30%,
+                    rgba(153, 153, 153, 0.2) 50%,
+                    transparent 70%);
             border-radius: 50%;
             transform: translate(-50%, -50%);
             animation: wave-secondary 8s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite reverse;
-        }        .fluid-logo {
+        }
+
+        .fluid-logo {
             position: relative;
             font-size: 16rem;
             font-weight: bold;
@@ -70,7 +75,7 @@
             opacity: 0;
             transform: scale(0.5) rotateY(180deg);
         }
-        
+
         @keyframes wave-animation {
             0% {
                 width: 0;
@@ -78,24 +83,28 @@
                 opacity: 1;
                 transform: translate(-50%, -50%) scale(0) rotate(0deg);
             }
+
             25% {
                 width: 80vw;
                 height: 80vh;
                 opacity: 0.8;
                 transform: translate(-50%, -50%) scale(0.8) rotate(90deg);
             }
+
             50% {
                 width: 150vw;
                 height: 150vh;
                 opacity: 0.6;
                 transform: translate(-50%, -50%) scale(1) rotate(180deg);
             }
+
             75% {
                 width: 220vw;
                 height: 220vh;
                 opacity: 0.3;
                 transform: translate(-50%, -50%) scale(1.2) rotate(270deg);
             }
+
             100% {
                 width: 300vw;
                 height: 300vh;
@@ -103,71 +112,84 @@
                 transform: translate(-50%, -50%) scale(1.5) rotate(360deg);
             }
         }
-        
+
         @keyframes wave-secondary {
             0% {
                 transform: translate(-50%, -50%) scale(0) rotate(0deg);
                 opacity: 0;
             }
+
             20% {
                 transform: translate(-50%, -50%) scale(0.5) rotate(72deg);
                 opacity: 0.4;
             }
+
             40% {
                 transform: translate(-50%, -50%) scale(1) rotate(144deg);
                 opacity: 0.6;
             }
+
             60% {
                 transform: translate(-50%, -50%) scale(1.5) rotate(216deg);
                 opacity: 0.4;
             }
+
             80% {
                 transform: translate(-50%, -50%) scale(2) rotate(288deg);
                 opacity: 0.2;
             }
+
             100% {
                 transform: translate(-50%, -50%) scale(2.5) rotate(360deg);
                 opacity: 0;
             }
         }
-        
+
         @keyframes logo-entrance {
             0% {
                 opacity: 0;
                 transform: scale(0.3) rotateY(180deg) translateY(100px);
                 filter: blur(20px);
             }
+
             20% {
                 opacity: 0.3;
                 transform: scale(0.6) rotateY(120deg) translateY(50px);
                 filter: blur(10px);
             }
+
             40% {
                 opacity: 0.6;
                 transform: scale(0.8) rotateY(60deg) translateY(20px);
                 filter: blur(5px);
             }
+
             60% {
                 opacity: 0.8;
                 transform: scale(0.95) rotateY(20deg) translateY(5px);
                 filter: blur(2px);
             }
+
             80% {
                 opacity: 1;
                 transform: scale(1.05) rotateY(0deg) translateY(0px);
                 filter: blur(0px);
             }
+
             90% {
                 opacity: 1;
                 transform: scale(1.02) rotateY(0deg) translateY(0px);
                 filter: blur(0px);
             }
+
             100% {
                 opacity: 1;
                 transform: scale(1) rotateY(0deg) translateY(0px);
                 filter: blur(0px);
             }
-        }        /* Enhanced CSS-based transition */
+        }
+
+        /* Enhanced CSS-based transition */
         .fluid-overlay.active {
             opacity: 1;
             pointer-events: all;
@@ -215,15 +237,19 @@
                 transform: scale(1);
                 box-shadow: 0 0 0 0 rgba(234, 67, 53, 0.7);
             }
+
             70% {
                 transform: scale(1.05);
                 box-shadow: 0 0 0 10px rgba(234, 67, 53, 0);
             }
+
             100% {
                 transform: scale(1);
                 box-shadow: 0 0 0 0 rgba(234, 67, 53, 0);
             }
-        }        /* WhisperGate Voice Modal Styles - Full Screen Futuristic */
+        }
+
+        /* WhisperGate Voice Modal Styles - Full Screen Futuristic */
         .voice-modal-overlay {
             position: fixed;
             top: 0;
@@ -231,12 +257,12 @@
             width: 100vw;
             height: 100vh;
             background: var(--body-bg);
-            background-image: linear-gradient(135deg, 
-                var(--body-bg) 0%, 
-                var(--content-box-bg) 25%, 
-                var(--body-bg) 50%, 
-                var(--content-box-bg) 75%, 
-                var(--body-bg) 100%);
+            background-image: linear-gradient(135deg,
+                    var(--body-bg) 0%,
+                    var(--content-box-bg) 25%,
+                    var(--body-bg) 50%,
+                    var(--content-box-bg) 75%,
+                    var(--body-bg) 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -246,14 +272,16 @@
             transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             backdrop-filter: blur(20px);
             overflow: hidden;
-        }        .voice-modal-overlay::before {
+        }
+
+        .voice-modal-overlay::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
+            background:
                 radial-gradient(circle at 20% 20%, rgba(68, 139, 255, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, var(--outer-frame-dots) 0%, transparent 50%),
                 radial-gradient(circle at 40% 70%, var(--outer-frame-dots) 0%, transparent 50%);
@@ -261,14 +289,18 @@
         }
 
         @keyframes floating-particles {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: translateY(0) rotate(0deg);
                 opacity: 0.3;
             }
+
             33% {
                 transform: translateY(-20px) rotate(120deg);
                 opacity: 0.6;
             }
+
             66% {
                 transform: translateY(10px) rotate(240deg);
                 opacity: 0.4;
@@ -278,11 +310,13 @@
         .voice-modal-overlay.active {
             opacity: 1;
             visibility: visible;
-        }        .voice-modal-card {
+        }
+
+        .voice-modal-card {
             background: var(--content-box-bg);
-            background-image: linear-gradient(135deg, 
-                var(--content-box-bg) 0%, 
-                var(--card-bg) 100%);
+            background-image: linear-gradient(135deg,
+                    var(--content-box-bg) 0%,
+                    var(--card-bg) 100%);
             border: 1px solid var(--content-box-border);
             border-radius: 32px;
             padding: 4rem 3rem;
@@ -290,7 +324,7 @@
             height: 100%;
             max-width: none;
             max-height: none;
-            box-shadow: 
+            box-shadow:
                 0 0 100px rgba(52, 168, 83, 0.1),
                 var(--box-shadow);
             transform: scale(0.8) rotateX(15deg);
@@ -300,18 +334,22 @@
             justify-content: center;
             position: relative;
             overflow: hidden;
-        }        .voice-modal-card::before {
+        }
+
+        .voice-modal-card::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
+            background:
                 linear-gradient(45deg, transparent 30%, rgba(68, 139, 255, 0.05) 50%, transparent 70%),
                 radial-gradient(circle at center, var(--outer-frame-dots) 0%, transparent 70%);
             pointer-events: none;
-        }.voice-modal-overlay.active .voice-modal-card {
+        }
+
+        .voice-modal-overlay.active .voice-modal-card {
             transform: scale(1) rotateX(0deg);
         }
 
@@ -332,7 +370,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-        }        .voice-pulse-ring {
+        }
+
+        .voice-pulse-ring {
             position: absolute;
             width: 100%;
             height: 100%;
@@ -376,7 +416,9 @@
 
         .voice-pulse-ring.listening::after {
             border-color: rgba(234, 67, 53, 0.1);
-        }        .voice-microphone-icon {
+        }
+
+        .voice-microphone-icon {
             width: 120px;
             height: 120px;
             background: linear-gradient(135deg, #448bff 0%, #2563eb 50%, #1d4ed8 100%);
@@ -387,7 +429,7 @@
             font-size: 3rem;
             color: #fff;
             transition: all 0.4s ease;
-            box-shadow: 
+            box-shadow:
                 0 0 40px rgba(68, 139, 255, 0.4),
                 inset 0 0 40px rgba(255, 255, 255, 0.1);
             position: relative;
@@ -408,11 +450,13 @@
 
         .voice-microphone-icon.listening {
             background: linear-gradient(135deg, #ea4335 0%, #d33b2c 50%, #b71c1c 100%);
-            box-shadow: 
+            box-shadow:
                 0 0 60px rgba(234, 67, 53, 0.6),
                 inset 0 0 40px rgba(255, 255, 255, 0.1);
             animation: listening-glow 1.5s ease-in-out infinite;
-        }        .voice-microphone-icon.listening::before {
+        }
+
+        .voice-microphone-icon.listening::before {
             background: linear-gradient(45deg, rgba(234, 67, 53, 0.2), transparent, rgba(234, 67, 53, 0.2));
         }
 
@@ -421,10 +465,12 @@
                 transform: scale(0.8);
                 opacity: 1;
             }
+
             50% {
                 transform: scale(1.1);
                 opacity: 0.6;
             }
+
             100% {
                 transform: scale(0.8);
                 opacity: 1;
@@ -436,10 +482,12 @@
                 transform: scale(0.9);
                 opacity: 1;
             }
+
             50% {
                 transform: scale(1.2);
                 opacity: 0.7;
             }
+
             100% {
                 transform: scale(0.9);
                 opacity: 1;
@@ -450,6 +498,7 @@
             0% {
                 transform: rotate(0deg);
             }
+
             100% {
                 transform: rotate(360deg);
             }
@@ -459,13 +508,17 @@
             0% {
                 box-shadow: 0 0 60px rgba(234, 67, 53, 0.6), inset 0 0 40px rgba(255, 255, 255, 0.1);
             }
+
             50% {
                 box-shadow: 0 0 100px rgba(234, 67, 53, 0.8), inset 0 0 60px rgba(255, 255, 255, 0.15);
             }
+
             100% {
                 box-shadow: 0 0 60px rgba(234, 67, 53, 0.6), inset 0 0 40px rgba(255, 255, 255, 0.1);
             }
-        }        .voice-modal-title {
+        }
+
+        .voice-modal-title {
             font-size: 3.5rem;
             font-weight: 700;
             margin-bottom: 1.5rem;
@@ -475,7 +528,9 @@
             background-clip: text;
             text-shadow: 0 0 30px rgba(68, 139, 255, 0.3);
             letter-spacing: 0.05em;
-        }.voice-modal-message {
+        }
+
+        .voice-modal-message {
             font-size: 1.4rem;
             color: var(--text-primary);
             opacity: 0.8;
@@ -522,7 +577,9 @@
             gap: 2rem;
             justify-content: center;
             flex-wrap: wrap;
-        }        .voice-control-btn {
+        }
+
+        .voice-control-btn {
             background: var(--button-secondary-bg);
             border: 1px solid var(--input-border);
             border-radius: 16px;
@@ -562,7 +619,9 @@
             border-color: var(--primary-color);
             transform: translateY(-3px);
             box-shadow: var(--box-shadow);
-        }        .voice-start-btn {
+        }
+
+        .voice-start-btn {
             background: linear-gradient(135deg, #448bff 0%, #2563eb 50%, #1d4ed8 100%);
             border-color: #448bff;
             color: var(--light-color);
@@ -599,7 +658,8 @@
 
         .voice-close-btn:hover {
             background: var(--button-secondary-bg);
-            filter: brightness(1.2);            border-color: var(--button-secondary-bg);
+            filter: brightness(1.2);
+            border-color: var(--button-secondary-bg);
             box-shadow: 0 10px 40px rgba(108, 117, 125, 0.3);
         }
 
@@ -611,12 +671,12 @@
             width: 100vw;
             height: 100vh;
             background: var(--body-bg);
-            background-image: linear-gradient(135deg, 
-                var(--body-bg) 0%, 
-                var(--content-box-bg) 25%, 
-                var(--body-bg) 50%, 
-                var(--content-box-bg) 75%, 
-                var(--body-bg) 100%);
+            background-image: linear-gradient(135deg,
+                    var(--body-bg) 0%,
+                    var(--content-box-bg) 25%,
+                    var(--body-bg) 50%,
+                    var(--content-box-bg) 75%,
+                    var(--body-bg) 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -635,7 +695,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
+            background:
                 radial-gradient(circle at 25% 25%, rgba(68, 139, 255, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 75% 75%, var(--outer-frame-dots) 0%, transparent 50%),
                 radial-gradient(circle at 50% 30%, var(--outer-frame-dots) 0%, transparent 50%);
@@ -649,9 +709,9 @@
 
         .record-modal-card {
             background: var(--content-box-bg);
-            background-image: linear-gradient(135deg, 
-                var(--content-box-bg) 0%, 
-                var(--card-bg) 100%);
+            background-image: linear-gradient(135deg,
+                    var(--content-box-bg) 0%,
+                    var(--card-bg) 100%);
             border: 1px solid var(--content-box-border);
             border-radius: 32px;
             padding: 4rem 3rem;
@@ -659,7 +719,7 @@
             height: 100%;
             max-width: none;
             max-height: none;
-            box-shadow: 
+            box-shadow:
                 0 0 100px rgba(68, 139, 255, 0.1),
                 var(--box-shadow);
             transform: scale(0.8) rotateX(15deg);
@@ -678,7 +738,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
+            background:
                 linear-gradient(45deg, transparent 30%, rgba(68, 139, 255, 0.05) 50%, transparent 70%),
                 radial-gradient(circle at center, var(--outer-frame-dots) 0%, transparent 70%);
             pointer-events: none;
@@ -747,7 +807,7 @@
             font-size: 3.5rem;
             color: #fff;
             transition: all 0.4s ease;
-            box-shadow: 
+            box-shadow:
                 0 0 40px rgba(68, 139, 255, 0.4),
                 inset 0 0 40px rgba(255, 255, 255, 0.1);
             position: relative;
@@ -768,7 +828,7 @@
 
         .record-microphone-icon.recording {
             background: linear-gradient(135deg, #ea4335 0%, #d33b2c 50%, #b71c1c 100%);
-            box-shadow: 
+            box-shadow:
                 0 0 60px rgba(234, 67, 53, 0.6),
                 inset 0 0 40px rgba(255, 255, 255, 0.1);
             animation: record-recording-glow 1.5s ease-in-out infinite;
@@ -803,18 +863,48 @@
             animation: wave-animation 1.5s ease-in-out infinite;
         }
 
-        .wave-bar:nth-child(1) { animation-delay: 0.1s; }
-        .wave-bar:nth-child(2) { animation-delay: 0.2s; }
-        .wave-bar:nth-child(3) { animation-delay: 0.3s; }
-        .wave-bar:nth-child(4) { animation-delay: 0.4s; }
-        .wave-bar:nth-child(5) { animation-delay: 0.5s; }
-        .wave-bar:nth-child(6) { animation-delay: 0.6s; }
-        .wave-bar:nth-child(7) { animation-delay: 0.7s; }
-        .wave-bar:nth-child(8) { animation-delay: 0.8s; }
+        .wave-bar:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .wave-bar:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .wave-bar:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .wave-bar:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .wave-bar:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .wave-bar:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+
+        .wave-bar:nth-child(7) {
+            animation-delay: 0.7s;
+        }
+
+        .wave-bar:nth-child(8) {
+            animation-delay: 0.8s;
+        }
 
         @keyframes wave-animation {
-            0%, 100% { height: 8px; }
-            50% { height: 32px; }
+
+            0%,
+            100% {
+                height: 8px;
+            }
+
+            50% {
+                height: 32px;
+            }
         }
 
         @keyframes record-pulse {
@@ -822,10 +912,12 @@
                 transform: scale(0.8);
                 opacity: 1;
             }
+
             50% {
                 transform: scale(1.1);
                 opacity: 0.6;
             }
+
             100% {
                 transform: scale(0.8);
                 opacity: 1;
@@ -837,10 +929,12 @@
                 transform: scale(0.9);
                 opacity: 1;
             }
+
             50% {
                 transform: scale(1.2);
                 opacity: 0.7;
             }
+
             100% {
                 transform: scale(0.9);
                 opacity: 1;
@@ -851,6 +945,7 @@
             0% {
                 transform: rotate(0deg);
             }
+
             100% {
                 transform: rotate(360deg);
             }
@@ -860,9 +955,11 @@
             0% {
                 box-shadow: 0 0 60px rgba(234, 67, 53, 0.6), inset 0 0 40px rgba(255, 255, 255, 0.1);
             }
+
             50% {
                 box-shadow: 0 0 100px rgba(234, 67, 53, 0.8), inset 0 0 60px rgba(255, 255, 255, 0.15);
             }
+
             100% {
                 box-shadow: 0 0 60px rgba(234, 67, 53, 0.6), inset 0 0 40px rgba(255, 255, 255, 0.1);
             }
@@ -916,8 +1013,15 @@
         }
 
         @keyframes timer-pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
         }
 
         .record-modal-controls {
@@ -1060,12 +1164,8 @@
         }
     </style>
 </head>
-<body>    <!-- Fluid Transition Overlay -->
-    <div id="fluid-transition" class="fluid-overlay">
-        <div class="fluid-wave"></div>
-        <div class="fluid-logo">ConvAi</div>
-    </div>
 
+<body>
     <!-- WhisperGate Voice Input Modal -->
     <div id="voice-input-modal" class="voice-modal-overlay">
         <div class="voice-modal-card">
@@ -1095,7 +1195,8 @@
                         Close
                     </button>
                 </div>
-            </div>        </div>
+            </div>
+        </div>
     </div>
 
     <!-- Record and Upload Modal -->
@@ -1133,7 +1234,8 @@
                         <i class="fas fa-stop"></i>
                         Stop Recording
                     </button>
-                    <button class="record-control-btn record-upload-btn" id="record-upload-file-btn" style="display: none;">
+                    <button class="record-control-btn record-upload-btn" id="record-upload-file-btn"
+                        style="display: none;">
                         <i class="fas fa-upload"></i>
                         Upload Recording
                     </button>
@@ -1142,7 +1244,8 @@
                         Close
                     </button>
                 </div>
-            </div>        </div>
+            </div>
+        </div>
     </div>
 
     <!-- Tips Modal -->
@@ -1158,46 +1261,59 @@
                 <div class="tips-section">
                     <h3><i class="fas fa-microphone"></i> Speech Delivery</h3>
                     <ul>
-                        <li><strong>Speak clearly and at a moderate pace</strong> - Ensure your words are easily understood</li>
-                        <li><strong>Use proper grammar and complete sentences</strong> - Avoid filler words and incomplete thoughts</li>
-                        <li><strong>Maintain a confident and professional tone</strong> - Sound enthusiastic but not overly casual</li>
-                        <li><strong>Structure your introduction logically</strong> - Follow a clear past-present-future progression</li>
+                        <li><strong>Speak clearly and at a moderate pace</strong> - Ensure your words are easily
+                            understood</li>
+                        <li><strong>Use proper grammar and complete sentences</strong> - Avoid filler words and
+                            incomplete thoughts</li>
+                        <li><strong>Maintain a confident and professional tone</strong> - Sound enthusiastic but not
+                            overly casual</li>
+                        <li><strong>Structure your introduction logically</strong> - Follow a clear past-present-future
+                            progression</li>
                     </ul>
                 </div>
-                
+
                 <div class="tips-section">
                     <h3><i class="fas fa-user"></i> Essential Information to Include</h3>
                     <ul>
                         <li><strong>Your name and current status</strong> - Introduce yourself clearly</li>
-                        <li><strong>Educational background</strong> - Mention your degree, institution, and graduation year</li>
+                        <li><strong>Educational background</strong> - Mention your degree, institution, and graduation
+                            year</li>
                         <li><strong>Technical skills and expertise</strong> - Highlight your key competencies</li>
                         <li><strong>Work experience or projects</strong> - Share relevant practical experience</li>
                         <li><strong>Career goals and aspirations</strong> - Explain what you're looking for</li>
                         <li><strong>Unique qualities or interests</strong> - What makes you stand out</li>
                     </ul>
                 </div>
-                
+
                 <div class="tips-section">
                     <h3><i class="fas fa-target"></i> Connect to Your Target Role</h3>
                     <ul>
-                        <li><strong>Align your skills with job requirements</strong> - Show how your abilities match the role</li>
+                        <li><strong>Align your skills with job requirements</strong> - Show how your abilities match the
+                            role</li>
                         <li><strong>Mention relevant technologies or tools</strong> - Demonstrate technical fit</li>
-                        <li><strong>Highlight problem-solving abilities</strong> - Share examples of challenges you've solved</li>
-                        <li><strong>Express genuine interest in the field</strong> - Show passion for your chosen career path</li>
+                        <li><strong>Highlight problem-solving abilities</strong> - Share examples of challenges you've
+                            solved</li>
+                        <li><strong>Express genuine interest in the field</strong> - Show passion for your chosen career
+                            path</li>
                     </ul>
                 </div>
-                
+
                 <div class="tips-section tips-example">
                     <h3><i class="fas fa-comment-dots"></i> Example Structure</h3>
                     <div class="example-text">
-                        <p><strong>Opening:</strong> "Hello, I'm [Name], a [current status] graduating from [Institution]..."</p>
-                        <p><strong>Background:</strong> "I've completed my [degree] with specialization in [field]..."</p>
-                        <p><strong>Skills & Experience:</strong> "I'm proficient in [technologies] and have worked on [projects/internships]..."</p>
-                        <p><strong>Goals:</strong> "I'm seeking opportunities in [field] where I can apply my skills in [specific areas]..."</p>
-                        <p><strong>Closing:</strong> "I'm excited about [specific aspect] and ready to contribute to [type of organization]."</p>
+                        <p><strong>Opening:</strong> "Hello, I'm [Name], a [current status] graduating from
+                            [Institution]..."</p>
+                        <p><strong>Background:</strong> "I've completed my [degree] with specialization in [field]..."
+                        </p>
+                        <p><strong>Skills & Experience:</strong> "I'm proficient in [technologies] and have worked on
+                            [projects/internships]..."</p>
+                        <p><strong>Goals:</strong> "I'm seeking opportunities in [field] where I can apply my skills in
+                            [specific areas]..."</p>
+                        <p><strong>Closing:</strong> "I'm excited about [specific aspect] and ready to contribute to
+                            [type of organization]."</p>
                     </div>
                 </div>
-                
+
                 <div class="tips-section tips-reminder">
                     <h3><i class="fas fa-exclamation-circle"></i> Remember</h3>
                     <ul>
@@ -1208,7 +1324,8 @@
                     </ul>
                 </div>
             </div>
-        </div>    </div>
+        </div>
+    </div>
 
     <!-- Rubrics Modal -->
     <div id="rubrics-modal" class="rubrics-modal">
@@ -1234,7 +1351,9 @@
                 <div class="rubrics-tab-content active" id="intro-rubrics">
                     <div class="rubrics-overview">
                         <h3><i class="fas fa-info-circle"></i> Introduction Rating Overview</h3>
-                        <p>Your spoken introduction will be evaluated on <strong>4 key criteria</strong> for a total of <strong>10 points</strong>:</p>
+                        <p>Your spoken introduction will be evaluated on <strong>4 key criteria</strong> for a total of
+                            <strong>10 points</strong>:
+                        </p>
                     </div>
 
                     <div class="rubrics-grid">
@@ -1248,15 +1367,18 @@
                                 <div class="rubric-breakdown">
                                     <div class="rubric-level excellent">
                                         <span class="level-score">3.0</span>
-                                        <span class="level-desc">Fluent, grammatically perfect, clear and coherent</span>
+                                        <span class="level-desc">Fluent, grammatically perfect, clear and
+                                            coherent</span>
                                     </div>
                                     <div class="rubric-level good">
                                         <span class="level-score">2.5</span>
-                                        <span class="level-desc">Mostly fluent, minor errors that don't hinder understanding</span>
+                                        <span class="level-desc">Mostly fluent, minor errors that don't hinder
+                                            understanding</span>
                                     </div>
                                     <div class="rubric-level average">
                                         <span class="level-score">2.0</span>
-                                        <span class="level-desc">Understandable with noticeable grammatical errors</span>
+                                        <span class="level-desc">Understandable with noticeable grammatical
+                                            errors</span>
                                     </div>
                                     <div class="rubric-level below">
                                         <span class="level-score">1.0-1.5</span>
@@ -1276,15 +1398,18 @@
                                 <div class="rubric-breakdown">
                                     <div class="rubric-level excellent">
                                         <span class="level-score">1.5</span>
-                                        <span class="level-desc">Excellent logical flow (past-present-future), easy to follow</span>
+                                        <span class="level-desc">Excellent logical flow (past-present-future), easy to
+                                            follow</span>
                                     </div>
                                     <div class="rubric-level good">
                                         <span class="level-score">1.0</span>
-                                        <span class="level-desc">Generally logical flow with minor organizational issues</span>
+                                        <span class="level-desc">Generally logical flow with minor organizational
+                                            issues</span>
                                     </div>
                                     <div class="rubric-level average">
                                         <span class="level-score">0.5</span>
-                                        <span class="level-desc">Some structure attempt but lacks clear organization</span>
+                                        <span class="level-desc">Some structure attempt but lacks clear
+                                            organization</span>
                                     </div>
                                     <div class="rubric-level below">
                                         <span class="level-score">0.0</span>
@@ -1343,7 +1468,8 @@
                                 <div class="rubric-breakdown">
                                     <div class="rubric-level excellent">
                                         <span class="level-score">2.0</span>
-                                        <span class="level-desc">Clearly connects strengths and goals to target role</span>
+                                        <span class="level-desc">Clearly connects strengths and goals to target
+                                            role</span>
                                     </div>
                                     <div class="rubric-level good">
                                         <span class="level-score">1.5</span>
@@ -1351,7 +1477,8 @@
                                     </div>
                                     <div class="rubric-level average">
                                         <span class="level-score">1.0</span>
-                                        <span class="level-desc">Some relevant skills mentioned but no clear connection</span>
+                                        <span class="level-desc">Some relevant skills mentioned but no clear
+                                            connection</span>
                                     </div>
                                     <div class="rubric-level below">
                                         <span class="level-score">0.0-0.5</span>
@@ -1367,7 +1494,8 @@
                 <div class="rubrics-tab-content" id="profile-rubrics">
                     <div class="rubrics-overview">
                         <h3><i class="fas fa-info-circle"></i> Profile Rating Overview</h3>
-                        <p>Your extracted profile information will be evaluated on <strong>4 key criteria</strong> for a total of <strong>10 points</strong>:</p>
+                        <p>Your extracted profile information will be evaluated on <strong>4 key criteria</strong> for a
+                            total of <strong>10 points</strong>:</p>
                     </div>
 
                     <div class="rubrics-grid">
@@ -1428,7 +1556,8 @@
                                 <div class="rubric-breakdown">
                                     <div class="rubric-level excellent">
                                         <span class="level-score">2.0</span>
-                                        <span class="level-desc">Strong alignment - skills directly match target role</span>
+                                        <span class="level-desc">Strong alignment - skills directly match target
+                                            role</span>
                                     </div>
                                     <div class="rubric-level good">
                                         <span class="level-score">1.5</span>
@@ -1456,15 +1585,18 @@
                                 <div class="rubric-breakdown">
                                     <div class="rubric-level excellent">
                                         <span class="level-score">3.0</span>
-                                        <span class="level-desc">Multiple well-described projects with technologies, problems, solutions</span>
+                                        <span class="level-desc">Multiple well-described projects with technologies,
+                                            problems, solutions</span>
                                     </div>
                                     <div class="rubric-level good">
                                         <span class="level-score">2.0-2.5</span>
-                                        <span class="level-desc">1+ projects with good detail and clear descriptions</span>
+                                        <span class="level-desc">1+ projects with good detail and clear
+                                            descriptions</span>
                                     </div>
                                     <div class="rubric-level average">
                                         <span class="level-score">1.0-1.5</span>
-                                        <span class="level-desc">Projects mentioned with basic technologies or brief descriptions</span>
+                                        <span class="level-desc">Projects mentioned with basic technologies or brief
+                                            descriptions</span>
                                     </div>
                                     <div class="rubric-level below">
                                         <span class="level-score">0.0-0.5</span>
@@ -1484,11 +1616,13 @@
                                 <div class="rubric-breakdown">
                                     <div class="rubric-level excellent">
                                         <span class="level-score">2.0</span>
-                                        <span class="level-desc">Multiple significant achievements (certifications, awards, leadership)</span>
+                                        <span class="level-desc">Multiple significant achievements (certifications,
+                                            awards, leadership)</span>
                                     </div>
                                     <div class="rubric-level good">
                                         <span class="level-score">1.5</span>
-                                        <span class="level-desc">Several achievements with clear professional relevance</span>
+                                        <span class="level-desc">Several achievements with clear professional
+                                            relevance</span>
                                     </div>
                                     <div class="rubric-level average">
                                         <span class="level-score">1.0</span>
@@ -1496,7 +1630,8 @@
                                     </div>
                                     <div class="rubric-level below">
                                         <span class="level-score">0.0-0.5</span>
-                                        <span class="level-desc">No achievements or vague mentions without specifics</span>
+                                        <span class="level-desc">No achievements or vague mentions without
+                                            specifics</span>
                                     </div>
                                 </div>
                             </div>
@@ -1520,41 +1655,47 @@
                         </div>
                         <p class="rubrics-note">
                             <i class="fas fa-info-circle"></i>
-                            Both evaluations are generated automatically using AI analysis of your spoken introduction and extracted profile information.
+                            Both evaluations are generated automatically using AI analysis of your spoken introduction
+                            and extracted profile information.
                         </p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
+
+    <div class="mainframe">
     <!-- Left Taskbar for Toggle Switches -->
-    <div class="left-taskbar">
-        <div class="theme-toggle-container">
-            <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
-                <i class="fas fa-moon" id="theme-icon"></i>
-            </button>
-        </div>        <div class="voice-input-container">
-            <button id="voice-input-toggle" class="voice-input-btn" aria-label="Voice Input">
-                <i class="fas fa-microphone" id="voice-icon"></i>
-            </button>
-        </div>        <div class="tips-container">
-            <button id="tips-toggle" class="tips-btn" aria-label="Speaking Tips">
-                <i class="fas fa-lightbulb" id="tips-icon"></i>
-            </button>
+        <div class="left-taskbar">
+            <div class="theme-toggle-container">
+                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
+            </div>
+            <div class="voice-input-container">
+                <button id="voice-input-toggle" class="voice-input-btn" aria-label="Voice Input">
+                    <i class="fas fa-microphone" id="voice-icon"></i>
+                </button>
+            </div>
+            <div class="tips-container">
+                <button id="tips-toggle" class="tips-btn" aria-label="Speaking Tips">
+                    <i class="fas fa-lightbulb" id="tips-icon"></i>
+                </button>
+            </div>
+            <div class="rubrics-container">
+                <button id="rubrics-toggle" class="rubrics-btn" aria-label="Grading Rubrics">
+                    <i class="fas fa-clipboard-check" id="rubrics-icon"></i>
+                </button>
+            </div>
+            <!-- Future switches can be added here -->
         </div>
-        <div class="rubrics-container">
-            <button id="rubrics-toggle" class="rubrics-btn" aria-label="Grading Rubrics">
-                <i class="fas fa-clipboard-check" id="rubrics-icon"></i>
-            </button>
-        </div>
-        <!-- Future switches can be added here -->
-    </div>
-    
-    <!-- Outer frame with dotted background (matching login page structure) -->
+
+        <!-- Outer frame with dotted background (matching login page structure) -->
         <!-- Single content box matching login page structure -->
-        <div class="main-content-box">            <header>
-                <div class="container">                    <div class="header-content">
+        <div class="main-content-box">
+            <header>
+                <div class="container">
+                    <div class="header-content">
                         <h1><i class="fas fa-robot"></i> ConvAi Introduction Evaluation System</h1>
                         <p class="lead">Upload your audio/video introduction for comprehensive evaluation</p>
                     </div>
@@ -1562,223 +1703,238 @@
             </header>
 
             <main class="container">
-                        <div class="row">
-                            <div class="col-lg-8 mx-auto">
-                    <!-- Progress Tracker -->
-                    <div class="progress-tracker mb-4">
-                        <div class="progress-step active" id="step-upload">
-                            <div class="step-icon"><i class="fas fa-upload"></i></div>
-                            <div class="step-label">Upload</div>
+                <div class="row">
+                    <div class="col-lg-8 mx-auto">
+                        <!-- Progress Tracker -->
+                        <div class="progress-tracker mb-4">
+                            <div class="progress-step active" id="step-upload">
+                                <div class="step-icon"><i class="fas fa-upload"></i></div>
+                                <div class="step-label">Upload</div>
+                            </div>
+                            <div class="progress-connector"></div>
+                            <div class="progress-step" id="step-transcribe">
+                                <div class="step-icon"><i class="fas fa-headphones"></i></div>
+                                <div class="step-label">Transcribe</div>
+                            </div>
+                            <div class="progress-connector"></div>
+                            <div class="progress-step" id="step-extract">
+                                <div class="step-icon"><i class="fas fa-clipboard-list"></i></div>
+                                <div class="step-label">Extract Fields</div>
+                            </div>
+                            <div class="progress-connector"></div>
+                            <div class="progress-step" id="step-rate">
+                                <div class="step-icon"><i class="fas fa-star"></i></div>
+                                <div class="step-label">Ratings</div>
+                            </div>
                         </div>
-                        <div class="progress-connector"></div>
-                        <div class="progress-step" id="step-transcribe">
-                            <div class="step-icon"><i class="fas fa-headphones"></i></div>
-                            <div class="step-label">Transcribe</div>
+
+                        <!-- Upload Section -->
+                        <div class="card mb-4" id="upload-section">
+                            <div class="card-body">
+                                <h2 class="card-title"><i class="fas fa-upload me-2"></i>Upload Your Introduction</h2>
+                                <p class="card-text">Upload an audio or video file of your introduction to begin the
+                                    evaluation process.</p>
+
+                                <form id="upload-form" class="mb-3">
+                                    <div class="drop-zone mb-3" id="drop-zone">
+                                        <span class="drop-zone__prompt">
+                                            <i class="fas fa-cloud-upload-alt fa-2x mb-2"></i><br>
+                                            Drop your file here or click to browse
+                                        </span>
+                                        <input type="file" name="file" id="file-input" class="drop-zone__input"
+                                            accept="audio/*,video/*">
+                                    </div>
+                                    <div id="file-info" class="mb-3 d-none">
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-file-audio me-2"></i>
+                                            <span id="file-name"></span>
+                                            <button type="button" class="btn-close float-end" id="clear-file"></button>
+                                        </div>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="extract-fields" checked>
+                                        <label class="form-check-label" for="extract-fields">
+                                            Extract information fields from the transcript
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="generate-ratings" checked>
+                                        <label class="form-check-label" for="generate-ratings">
+                                            Generate profile and introduction ratings
+                                        </label>
+                                    </div>
+                                    <div class="d-flex gap-3 flex-wrap">
+                                        <button type="submit" class="btn btn-primary" id="upload-button">
+                                            <i class="fas fa-upload me-2"></i>Upload and Process
+                                        </button>
+                                        <button type="button" class="btn btn-info record-upload-btn"
+                                            id="record-upload-button">
+                                            <i class="fas fa-microphone me-2"></i>Record and Upload
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                        <div class="progress-connector"></div>
-                        <div class="progress-step" id="step-extract">
-                            <div class="step-icon"><i class="fas fa-clipboard-list"></i></div>
-                            <div class="step-label">Extract Fields</div>
+
+                        <!-- Processing Section -->
+                        <div class="card mb-4 d-none" id="processing-section">
+                            <div class="card-body">
+                                <h2 class="card-title"><i class="fas fa-cogs me-2"></i>Processing Your Introduction</h2>
+
+                                <!-- Transcription Status -->
+                                <div class="status-item mb-3" id="transcription-status">
+                                    <div class="d-flex align-items-center">
+                                        <div class="status-icon processing">
+                                            <i class="fas fa-headphones"></i>
+                                        </div>
+                                        <div class="status-content">
+                                            <h4>Transcribing Audio</h4>
+                                            <p class="status-message">Converting your audio to text...</p>
+                                        </div>
+                                    </div>
+                                    <div class="progress mt-2">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                            role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Field Extraction Status -->
+                                <div class="status-item mb-3" id="extraction-status">
+                                    <div class="d-flex align-items-center">
+                                        <div class="status-icon waiting">
+                                            <i class="fas fa-clipboard-list"></i>
+                                        </div>
+                                        <div class="status-content">
+                                            <h4>Extracting Information</h4>
+                                            <p class="status-message">Waiting to extract information from transcript...</p>
+                                        </div>
+                                    </div>
+                                    <div class="progress mt-2">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                            role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Rating Generation Status -->
+                                <div class="status-item mb-3" id="rating-status">
+                                    <div class="d-flex align-items-center">
+                                        <div class="status-icon waiting">
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                        <div class="status-content">
+                                            <h4>Generating Ratings</h4>
+                                            <p class="status-message">Waiting to evaluate your introduction...</p>
+                                        </div>
+                                    </div>
+                                    <div class="progress mt-2">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                            role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-info d-none" id="processing-message">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <span id="processing-message-text"></span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="progress-connector"></div>
-                        <div class="progress-step" id="step-rate">
-                            <div class="step-icon"><i class="fas fa-star"></i></div>
-                            <div class="step-label">Ratings</div>
+
+                        <!-- Results Section -->
+                        <div class="card mb-4 d-none" id="results-section">
+                            <div class="card-body">
+                                <h2 class="card-title"><i class="fas fa-clipboard-check me-2"></i>Evaluation Results</h2>
+
+                                <!-- Tabs for different results -->
+                                <ul class="nav nav-tabs mb-3" id="resultsTabs" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="transcript-tab" data-bs-toggle="tab"
+                                            data-bs-target="#transcript" type="button" role="tab" aria-controls="transcript"
+                                            aria-selected="true">
+                                            <i class="fas fa-headphones me-1"></i> Transcript
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="fields-tab" data-bs-toggle="tab"
+                                            data-bs-target="#fields" type="button" role="tab" aria-controls="fields"
+                                            aria-selected="false">
+                                            <i class="fas fa-clipboard-list me-1"></i> Extracted Fields
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab"
+                                            data-bs-target="#profile" type="button" role="tab" aria-controls="profile"
+                                            aria-selected="false">
+                                            <i class="fas fa-user me-1"></i> Profile Rating
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="intro-tab" data-bs-toggle="tab" data-bs-target="#intro"
+                                            type="button" role="tab" aria-controls="intro" aria-selected="false">
+                                            <i class="fas fa-star me-1"></i> Intro Rating
+                                        </button>
+                                    </li>
+                                </ul>
+
+                                <div class="tab-content" id="resultsTabContent">
+                                    <!-- Transcript Tab -->
+                                    <div class="tab-pane fade show active" id="transcript" role="tabpanel">
+                                        <div class="card bg-light">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Transcript</h5>
+                                                <pre id="transcript-content" class="transcript-content"></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Extracted Fields Tab -->
+                                    <div class="tab-pane fade" id="fields" role="tabpanel">
+                                        <div class="card bg-light">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Extracted Information</h5>
+                                                <div id="extracted-fields-content"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Profile Rating Tab -->
+                                    <div class="tab-pane fade" id="profile" role="tabpanel">
+                                        <div class="card bg-light">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Profile Evaluation</h5>
+                                                <div id="profile-rating-content"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Intro Rating Tab -->
+                                    <div class="tab-pane fade" id="intro" role="tabpanel">
+                                        <div class="card bg-light">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Introduction Evaluation</h5>
+                                                <div id="intro-rating-content"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <button type="button" class="btn btn-primary" id="start-new-button">
+                                        <i class="fas fa-redo me-2"></i>Start New Evaluation
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </div>
+            </main>
 
-                    <!-- Upload Section -->
-                    <div class="card mb-4" id="upload-section">
-                        <div class="card-body">
-                            <h2 class="card-title"><i class="fas fa-upload me-2"></i>Upload Your Introduction</h2>
-                            <p class="card-text">Upload an audio or video file of your introduction to begin the evaluation process.</p>
-                            
-                            <form id="upload-form" class="mb-3">
-                                <div class="drop-zone mb-3" id="drop-zone">
-                                    <span class="drop-zone__prompt">
-                                        <i class="fas fa-cloud-upload-alt fa-2x mb-2"></i><br>
-                                        Drop your file here or click to browse
-                                    </span>
-                                    <input type="file" name="file" id="file-input" class="drop-zone__input" accept="audio/*,video/*">
-                                </div>
-                                <div id="file-info" class="mb-3 d-none">
-                                    <div class="alert alert-info">
-                                        <i class="fas fa-file-audio me-2"></i>
-                                        <span id="file-name"></span>
-                                        <button type="button" class="btn-close float-end" id="clear-file"></button>
-                                    </div>
-                                </div>
-                                <div class="form-check mb-3">
-                                    <input class="form-check-input" type="checkbox" id="extract-fields" checked>
-                                    <label class="form-check-label" for="extract-fields">
-                                        Extract information fields from the transcript
-                                    </label>
-                                </div>
-                                <div class="form-check mb-3">
-                                    <input class="form-check-input" type="checkbox" id="generate-ratings" checked>
-                                    <label class="form-check-label" for="generate-ratings">
-                                        Generate profile and introduction ratings
-                                    </label>
-                                </div>                                <div class="d-flex gap-3 flex-wrap">
-                                    <button type="submit" class="btn btn-primary" id="upload-button">
-                                        <i class="fas fa-upload me-2"></i>Upload and Process
-                                    </button>
-                                    <button type="button" class="btn btn-info record-upload-btn" id="record-upload-button">
-                                        <i class="fas fa-microphone me-2"></i>Record and Upload
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+            <footer class="text-center py-3">
+                <div class="container">
+                    <p>© Entity Creations | 2025 ConvAi Team | Project ConvAi-IntroEval</p>
+                </div>
+            </footer>
 
-                    <!-- Processing Section -->
-                    <div class="card mb-4 d-none" id="processing-section">
-                        <div class="card-body">
-                            <h2 class="card-title"><i class="fas fa-cogs me-2"></i>Processing Your Introduction</h2>
-                            
-                            <!-- Transcription Status -->
-                            <div class="status-item mb-3" id="transcription-status">
-                                <div class="d-flex align-items-center">
-                                    <div class="status-icon processing">
-                                        <i class="fas fa-headphones"></i>
-                                    </div>
-                                    <div class="status-content">
-                                        <h4>Transcribing Audio</h4>
-                                        <p class="status-message">Converting your audio to text...</p>
-                                    </div>
-                                </div>
-                                <div class="progress mt-2">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
-                                </div>
-                            </div>
-
-                            <!-- Field Extraction Status -->
-                            <div class="status-item mb-3" id="extraction-status">
-                                <div class="d-flex align-items-center">
-                                    <div class="status-icon waiting">
-                                        <i class="fas fa-clipboard-list"></i>
-                                    </div>
-                                    <div class="status-content">
-                                        <h4>Extracting Information</h4>
-                                        <p class="status-message">Waiting to extract information from transcript...</p>
-                                    </div>
-                                </div>
-                                <div class="progress mt-2">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
-                                </div>
-                            </div>
-
-                            <!-- Rating Generation Status -->
-                            <div class="status-item mb-3" id="rating-status">
-                                <div class="d-flex align-items-center">
-                                    <div class="status-icon waiting">
-                                        <i class="fas fa-star"></i>
-                                    </div>
-                                    <div class="status-content">
-                                        <h4>Generating Ratings</h4>
-                                        <p class="status-message">Waiting to evaluate your introduction...</p>
-                                    </div>
-                                </div>
-                                <div class="progress mt-2">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
-                                </div>
-                            </div>
-
-                            <div class="alert alert-info d-none" id="processing-message">
-                                <i class="fas fa-info-circle me-2"></i>
-                                <span id="processing-message-text"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Results Section -->
-                    <div class="card mb-4 d-none" id="results-section">
-                        <div class="card-body">
-                            <h2 class="card-title"><i class="fas fa-clipboard-check me-2"></i>Evaluation Results</h2>
-                            
-                            <!-- Tabs for different results -->
-                            <ul class="nav nav-tabs mb-3" id="resultsTabs" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="transcript-tab" data-bs-toggle="tab" data-bs-target="#transcript" type="button" role="tab" aria-controls="transcript" aria-selected="true">
-                                        <i class="fas fa-headphones me-1"></i> Transcript
-                                    </button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="fields-tab" data-bs-toggle="tab" data-bs-target="#fields" type="button" role="tab" aria-controls="fields" aria-selected="false">
-                                        <i class="fas fa-clipboard-list me-1"></i> Extracted Fields
-                                    </button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">
-                                        <i class="fas fa-user me-1"></i> Profile Rating
-                                    </button>
-                                </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="intro-tab" data-bs-toggle="tab" data-bs-target="#intro" type="button" role="tab" aria-controls="intro" aria-selected="false">
-                                        <i class="fas fa-star me-1"></i> Intro Rating
-                                    </button>
-                                </li>
-                            </ul>
-                            
-                            <div class="tab-content" id="resultsTabContent">
-                                <!-- Transcript Tab -->
-                                <div class="tab-pane fade show active" id="transcript" role="tabpanel">
-                                    <div class="card bg-light">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Transcript</h5>
-                                            <pre id="transcript-content" class="transcript-content"></pre>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Extracted Fields Tab -->
-                                <div class="tab-pane fade" id="fields" role="tabpanel">
-                                    <div class="card bg-light">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Extracted Information</h5>
-                                            <div id="extracted-fields-content"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Profile Rating Tab -->
-                                <div class="tab-pane fade" id="profile" role="tabpanel">
-                                    <div class="card bg-light">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Profile Evaluation</h5>
-                                            <div id="profile-rating-content"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Intro Rating Tab -->
-                                <div class="tab-pane fade" id="intro" role="tabpanel">
-                                    <div class="card bg-light">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Introduction Evaluation</h5>
-                                            <div id="intro-rating-content"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                              <div class="mt-3">
-                                <button type="button" class="btn btn-primary" id="start-new-button">
-                                    <i class="fas fa-redo me-2"></i>Start New Evaluation
-                                </button>
-                            </div>
-                        </div>
-                    </div>                </div>
-            </div>
-        </main>        
-        
-        <footer class="text-center py-3">
-            <div class="container">
-                <p>© Entity Creations | 2025 ConvAi Team | Project ConvAi-IntroEval</p>
-            </div>
-        </footer>
-        
         </div> <!-- Close main-content-box -->
-    </div>
+    </div> <!-- Close outerframe -->
 
     <!-- Modal for errors -->
     <div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true">
@@ -1795,418 +1951,421 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
-        </div>    </div>    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../static/js/rating-utils.js"></script>
     <script src="../static/js/app.js"></script>
     <script>    // Simple CSS-based fluid transition
-    document.addEventListener('DOMContentLoaded', function() {
-        const overlay = document.getElementById('fluid-transition');
-        
-        // Test function for manual triggering
-        window.testTransition = function() {
-            localStorage.setItem('showFluidTransition', 'true');
-            location.reload();
-        };
-        
-        if (localStorage.getItem('showFluidTransition')) {
-            localStorage.removeItem('showFluidTransition');
-            
-            // Show and start the transition
-            overlay.classList.add('active');
-            
-            // Hide the overlay after animation completes (extended duration)
-            setTimeout(() => {
-                overlay.style.display = 'none';
-            }, 5500); // Increased from 2000ms to 5500ms for smoother fade
-        }
+        document.addEventListener('DOMContentLoaded', function () {
+            const overlay = document.getElementById('fluid-transition');
 
-        // Theme Toggle Functionality
-        const themeToggle = document.getElementById('theme-toggle');
-        const themeIcon = document.getElementById('theme-icon');
-        const html = document.documentElement;
-        
-        // Check for saved theme preference or default to dark
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        html.setAttribute('data-theme', savedTheme);
-        updateThemeIcon(savedTheme);
-        
-        themeToggle.addEventListener('click', function() {
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateThemeIcon(newTheme);
-        });
-          function updateThemeIcon(theme) {
-            if (theme === 'dark') {
-                themeIcon.className = 'fas fa-sun'; // Show sun icon in dark mode
-            } else {
-                themeIcon.className = 'fas fa-moon'; // Show moon icon in light mode
-            }
-        }
-
-        // Voice Input Modal Functionality
-        const voiceInputToggle = document.getElementById('voice-input-toggle');
-        const voiceModal = document.getElementById('voice-input-modal');
-        const voiceStartBtn = document.getElementById('voice-start-btn');
-        const voiceStopBtn = document.getElementById('voice-stop-btn');
-        const voiceCloseBtn = document.getElementById('voice-close-btn');
-        const voiceStatusMessage = document.getElementById('voice-status-message');
-        const voiceTranscript = document.getElementById('voice-transcript');
-        const voiceIcon = document.getElementById('voice-icon');
-        const voicePulseRing = document.querySelector('.voice-pulse-ring');
-        const voiceMicIcon = document.querySelector('.voice-microphone-icon');
-
-        let isRecording = false;
-        let recognition = null;
-
-        // Initialize speech recognition if available
-        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            recognition = new SpeechRecognition();
-            recognition.continuous = true;
-            recognition.interimResults = true;
-            recognition.lang = 'en-US';
-
-            recognition.onstart = function() {
-                voiceStatusMessage.textContent = "Listening... Speak now!";
-                voiceTranscript.classList.remove('empty');
-                voicePulseRing.classList.add('listening');
-                voiceMicIcon.classList.add('listening');
+            // Test function for manual triggering
+            window.testTransition = function () {
+                localStorage.setItem('showFluidTransition', 'true');
+                location.reload();
             };
 
-            recognition.onresult = function(event) {
-                let finalTranscript = '';
-                let interimTranscript = '';
+            if (localStorage.getItem('showFluidTransition')) {
+                localStorage.removeItem('showFluidTransition');
 
-                for (let i = event.resultIndex; i < event.results.length; i++) {
-                    const transcript = event.results[i][0].transcript;
-                    if (event.results[i].isFinal) {
-                        finalTranscript += transcript + ' ';
-                    } else {
-                        interimTranscript += transcript;
+                // Show and start the transition
+                overlay.classList.add('active');
+
+                // Hide the overlay after animation completes (extended duration)
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 5500); // Increased from 2000ms to 5500ms for smoother fade
+            }
+
+            // Theme Toggle Functionality
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-icon');
+            const html = document.documentElement;
+
+            // Check for saved theme preference or default to dark
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            html.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+
+            themeToggle.addEventListener('click', function () {
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+                html.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+            function updateThemeIcon(theme) {
+                if (theme === 'dark') {
+                    themeIcon.className = 'fas fa-sun'; // Show sun icon in dark mode
+                } else {
+                    themeIcon.className = 'fas fa-moon'; // Show moon icon in light mode
+                }
+            }
+
+            // Voice Input Modal Functionality
+            const voiceInputToggle = document.getElementById('voice-input-toggle');
+            const voiceModal = document.getElementById('voice-input-modal');
+            const voiceStartBtn = document.getElementById('voice-start-btn');
+            const voiceStopBtn = document.getElementById('voice-stop-btn');
+            const voiceCloseBtn = document.getElementById('voice-close-btn');
+            const voiceStatusMessage = document.getElementById('voice-status-message');
+            const voiceTranscript = document.getElementById('voice-transcript');
+            const voiceIcon = document.getElementById('voice-icon');
+            const voicePulseRing = document.querySelector('.voice-pulse-ring');
+            const voiceMicIcon = document.querySelector('.voice-microphone-icon');
+
+            let isRecording = false;
+            let recognition = null;
+
+            // Initialize speech recognition if available
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = 'en-US';
+
+                recognition.onstart = function () {
+                    voiceStatusMessage.textContent = "Listening... Speak now!";
+                    voiceTranscript.classList.remove('empty');
+                    voicePulseRing.classList.add('listening');
+                    voiceMicIcon.classList.add('listening');
+                };
+
+                recognition.onresult = function (event) {
+                    let finalTranscript = '';
+                    let interimTranscript = '';
+
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript + ' ';
+                        } else {
+                            interimTranscript += transcript;
+                        }
                     }
-                }
 
-                voiceTranscript.innerHTML = finalTranscript + '<span style="color: #888;">' + interimTranscript + '</span>';
-            };
+                    voiceTranscript.innerHTML = finalTranscript + '<span style="color: #888;">' + interimTranscript + '</span>';
+                };
 
-            recognition.onerror = function(event) {
-                voiceStatusMessage.textContent = "Error occurred in recognition: " + event.error;
-                stopRecording();
-            };
+                recognition.onerror = function (event) {
+                    voiceStatusMessage.textContent = "Error occurred in recognition: " + event.error;
+                    stopRecording();
+                };
 
-            recognition.onend = function() {
-                if (isRecording) {
-                    voiceStatusMessage.textContent = "Recording stopped. Click Start to record again.";
-                }
-                stopRecording();
-            };
-        }
-
-        // Open voice modal
-        voiceInputToggle.addEventListener('click', function() {
-            voiceModal.classList.add('active');
-            voiceStatusMessage.textContent = "Tell me who you are...";
-            voiceTranscript.textContent = "";
-            voiceTranscript.classList.add('empty');
-            resetModalState();
-        });
-
-        // Close voice modal
-        voiceCloseBtn.addEventListener('click', function() {
-            voiceModal.classList.remove('active');
-            if (isRecording) {
-                stopRecording();
+                recognition.onend = function () {
+                    if (isRecording) {
+                        voiceStatusMessage.textContent = "Recording stopped. Click Start to record again.";
+                    }
+                    stopRecording();
+                };
             }
-        });
 
-        // Start recording
-        voiceStartBtn.addEventListener('click', function() {
-            if (recognition) {
-                startRecording();
-            } else {
-                voiceStatusMessage.textContent = "Speech recognition not supported in this browser.";
-            }
-        });
+            // Open voice modal
+            voiceInputToggle.addEventListener('click', function () {
+                voiceModal.classList.add('active');
+                voiceStatusMessage.textContent = "Tell me who you are...";
+                voiceTranscript.textContent = "";
+                voiceTranscript.classList.add('empty');
+                resetModalState();
+            });
 
-        // Stop recording
-        voiceStopBtn.addEventListener('click', function() {
-            stopRecording();
-        });
-
-        // Close modal when clicking outside
-        voiceModal.addEventListener('click', function(e) {
-            if (e.target === voiceModal) {
+            // Close voice modal
+            voiceCloseBtn.addEventListener('click', function () {
                 voiceModal.classList.remove('active');
                 if (isRecording) {
                     stopRecording();
                 }
+            });
+
+            // Start recording
+            voiceStartBtn.addEventListener('click', function () {
+                if (recognition) {
+                    startRecording();
+                } else {
+                    voiceStatusMessage.textContent = "Speech recognition not supported in this browser.";
+                }
+            });
+
+            // Stop recording
+            voiceStopBtn.addEventListener('click', function () {
+                stopRecording();
+            });
+
+            // Close modal when clicking outside
+            voiceModal.addEventListener('click', function (e) {
+                if (e.target === voiceModal) {
+                    voiceModal.classList.remove('active');
+                    if (isRecording) {
+                        stopRecording();
+                    }
+                }
+            });
+
+            function startRecording() {
+                if (!isRecording && recognition) {
+                    isRecording = true;
+                    voiceInputToggle.classList.add('recording');
+                    voiceStartBtn.style.display = 'none';
+                    voiceStopBtn.style.display = 'flex';
+                    voiceStatusMessage.textContent = "Starting recording...";
+
+                    try {
+                        recognition.start();
+                    } catch (error) {
+                        console.error('Error starting recognition:', error);
+                        voiceStatusMessage.textContent = "Error starting recording. Please try again.";
+                        stopRecording();
+                    }
+                }
+            }
+
+            function stopRecording() {
+                if (isRecording && recognition) {
+                    isRecording = false;
+                    recognition.stop();
+                }
+
+                voiceInputToggle.classList.remove('recording');
+                voiceStartBtn.style.display = 'flex';
+                voiceStopBtn.style.display = 'none';
+                voicePulseRing.classList.remove('listening');
+                voiceMicIcon.classList.remove('listening');
+
+                if (voiceTranscript.textContent.trim()) {
+                    voiceStatusMessage.textContent = "Recording complete! You can start a new recording or close.";
+                } else {
+                    voiceStatusMessage.textContent = "No speech detected. Try again.";
+                }
+            }
+
+            function resetModalState() {
+                isRecording = false;
+                voiceStartBtn.style.display = 'flex';
+                voiceStopBtn.style.display = 'none';
+                voicePulseRing.classList.remove('listening');
+                voiceMicIcon.classList.remove('listening'); voiceInputToggle.classList.remove('recording');
             }
         });
 
-        function startRecording() {
-            if (!isRecording && recognition) {
-                isRecording = true;
-                voiceInputToggle.classList.add('recording');
-                voiceStartBtn.style.display = 'none';
-                voiceStopBtn.style.display = 'flex';
-                voiceStatusMessage.textContent = "Starting recording...";
-                
-                try {
-                    recognition.start();
-                } catch (error) {
-                    console.error('Error starting recognition:', error);
-                    voiceStatusMessage.textContent = "Error starting recording. Please try again.";
-                    stopRecording();
-                }
-            }
+        // Record and Upload Modal Functionality
+        const recordUploadButton = document.getElementById('record-upload-button');
+        const recordModal = document.getElementById('record-upload-modal');
+        const recordStartBtn = document.getElementById('record-start-btn');
+        const recordStopBtn = document.getElementById('record-stop-btn');
+        const recordUploadFileBtn = document.getElementById('record-upload-file-btn');
+        const recordCloseBtn = document.getElementById('record-close-btn');
+        const recordStatusMessage = document.getElementById('record-status-message');
+        const recordTimer = document.getElementById('record-timer');
+        const recordWaveform = document.getElementById('record-waveform');
+        const recordPulseRing = document.querySelector('.record-pulse-ring');
+        const recordPulseRingSecondary = document.querySelector('.record-pulse-ring-secondary');
+        const recordMicIcon = document.querySelector('.record-microphone-icon');
+
+        let isRecordingAudio = false;
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let startTime = null;
+        let timerInterval = null;
+        let recordedBlob = null;
+
+        // Check for MediaRecorder support
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            recordUploadButton.disabled = true;
+            recordUploadButton.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Recording Not Supported';
         }
 
-        function stopRecording() {
-            if (isRecording && recognition) {
-                isRecording = false;
-                recognition.stop();
-            }
-            
-            voiceInputToggle.classList.remove('recording');
-            voiceStartBtn.style.display = 'flex';
-            voiceStopBtn.style.display = 'none';
-            voicePulseRing.classList.remove('listening');
-            voiceMicIcon.classList.remove('listening');
-            
-            if (voiceTranscript.textContent.trim()) {
-                voiceStatusMessage.textContent = "Recording complete! You can start a new recording or close.";
-            } else {
-                voiceStatusMessage.textContent = "No speech detected. Try again.";
-            }
-        }
+        // Open record modal
+        recordUploadButton.addEventListener('click', function () {
+            recordModal.classList.add('active');
+            recordStatusMessage.textContent = "Ready to record your introduction...";
+            resetRecordingState();
+        });
 
-        function resetModalState() {
-            isRecording = false;
-            voiceStartBtn.style.display = 'flex';
-            voiceStopBtn.style.display = 'none';
-            voicePulseRing.classList.remove('listening');
-            voiceMicIcon.classList.remove('listening');            voiceInputToggle.classList.remove('recording');
-        }
-    });
-
-    // Record and Upload Modal Functionality
-    const recordUploadButton = document.getElementById('record-upload-button');
-    const recordModal = document.getElementById('record-upload-modal');
-    const recordStartBtn = document.getElementById('record-start-btn');
-    const recordStopBtn = document.getElementById('record-stop-btn');
-    const recordUploadFileBtn = document.getElementById('record-upload-file-btn');
-    const recordCloseBtn = document.getElementById('record-close-btn');
-    const recordStatusMessage = document.getElementById('record-status-message');
-    const recordTimer = document.getElementById('record-timer');
-    const recordWaveform = document.getElementById('record-waveform');
-    const recordPulseRing = document.querySelector('.record-pulse-ring');
-    const recordPulseRingSecondary = document.querySelector('.record-pulse-ring-secondary');
-    const recordMicIcon = document.querySelector('.record-microphone-icon');
-
-    let isRecordingAudio = false;
-    let mediaRecorder = null;
-    let recordedChunks = [];
-    let startTime = null;
-    let timerInterval = null;
-    let recordedBlob = null;
-
-    // Check for MediaRecorder support
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        recordUploadButton.disabled = true;
-        recordUploadButton.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Recording Not Supported';
-    }
-
-    // Open record modal
-    recordUploadButton.addEventListener('click', function() {
-        recordModal.classList.add('active');
-        recordStatusMessage.textContent = "Ready to record your introduction...";
-        resetRecordingState();
-    });
-
-    // Close record modal
-    recordCloseBtn.addEventListener('click', function() {
-        recordModal.classList.remove('active');
-        if (isRecordingAudio) {
-            stopRecording();
-        }
-    });
-
-    // Close modal when clicking outside
-    recordModal.addEventListener('click', function(e) {
-        if (e.target === recordModal) {
+        // Close record modal
+        recordCloseBtn.addEventListener('click', function () {
             recordModal.classList.remove('active');
             if (isRecordingAudio) {
                 stopRecording();
             }
-        }
-    });
+        });
 
-    // Start recording
-    recordStartBtn.addEventListener('click', async function() {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ 
-                audio: {
-                    echoCancellation: true,
-                    noiseSuppression: true,
-                    sampleRate: 44100
-                }
-            });
-            
-            recordedChunks = [];
-            mediaRecorder = new MediaRecorder(stream, {
-                mimeType: 'audio/webm;codecs=opus'
-            });
-
-            mediaRecorder.ondataavailable = function(event) {
-                if (event.data.size > 0) {
-                    recordedChunks.push(event.data);
-                }
-            };
-
-            mediaRecorder.onstop = function() {
-                recordedBlob = new Blob(recordedChunks, { type: 'audio/webm' });
-                stream.getTracks().forEach(track => track.stop());
-                
-                recordStatusMessage.textContent = "Recording completed! Click upload to process.";
-                recordUploadFileBtn.style.display = 'flex';
-            };
-
-            mediaRecorder.start();
-            startRecordingUI();
-
-        } catch (error) {
-            console.error('Error accessing microphone:', error);
-            recordStatusMessage.textContent = "Error accessing microphone. Please check permissions.";
-        }
-    });
-
-    // Stop recording
-    recordStopBtn.addEventListener('click', function() {
-        stopRecording();
-    });    // Upload recorded file
-    recordUploadFileBtn.addEventListener('click', async function() {
-        if (recordedBlob) {
-            try {
-                // Convert blob to file
-                const recordedFile = new File([recordedBlob], `recording_${Date.now()}.webm`, {
-                    type: 'audio/webm'
-                });
-                
-                console.log('Created recorded file:', recordedFile);
-                
-                // First ensure the file handler exists
-                if (typeof window.handleFileSelect !== 'function') {
-                    throw new Error('File handler not initialized. Please reload the page.');
-                }
-                
-                // Use the handler and check its result
-                const fileHandled = window.handleFileSelect(recordedFile);
-                if (!fileHandled) {
-                    throw new Error('Failed to process the recorded file.');
-                }
-                
-                // Close the modal
+        // Close modal when clicking outside
+        recordModal.addEventListener('click', function (e) {
+            if (e.target === recordModal) {
                 recordModal.classList.remove('active');
-                
-                // Submit the form to trigger normal file upload processing
-                const uploadForm = document.getElementById('upload-form');
-                if (uploadForm) {
-                    console.log('Submitting form with recorded file');
-                    uploadForm.dispatchEvent(new Event('submit', {
-                        bubbles: true,
-                        cancelable: true
-                    }));
-                } else {
-                    throw new Error('Upload form not found');
+                if (isRecordingAudio) {
+                    stopRecording();
                 }
+            }
+        });
+
+        // Start recording
+        recordStartBtn.addEventListener('click', async function () {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        sampleRate: 44100
+                    }
+                });
+
+                recordedChunks = [];
+                mediaRecorder = new MediaRecorder(stream, {
+                    mimeType: 'audio/webm;codecs=opus'
+                });
+
+                mediaRecorder.ondataavailable = function (event) {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = function () {
+                    recordedBlob = new Blob(recordedChunks, { type: 'audio/webm' });
+                    stream.getTracks().forEach(track => track.stop());
+
+                    recordStatusMessage.textContent = "Recording completed! Click upload to process.";
+                    recordUploadFileBtn.style.display = 'flex';
+                };
+
+                mediaRecorder.start();
+                startRecordingUI();
+
             } catch (error) {
-                console.error('Error processing recording:', error);
-                recordStatusMessage.textContent = error.message || "Error processing recording. Please try again.";
+                console.error('Error accessing microphone:', error);
+                recordStatusMessage.textContent = "Error accessing microphone. Please check permissions.";
+            }
+        });
+
+        // Stop recording
+        recordStopBtn.addEventListener('click', function () {
+            stopRecording();
+        });    // Upload recorded file
+        recordUploadFileBtn.addEventListener('click', async function () {
+            if (recordedBlob) {
+                try {
+                    // Convert blob to file
+                    const recordedFile = new File([recordedBlob], `recording_${Date.now()}.webm`, {
+                        type: 'audio/webm'
+                    });
+
+                    console.log('Created recorded file:', recordedFile);
+
+                    // First ensure the file handler exists
+                    if (typeof window.handleFileSelect !== 'function') {
+                        throw new Error('File handler not initialized. Please reload the page.');
+                    }
+
+                    // Use the handler and check its result
+                    const fileHandled = window.handleFileSelect(recordedFile);
+                    if (!fileHandled) {
+                        throw new Error('Failed to process the recorded file.');
+                    }
+
+                    // Close the modal
+                    recordModal.classList.remove('active');
+
+                    // Submit the form to trigger normal file upload processing
+                    const uploadForm = document.getElementById('upload-form');
+                    if (uploadForm) {
+                        console.log('Submitting form with recorded file');
+                        uploadForm.dispatchEvent(new Event('submit', {
+                            bubbles: true,
+                            cancelable: true
+                        }));
+                    } else {
+                        throw new Error('Upload form not found');
+                    }
+                } catch (error) {
+                    console.error('Error processing recording:', error);
+                    recordStatusMessage.textContent = error.message || "Error processing recording. Please try again.";
+                }
+            }
+        });
+
+        function startRecordingUI() {
+            isRecordingAudio = true;
+            startTime = Date.now();
+
+            // Update UI
+            recordStartBtn.style.display = 'none';
+            recordStopBtn.style.display = 'flex';
+            recordUploadFileBtn.style.display = 'none';
+
+            // Add recording classes
+            recordPulseRing.classList.add('recording');
+            recordPulseRingSecondary.classList.add('recording');
+            recordMicIcon.classList.add('recording');
+            recordTimer.classList.add('recording');
+            recordWaveform.classList.add('active');
+
+            // Start timer
+            timerInterval = setInterval(updateTimer, 100);
+
+            recordStatusMessage.textContent = "Recording in progress... Speak clearly!";
+        }
+
+        function stopRecording() {
+            if (isRecordingAudio && mediaRecorder) {
+                isRecordingAudio = false;
+                mediaRecorder.stop();
+            }
+
+            // Update UI
+            recordStartBtn.style.display = 'flex';
+            recordStopBtn.style.display = 'none';
+
+            // Remove recording classes
+            recordPulseRing.classList.remove('recording');
+            recordPulseRingSecondary.classList.remove('recording');
+            recordMicIcon.classList.remove('recording');
+            recordTimer.classList.remove('recording');
+            recordWaveform.classList.remove('active');
+
+            // Stop timer
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
             }
         }
-    });
 
-    function startRecordingUI() {
-        isRecordingAudio = true;
-        startTime = Date.now();
-        
-        // Update UI
-        recordStartBtn.style.display = 'none';
-        recordStopBtn.style.display = 'flex';
-        recordUploadFileBtn.style.display = 'none';
-        
-        // Add recording classes
-        recordPulseRing.classList.add('recording');
-        recordPulseRingSecondary.classList.add('recording');
-        recordMicIcon.classList.add('recording');
-        recordTimer.classList.add('recording');
-        recordWaveform.classList.add('active');
-        
-        // Start timer
-        timerInterval = setInterval(updateTimer, 100);
-        
-        recordStatusMessage.textContent = "Recording in progress... Speak clearly!";
-    }
+        function updateTimer() {
+            if (startTime) {
+                const elapsed = Date.now() - startTime;
+                const minutes = Math.floor(elapsed / 60000);
+                const seconds = Math.floor((elapsed % 60000) / 1000);
+                recordTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
 
-    function stopRecording() {
-        if (isRecordingAudio && mediaRecorder) {
+        function resetRecordingState() {
             isRecordingAudio = false;
-            mediaRecorder.stop();
-        }
-        
-        // Update UI
-        recordStartBtn.style.display = 'flex';
-        recordStopBtn.style.display = 'none';
-        
-        // Remove recording classes
-        recordPulseRing.classList.remove('recording');
-        recordPulseRingSecondary.classList.remove('recording');
-        recordMicIcon.classList.remove('recording');
-        recordTimer.classList.remove('recording');
-        recordWaveform.classList.remove('active');
-        
-        // Stop timer
-        if (timerInterval) {
-            clearInterval(timerInterval);
-            timerInterval = null;
-        }
-    }
+            recordedChunks = [];
+            recordedBlob = null;
+            startTime = null;
 
-    function updateTimer() {
-        if (startTime) {
-            const elapsed = Date.now() - startTime;
-            const minutes = Math.floor(elapsed / 60000);
-            const seconds = Math.floor((elapsed % 60000) / 1000);
-            recordTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        }
-    }
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
 
-    function resetRecordingState() {
-        isRecordingAudio = false;
-        recordedChunks = [];
-        recordedBlob = null;
-        startTime = null;
-        
-        if (timerInterval) {
-            clearInterval(timerInterval);
-            timerInterval = null;
+            // Reset UI
+            recordStartBtn.style.display = 'flex';
+            recordStopBtn.style.display = 'none';
+            recordUploadFileBtn.style.display = 'none';
+
+            recordPulseRing.classList.remove('recording');
+            recordPulseRingSecondary.classList.remove('recording');
+            recordMicIcon.classList.remove('recording');
+            recordTimer.classList.remove('recording');
+            recordWaveform.classList.remove('active');
+            recordTimer.textContent = '00:00';
         }
-        
-        // Reset UI
-        recordStartBtn.style.display = 'flex';
-        recordStopBtn.style.display = 'none';
-        recordUploadFileBtn.style.display = 'none';
-        
-        recordPulseRing.classList.remove('recording');
-        recordPulseRingSecondary.classList.remove('recording');
-        recordMicIcon.classList.remove('recording');
-        recordTimer.classList.remove('recording');
-        recordWaveform.classList.remove('active');
-          recordTimer.textContent = '00:00';
-    }
     </script>
 </body>
+
 </html>

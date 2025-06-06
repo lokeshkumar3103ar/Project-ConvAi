@@ -4,7 +4,7 @@
  * 
  * This script handles the user interface for the ConvAi-IntroEval system,
  * including file uploads, streaming API responses, and results display.
- */
+*/
 
 // Initialize global app state and handlers
 window.appState = {
