@@ -1,0 +1,27 @@
+{
+  "profile_rating": "7.2",
+  "grading_explanation": {
+    "completeness": "2.67/3 – 25 of 35 fields filled (71% completion).",
+    "relevance": "1.0/2 – Relevant skills mentioned but significant gaps, such as lack of experience in web development or specific machine learning techniques relevant to a data science role.",
+    "projects_or_internships": "1.5/3 – 1 project mentioned with decent detail (technology + problem/solution mentioned), but no clear solution or outcomes for the other project.",
+    "extra_achievements": "2.0/2 – Multiple significant achievements like winning competitions and an internship at Kothan Solutions."
+  },
+  "grading_debug": {
+    "completeness_score": "2.67",
+    "relevance_score": "1.0",
+    "projects_score": "1.5",
+    "achievements_score": "2.0",
+    "calculated_sum": "7.2",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "7.2"
+    },
+    "notes": "The candidate has strong educational background and achievements but lacks relevant work experience in the desired field."
+  },
+  "evaluated_file": "c:\\Users\\lokes\\Downloads\\KAMPYUTER\\College Projects\\Project ConvAi\\Project-ConvAi\\ConvAi-IntroEval\\filled_forms\\form_20250605_140443.json",
+  "evaluation_timestamp": "2025-06-05T14:04:57.555093",
+  "save_status": {
+    "success": true,
+    "file_path": "c:\\Users\\lokes\\Downloads\\KAMPYUTER\\College Projects\\Project ConvAi\\Project-ConvAi\\ConvAi-IntroEval\\ratings\\form_20250605_140443_profile_rating.json"
+  }
+}

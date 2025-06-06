@@ -1,0 +1,33 @@
+{
+  "intro_rating": "8.5",
+  "grading_explanation": {
+    "grammar_and_clarity": "2.5/3.0 – The candidate has mostly fluent and clear sentences throughout, but occasional awkward phrasing such as 'Applications at IIT Madras' can be improved.",
+    "structure": "1.5/1.5 – Excellent logical flow, easy to follow.",
+    "info_coverage": "3.0/3.5 – The candidate covers all key information areas, but the connection between academic certifications and their practical application could be made more explicit.",
+    "relevance_to_role": "1.5/2.0 – The candidate mentions a desire for roles in AI, ML, data science, prompt engineering, or research collaborations, which is relevant to their field, but the connection to specific job roles could be stronger."
+  },
+  "insights": [
+    "Tone: Confident and enthusiastic",
+    "Style: Structured and informative",
+    "Fluency: Smooth pacing"
+  ],
+  "feedback": [
+    "Specific suggestion for delivery improvement: Consider using more concise phrasing to improve clarity and readability.",
+    "Specific suggestion for content enhancement: Clearly connect academic certifications to specific projects or job roles to demonstrate practical application.",
+    "Specific suggestion for structure improvement: Organize the introduction so that key information is presented in a logical order, with a focus on professional experiences first followed by educational background."
+  ],
+  "grading_debug": {
+    "grammar_clarity_score": "2.5",
+    "structure_score": "1.5",
+    "info_coverage_score": 3.0,
+    "relevance_score": "1.5",
+    "calculated_sum": "8.5",
+    "sum_check": {
+      "intro_expected": 10.0,
+      "intro_reported": "8.5"
+    },
+    "notes": "The candidate presents a strong professional profile with a clear focus on their field of expertise. Improvements can be made in the delivery, structure, and connection to specific job roles."
+  },
+  "evaluated_file": "c:\\Users\\lokes\\Downloads\\KAMPYUTER\\College Projects\\Project ConvAi\\Project-ConvAi\\ConvAi-IntroEval\\transcription\\20250605_140013_my_intro_transcription_turbo.txt",
+  "evaluation_timestamp": "2025-06-05T14:01:43.923023"
+}

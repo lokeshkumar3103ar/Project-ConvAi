@@ -1,0 +1,23 @@
+{
+  "profile_rating": "9.5",
+  "grading_explanation": {
+    "completeness": "3.0/3 – 100% completion.",
+    "relevance": "2.0/2 – Strong alignment: Skills (Python, machine learning, deep learning) and experiences (internship at COTHON Solutions, first place at AI Genesis and INNOTHON 2025) directly match the target role of entry-level roles in AI, ML, data science, prompt engineering.",
+    "projects_or_internships": "2.5/3 – Very good: Mentioned multiple projects (ConvAi, Project 11, Face and QR attendance) with decent detail (technologies + problem/solution mentioned).",
+    "extra_achievements": "2.0/2 – Outstanding: Multiple significant achievements (GitHub Foundations, Data Literacy from Datacamp, Chad GPT (Intermediate), Google Data Analytics specialization, Excellence in Academia Award, ranked second at Hindustan University for academic performance)."
+  },
+  "grading_debug": {
+    "completeness_score": "3.0",
+    "relevance_score": "2.0",
+    "projects_score": "2.5",
+    "achievements_score": "2.0",
+    "calculated_sum": "9.5",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "9.5"
+    },
+    "notes": "[The candidate's profile is strong and relevant for the target role, with a good mix of academic achievements, projects, and relevant skills. The missing field is Age.]"
+  },
+  "evaluated_file": "c:\\Users\\lokes\\Downloads\\KAMPYUTER\\College Projects\\Project ConvAi\\Project-ConvAi\\ConvAi-IntroEval\\filled_forms\\form_20250605_140107.json",
+  "evaluation_timestamp": "2025-06-05T14:01:23.059968"
+}
