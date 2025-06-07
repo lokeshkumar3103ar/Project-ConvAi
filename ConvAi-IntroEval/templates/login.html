@@ -32,6 +32,14 @@
           <input id="login-username" type="text" name="username" required />
           <label for="login-password">Password</label>
           <input id="login-password" type="password" name="password" required />
+          <div class="login-type">
+            <label>
+              <input type="radio" name="loginType" value="student" checked /> Student
+            </label>
+            <label>
+              <input type="radio" name="loginType" value="teacher" /> Teacher
+            </label>
+          </div>
           <button type="submit">LOG IN</button>
         </form>
         <div id="loginResult" class="form-message"></div>
@@ -43,9 +51,12 @@
           <input id="register-username" type="text" name="username" required />
           <label for="register-password">Password</label>
           <input id="register-password" type="password" name="password" required />
-          <button type="submit">REGISTER</button>
+          <label for="register-roll">Roll Number</label>
+          <input id="register-roll" type="text" name="roll_number" required placeholder="Enter your Roll Number" />
+          <button type="submit">REGISTER AS STUDENT</button>
         </form>
         <div id="registerResult" class="form-message"></div>
+        <p class="info-text">Note: Teachers need to contact administrators for registration.</p>
       </div>
       <div id="forgotSection" class="form-section">
         <!-- <button class="back-link" onclick="showSection('loginSection')">&larr; Back to Login</button> -->

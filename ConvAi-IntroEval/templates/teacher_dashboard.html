@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - ConvAi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Khand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Root Variables */
+        :root {
+            --primary-color: #1a1a1a;
+            --secondary-color: #e74c3c;
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --border-color: #333;
+            --sidebar-width: 300px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --hover-color: #2c3e50;
+        }
+
+        [data-theme="light"] {
+            --primary-color: #ffffff;
+            --secondary-color: #e74c3c;
+            --background-color: #f5f6fa;
+            --text-color: #2c3e50;
+            --border-color: #dcdde1;
+            --hover-color: #f0f2f5;
+        }
+
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: default !important;
+            user-select: none !important;
+            font-family: 'Khand', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        /* Left Taskbar */
+        .left-taskbar {
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60px;
+            background: var(--primary-color);
+            border-radius: 0 10px 10px 0;
+            padding: 15px 0;
+            box-shadow: var(--box-shadow);
+            z-index: 1000;
+        }
+
+        .theme-toggle-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+        }
+
+        .theme-toggle-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.2rem;
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer !important;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle-btn:hover {
+            background: var(--hover-color);
+        }
+
+        /* Search Button and Modal */
+        .search-btn {
+            position: fixed;
+            right: 30px;
+            bottom: 30px;
+            background: var(--secondary-color);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            font-size: 24px;
+            cursor: pointer !important;
+            box-shadow: var(--box-shadow);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--primary-color);
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer !important;
+        }
+
+        /* Dashboard Layout */
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--primary-color);
+            padding: 2rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: var(--box-shadow);
+            margin-left: 60px;
+        }
+
+        .sidebar h2 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--secondary-color);
+            letter-spacing: 1px;
+        }
+
+        .student-item {
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer !important;
+        }
+
+        .student-item:hover {
+            background: var(--secondary-color);
+            transform: translateX(5px);
+        }
+
+        .student-item.active {
+            background: var(--secondary-color);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            margin-left: calc(var(--sidebar-width) + 60px);
+            min-height: 100vh;
+            background: var(--background-color);
+            transition: all 0.3s ease;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+            cursor: pointer !important;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            background: var(--primary-color);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            cursor: text !important;
+        }
+
+        .form-group input:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.1);
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer !important;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--box-shadow);
+        }
+
+        /* Student Details Section */
+        .student-details {
+            background: var(--primary-color);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--box-shadow);
+            margin-top: 2rem;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            background: var(--primary-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .alert-success {
+            border-color: #28a745;
+            color: #28a745;
+        }
+
+        .alert-error {
+            border-color: var(--secondary-color);
+            color: var(--secondary-color);
+        }
+
+        .alert-info {
+            border-color: #17a2b8;
+            color: #17a2b8;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Left Taskbar -->
+    <div class="left-taskbar">
+        <div class="theme-toggle-container">
+            <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+                <i class="fas fa-moon" id="theme-icon"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Search Button -->
+    <button class="search-btn" onclick="openSearchModal()">
+        <i class="fas fa-search"></i>
+    </button>
+
+    <!-- Search Modal -->
+    <div id="searchModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeSearchModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 style="margin-bottom: 1.5rem; font-family: 'Oswald', sans-serif;">Search Student</h3>
+            <form id="studentSearchForm">
+                <div class="form-group">
+                    <label for="studentRoll">Student Roll Number</label>
+                    <input type="text" id="studentRoll" name="studentRoll" required
+                        placeholder="Enter student roll number">
+                </div>
+                <button type="submit" class="btn btn-primary">Search Student</button>
+            </form>
+            <div id="searchResult"></div>
+            <div id="assignButton" style="display: none; margin-top: 1rem;">
+                <button class="btn btn-primary" onclick="assignStudent()">Add Student to My List</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard">
+        <div class="sidebar">
+            <h2>Your Students</h2>
+            <div id="studentList" class="student-list">
+                <div class="student-item loading">Loading students...</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div id="studentDetails" style="display: none;" class="student-details"></div>
+        </div>
+    </div>
+
+    <script>
+        const teacherUsername = '{{ teacher_username }}';
+        let currentStudent = null;
+
+        // Theme Toggle
+        document.addEventListener('DOMContentLoaded', function () {
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-icon');
+            const html = document.documentElement;
+
+            // Check for saved theme preference or default to dark
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            html.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+
+            themeToggle.addEventListener('click', function () {
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+                html.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+
+            function updateThemeIcon(theme) {
+                if (theme === 'dark') {
+                    themeIcon.className = 'fas fa-sun'; // Show sun icon in dark mode
+                } else {
+                    themeIcon.className = 'fas fa-moon'; // Show moon icon in light mode
+                }
+            }
+        });
+
+        // Modal Functions
+        function openSearchModal() {
+            document.getElementById('searchModal').style.display = 'block';
+            document.getElementById('studentRoll').focus();
+        }
+
+        function closeSearchModal() {
+            document.getElementById('searchModal').style.display = 'none';
+            document.getElementById('studentRoll').value = '';
+            document.getElementById('searchResult').innerHTML = '';
+            document.getElementById('assignButton').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function (event) {
+            const modal = document.getElementById('searchModal');
+            if (event.target === modal) {
+                closeSearchModal();
+            }
+        }
+
+        async function loadStudents() {
+            try {
+                const studentList = document.getElementById('studentList');
+                studentList.innerHTML = '<div class="student-item loading">Loading students...</div>';
+
+                const response = await fetch(`/api/teacher/students/${teacherUsername}`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                studentList.innerHTML = '';
+
+                if (!data.students || data.students.length === 0) {
+                    studentList.innerHTML = '<div class="student-item">No students assigned yet</div>';
+                    return;
+                }
+
+                data.students.forEach(student => {
+                    const div = document.createElement('div');
+                    div.className = 'student-item';
+                    div.innerHTML = `
+                        <div class="student-name">${student.username}</div>
+                        <div class="student-roll">${student.roll_number}</div>
+                    `;
+                    div.onclick = () => showStudentRatings(student.roll_number, student.username);
+                    studentList.appendChild(div);
+                });
+            } catch (error) {
+                console.error('Error loading students:', error);
+                document.getElementById('studentList').innerHTML =
+                    `<div class="student-item error">Error loading students: ${error.message}</div>`;
+            }
+        }
+
+        async function showStudentRatings(rollNumber, username) {
+            try {
+                // Highlight active student
+                document.querySelectorAll('.student-item').forEach(item => {
+                    item.classList.remove('active');
+                    if (item.querySelector('.student-roll')?.textContent === rollNumber) {
+                        item.classList.add('active');
+                    }
+                });
+
+                const response = await fetch(`/api/student/ratings/${rollNumber}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch student ratings');
+                }
+
+                const data = await response.json();
+                const studentDetails = document.getElementById('studentDetails');
+
+                studentDetails.style.display = 'block';
+                studentDetails.innerHTML = `
+                    <h3>${username}'s Ratings</h3>
+                    <div id="ratingsContent">
+                        ${data.ratings.length === 0 ?
+                        '<div class="alert alert-info">No ratings available for this student yet</div>' :
+                        data.ratings.map(rating => `
+                                <div class="student-info">
+                                    <div class="info-item">
+                                        <strong>Type:</strong> ${rating.data.type || 'Evaluation'}
+                                    </div>
+                                    <div class="info-item">
+                                        <strong>Score:</strong> ${rating.data.score || 'N/A'}
+                                    </div>
+                                    <div class="info-item">
+                                        <strong>Date:</strong> ${new Date(rating.data.timestamp).toLocaleDateString()}
+                                    </div>
+                                    ${rating.data.feedback ? `
+                                        <div class="info-item">
+                                            <strong>Feedback:</strong> ${rating.data.feedback}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `).join('')
+                    }
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading student details:', error);
+                document.getElementById('studentDetails').innerHTML = `
+                    <div class="alert alert-error">
+                        Error loading student details: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        document.getElementById('studentSearchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const rollNumber = document.getElementById('studentRoll').value;
+            const searchResult = document.getElementById('searchResult');
+            const assignButton = document.getElementById('assignButton');
+
+            try {
+                const response = await fetch(`/api/teacher/search_student/${rollNumber}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    searchResult.innerHTML = `
+                        <div class="alert alert-success">
+                            <div class="student-info">
+                                <div class="info-item">
+                                    <strong>Student Name:</strong> ${data.username}
+                                </div>
+                                <div class="info-item">
+                                    <strong>Roll Number:</strong> ${data.roll_number}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    currentStudent = data;
+                    assignButton.style.display = 'block';
+                } else {
+                    searchResult.innerHTML = `
+                        <div class="alert alert-error">
+                            Student not found
+                        </div>
+                    `;
+                    assignButton.style.display = 'none';
+                }
+            } catch (error) {
+                searchResult.innerHTML = `
+                    <div class="alert alert-error">
+                        Error searching for student: ${error.message}
+                    </div>
+                `;
+                assignButton.style.display = 'none';
+            }
+        });
+
+        async function assignStudent() {
+            if (!currentStudent) return;
+
+            const assignButton = document.getElementById('assignButton').querySelector('button');
+            const searchResult = document.getElementById('searchResult');
+
+            try {
+                assignButton.disabled = true;
+                assignButton.textContent = 'Assigning...';
+
+                const response = await fetch('/api/teacher/assign_student', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        student_roll: currentStudent.roll_number,
+                        teacher_username: teacherUsername
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    searchResult.innerHTML = `
+                        <div class="alert alert-success">
+                            ${result.message}
+                        </div>
+                    `;
+                    document.getElementById('studentRoll').value = '';
+                    document.getElementById('assignButton').style.display = 'none';
+                    loadStudents();
+                } else {
+                    throw new Error(result.detail || 'Failed to assign student');
+                }
+            } catch (error) {
+                searchResult.innerHTML = `
+                    <div class="alert alert-error">
+                        ${error.message}
+                    </div>
+                `;
+            } finally {
+                assignButton.disabled = false;
+                assignButton.textContent = 'Add Student to My List';
+            }
+        }
+
+        // Initialize
+        loadStudents();
+    </script>
+</body>
+
+</html>

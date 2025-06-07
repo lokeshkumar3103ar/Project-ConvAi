@@ -35,20 +35,24 @@ from fastapi import (
 )
 
 #login 
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from argon2 import PasswordHasher #argon2 for password hashing
+from auth import get_current_teacher, create_access_token
 from argon2.exceptions import VerifyMismatchError
 
 import secrets
 from datetime import datetime, timedelta
 
-from models import User, SessionLocal , PasswordResetToken #database models
+from models import User, Teacher, TeacherStudentMap, Note, SessionLocal, PasswordResetToken #database models
 
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from sse_starlette.sse import EventSourceResponse as StreamingResponse
+
+# Import teacher routes
+from teacher_routes import router as teacher_router
 
 #db setup
 def get_db():
@@ -123,6 +127,9 @@ app.add_middleware(
 # Mount static files
 if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
+# Include teacher routes
+app.include_router(teacher_router)
 
 # ==================== UTILITY FUNCTIONS ====================
 
@@ -673,7 +680,7 @@ async def check_rating_status(form_id: str = None):
                 except Exception:
                     continue
         
-        # Get the most recent files if multiple are found
+        # Get the most recent files if profile or intro files are found
         if profile_files:
             profile_files = [max(profile_files, key=lambda x: x.stat().st_mtime)]
         
@@ -733,14 +740,44 @@ async def get_login():
 
 @app.post("/login")
 async def login(username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
+    # First try teacher login
+    teacher = db.query(Teacher).filter(Teacher.username == username).first()
+    if teacher:
+        try:
+            ph.verify(teacher.hashed_password, password)
+            access_token = create_access_token(data={"sub": teacher.username})
+            response = RedirectResponse(url="/teacher/dashboard", status_code=status.HTTP_303_SEE_OTHER)
+            response.set_cookie(
+                key="access_token",
+                value=f"Bearer {access_token}",
+                httponly=True,
+                secure=False,  # Set to False for local development
+                samesite='lax',
+                max_age=1800  # 30 minutes
+            )
+            return response
+        except VerifyMismatchError:
+            raise HTTPException(status_code=401, detail="Invalid username or password")
+    
+    # If not a teacher, try student login
     user = db.query(User).filter(User.username == username).first()
     if not user:
         raise HTTPException(status_code=401, detail="Invalid username or password")
     try:
-        ph.verify(user.hashed_password, password)  # Use argon2 to verify
+        ph.verify(user.hashed_password, password)
+        access_token = create_access_token(data={"sub": user.username})
+        response = RedirectResponse(url="/index", status_code=status.HTTP_303_SEE_OTHER)
+        response.set_cookie(
+            key="access_token",
+            value=f"Bearer {access_token}",
+            httponly=True,
+            secure=False,  # Set to False for local development
+            samesite='lax',
+            max_age=1800  # 30 minutes
+        )
+        return response
     except VerifyMismatchError:
         raise HTTPException(status_code=401, detail="Invalid username or password")
-    return {"message": "Login successful", "username": username}
 
     
 @app.get("/index", response_class=HTMLResponse)
@@ -753,12 +790,27 @@ async def get_index():
 
 
 @app.post("/register")
-async def register(username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
+async def register(
+    username: str = Form(...),
+    password: str = Form(...),
+    roll_number: str = Form(None),
+    db: Session = Depends(get_db)
+):
     user = db.query(User).filter(User.username == username).first()
     if user:
         raise HTTPException(status_code=400, detail="Username already registered")
+    
+    if roll_number:
+        existing_roll = db.query(User).filter(User.roll_number == roll_number).first()
+        if existing_roll:
+            raise HTTPException(status_code=400, detail="Roll number already registered")
+    
     hashed_password = ph.hash(password)
-    new_user = User(username=username, hashed_password=hashed_password)
+    new_user = User(
+        username=username,
+        hashed_password=hashed_password,
+        roll_number=roll_number
+    )
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -799,6 +851,107 @@ async def get_reset_password():
     html_path = TEMPLATES_DIR / "reset_password.html"
     with open(html_path, "r", encoding="utf-8") as html_file:
         return html_file.read()
+
+# ==================== TEACHER AUTHENTICATION ====================
+
+@app.post("/teacher/login")
+async def teacher_login(username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
+    teacher = db.query(Teacher).filter(Teacher.username == username).first()
+    if not teacher:
+        raise HTTPException(status_code=400, detail="Teacher not found")
+    try:
+        ph.verify(teacher.hashed_password, password)
+    except VerifyMismatchError:
+        raise HTTPException(status_code=400, detail="Incorrect password")
+    
+    access_token = create_access_token(data={"sub": teacher.username})
+    response = RedirectResponse(url="/teacher/dashboard", status_code=status.HTTP_303_SEE_OTHER)
+    response.set_cookie(
+        key="access_token",
+        value=f"Bearer {access_token}",
+        httponly=True,
+        secure=False,  # Set to False for local development
+        samesite='lax',
+        max_age=1800  # 30 minutes
+    )
+    return response
+
+@app.get("/teacher/dashboard", response_class=HTMLResponse)
+async def get_teacher_dashboard(request: Request, current_teacher: dict = Depends(get_current_teacher)):
+    html_path = TEMPLATES_DIR / "teacher_dashboard.html"
+    with open(html_path, "r", encoding="utf-8") as html_file:
+        return html_file.read()
+
+@app.get("/api/auth/me")
+async def get_current_user_info(request: Request, current_teacher: dict = Depends(get_current_teacher)):
+    return current_teacher
+
+# ==================== TEACHER MANAGEMENT ====================
+
+@app.post("/teacher/register")
+async def register_teacher(
+    username: str = Form(...),
+    password: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    teacher = db.query(Teacher).filter(Teacher.username == username).first()
+    if teacher:
+        raise HTTPException(status_code=400, detail="Username already registered")
+    hashed_password = ph.hash(password)
+    new_teacher = Teacher(username=username, hashed_password=hashed_password)
+    db.add(new_teacher)
+    db.commit()
+    db.refresh(new_teacher)
+    return {"message": "Teacher registered successfully"}
+
+@app.post("/teacher/assign-student")
+async def assign_student(
+    request: Request,
+    teacher_username: str = Form(...),
+    student_roll: str = Form(...),
+    db: Session = Depends(get_db),
+    current_teacher: dict = Depends(get_current_teacher)
+):
+    # Only allow teachers to assign students to themselves
+    if current_teacher["username"] != teacher_username:
+        raise HTTPException(status_code=403, detail="Not authorized to assign students to other teachers")
+    
+    # Check if student exists
+    student = db.query(User).filter(User.roll_number == student_roll).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+    
+    # Check if mapping already exists
+    existing_mapping = db.query(TeacherStudentMap).filter(
+        TeacherStudentMap.teacher_username == teacher_username,
+        TeacherStudentMap.student_roll == student_roll
+    ).first()
+    
+    if existing_mapping:
+        raise HTTPException(status_code=400, detail="Student already assigned to this teacher")
+    
+    # Create new mapping
+    new_mapping = TeacherStudentMap(
+        teacher_username=teacher_username,
+        student_roll=student_roll
+    )
+    db.add(new_mapping)
+    db.commit()
+    
+    return {"message": "Student assigned successfully"}
+
+# Update register endpoint to include roll number for students
+@app.post("/register")
+async def register(username: str = Form(...), password: str = Form(...), roll_number: str = Form(...), db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.username == username).first()
+    if user:
+        raise HTTPException(status_code=400, detail="Username already registered")
+    hashed_password = ph.hash(password)
+    new_user = User(username=username, hashed_password=hashed_password, roll_number=roll_number)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return {"message": "User registered successfully"}
 
 # ==================== MAIN ENTRY POINT ====================
 

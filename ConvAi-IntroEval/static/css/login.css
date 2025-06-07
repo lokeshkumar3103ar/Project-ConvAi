@@ -202,7 +202,7 @@ html, body {
       border: 3px solid var(--content-box-border);
       border-radius: 20px;
       width: 360px;
-      height: 400px;
+      height: fit-content;
       box-shadow: var(--box-shadow);
       position: relative;
       display: flex;
@@ -279,10 +279,25 @@ html, body {
       box-sizing: border-box;
       outline: none;
       transition: border-color 0.2s;
-    }
-    input[type="text"]:focus, input[type="password"]:focus {
+    }    input[type="text"]:focus, input[type="password"]:focus {
       border-color: var(--primary-color);
-    }    button[type="submit"] {
+    }
+    .login-type, .register-type {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .login-type label, .register-type label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+    }
+    input[type="radio"] {
+      cursor: pointer;
+    }
+    button[type="submit"] {
       width: 100%;
       padding: 12px 0;
       background: var(--button-primary-bg);
@@ -296,11 +311,19 @@ html, body {
       cursor: pointer;
       margin-top: 25px;
       transition: background 0.2s;
-    }
-    button[type="submit"]:hover {
+    }    button[type="submit"]:hover {
       background: var(--button-secondary-bg);
       color: var(--button-secondary-color);
-    }    .form-message {
+    }
+    .info-text {
+      font-size: 0.9em;
+      color: var(--text-primary);
+      text-align: center;
+      margin-top: 20px;
+      font-style: italic;
+      opacity: 0.8;
+    }
+    .form-message {
       margin-top: 10px;
       color: var(--danger-color);
       text-align: center;
