@@ -823,11 +823,7 @@ body {
 .main-content-box .card {
     border: 2px solid var(--outer-frame-border);
     box-shadow: none;
-    background: transparent;
-}
-
-.main-content-box .card-body {
-    padding: 1rem 0;
+    background: var(--card-bg);
 }
 
 /* Remove header and footer borders inside main-content-box */
@@ -841,6 +837,7 @@ body {
     border-radius: var(--border-radius);
     padding: 15px;
     border: 1px solid var(--card-border);
+    box-shadow: var(--box-shadow);
 }
 
 header, .card, .login-box, .outer-frame {
