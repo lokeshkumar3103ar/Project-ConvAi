@@ -200,37 +200,16 @@ def evaluate_intro_rating_sync(transcript_path=None) -> dict:
                 if rating_data.get("status") == "error":
                     print(f"❌ Error processing LLM response: {rating_data.get('message')}")
                     # Return the error structure from fix_json_and_rating_calculation
-                    return rating_data
-
-                # Add metadata about the evaluated file
+                    return rating_data                # Add metadata about the evaluated file
                 rating_data["evaluated_file"] = str(file_path)
                 rating_data["evaluation_timestamp"] = datetime.datetime.now().isoformat()
                 
-                # Save the rating to a file
-                # Assuming this script is in app/llm/, so parent.parent is ConvAi-IntroEval
-                ratings_dir = Path(__file__).parent.parent.parent / "ratings"
-                # Ensure ratings directory exists
-                ratings_dir.mkdir(parents=True, exist_ok=True)
-                base_filename = Path(file_path).stem
-                rating_filename = f"{base_filename}_intro_rating.json"
-                rating_file_path = ratings_dir / rating_filename
+                # NOTE: File saving is now handled by the background process in main.py
+                # This eliminates duplicate file saving and ensures proper file organization
+                print(f"✅ Intro rating evaluation completed for {file_path}")
+                print("📁 File will be saved by background process with proper organization")
                 
-                # Use the utility function for saving
-                success, message = save_rating_to_file(rating_data, str(rating_file_path), "intro")
-                if success:
-                    print(f"✅ Intro rating evaluation completed and saved to {rating_file_path}")
-                    # Add save result to the rating data
-                    rating_data["save_status"] = {
-                        "success": True,
-                        "file_path": str(rating_file_path)
-                    }
-                else:
-                    print(f"❌ Error: Could not save intro rating to file: {message}")
-                    # Add save error to the rating data
-                    rating_data["save_status"] = {
-                        "success": False,
-                        "error": message
-                    }
+                return rating_data
                 
                 return rating_data
             
@@ -346,54 +325,23 @@ async def evaluate_intro_rating_stream(transcript_path=None):
                     error_msg = f"Error processing LLM response: {rating_data.get('message')}"
                     print(f"❌ [CONSOLE] {error_msg}")
                     yield f"data: {json.dumps({'status': 'error', 'message': error_msg, 'raw_response': rating_data.get('raw_response', rating_text)})}\n\n"
-                    return
-
-                # Add metadata about the evaluated file
+                    return                # Add metadata about the evaluated file
                 rating_data["evaluated_file"] = str(file_path)
                 rating_data["evaluation_timestamp"] = datetime.datetime.now().isoformat()
                 
-                # Save the rating to a file
-                # Assuming this script is in app/llm/, so parent.parent is ConvAi-IntroEval
-                ratings_dir = Path(__file__).parent.parent.parent / "ratings"
-                # Ensure ratings directory exists
-                ratings_dir.mkdir(parents=True, exist_ok=True)
-                base_filename = Path(file_path).stem
-                rating_filename = f"{base_filename}_intro_rating.json"
-                rating_file_path = ratings_dir / rating_filename
-                
-                # Tell the client we're saving the rating
-                yield f"data: {json.dumps({'status': 'progress', 'message': 'Saving intro rating...'})}\n\n"
+                # NOTE: File saving is now handled by the background process in main.py
+                # This eliminates duplicate file saving and ensures proper file organization
+                yield f"data: {json.dumps({'status': 'progress', 'message': 'Intro rating evaluation completed'})}\n\n"
                 await asyncio.sleep(0.1)
                 
-                # Save the rating to a file using the utility function
-                success, message = save_rating_to_file(rating_data, str(rating_file_path), "intro")
-                
-                if success:
-                    print(f"✅ [CONSOLE] Saved intro rating to: {rating_file_path}")
-                    # Add save status to the rating data
-                    rating_data["save_status"] = {
-                        "success": True,
-                        "file_path": str(rating_file_path)
-                    }
-                    
-                    # Send the final rating data to the client
-                    completion_data = {
-                        "status": "complete",
-                        "file": str(rating_file_path),
-                        "rating": rating_data.get("intro_rating"), # Use .get for safety
-                        "data": rating_data,
-                        "message": "Intro rating evaluation completed successfully"
-                    }
-                    yield f"data: {json.dumps(completion_data)}\n\n"
-                else:
-                    error_msg = f"Could not save intro rating to file: {message}"
-                    print(f"❌ [CONSOLE] {error_msg}")
-                    # Add save error status to the rating data
-                    rating_data["save_status"] = {
-                        "success": False,
-                        "error": message
-                    }
-                    yield f"data: {json.dumps({'status': 'error', 'message': error_msg})}\n\n"
+                # Send the final rating data to the client
+                completion_data = {
+                    "status": "complete",
+                    "rating": rating_data.get("intro_rating"),
+                    "data": rating_data,
+                    "message": "Intro rating evaluation completed successfully. File will be saved by background process."
+                }
+                yield f"data: {json.dumps(completion_data)}\n\n"
             
             except json.JSONDecodeError as e:
                 error_msg = f"Error parsing LLM response as JSON: {str(e)}"

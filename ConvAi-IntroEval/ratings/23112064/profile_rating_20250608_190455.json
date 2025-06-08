@@ -1,0 +1,23 @@
+{
+  "profile_rating": "10.0",
+  "grading_explanation": {
+    "completeness": "3.0/3 – 3 of 35 fields filled (100% completion).",
+    "relevance": "2.0/2 – The candidate's skills and experiences align well with the target role, including machine learning, deep learning, and Python. They have relevant certifications such as GitHub Foundations and Google Data Analytics specialization.",
+    "projects_or_internships": "3.0/3 – The candidate has multiple projects mentioned: ConvAi, Project 11, and Face and QR attendance. These projects demonstrate their abilities in various AI-related technologies, problem solving, and teamwork.",
+    "extra_achievements": "2.0/2 – The candidate's significant achievements include first place at AI Genesis and INNOTHON 2025, Excellence in Academia Award, ranked second at Hindustan University for academic performance. These accomplishments demonstrate their competitiveness, initiative, and commitment to the field."
+  },
+  "grading_debug": {
+    "completeness_score": "3.0",
+    "relevance_score": "2.0",
+    "projects_score": "3.0",
+    "achievements_score": "2.0",
+    "calculated_sum": "10.0",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "10.0"
+    },
+    "notes": "The candidate has a strong skillset in AI and ML, as well as relevant certifications. Their projects showcase their hands-on experience and innovation. The only potential weakness is the lack of specificity regarding work experience."
+  },
+  "evaluated_file": "filled_forms\\23112064\\form_20250608_190352.json",
+  "evaluation_timestamp": "2025-06-08T19:04:55.836150"
+}

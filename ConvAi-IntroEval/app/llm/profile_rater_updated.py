@@ -235,37 +235,16 @@ def evaluate_profile_rating(form_path=None) -> dict:
                     rating_data["grading_debug"]["calculated_sum"] = calculated_sum_by_python
                     if "sum_check" not in rating_data["grading_debug"]: rating_data["grading_debug"]["sum_check"] = {}
                     rating_data["grading_debug"]["sum_check"]["profile_reported"] = calculated_sum_by_python
-                    rating_data["grading_debug"]["sum_check"]["profile_expected"] = 10.0
-
-
-                # ---- END: Fix and verify profile rating calculation ----
+                    rating_data["grading_debug"]["sum_check"]["profile_expected"] = 10.0                # ---- END: Fix and verify profile rating calculation ----
+                
                 # Add metadata about the evaluated file
                 rating_data["evaluated_file"] = str(file_path)
                 rating_data["evaluation_timestamp"] = datetime.datetime.now().isoformat()
                 
-                # Save the rating to a file
-                # Assuming this script is in app/llm/, so parent.parent is ConvAi-IntroEval
-                ratings_dir = Path(__file__).parent.parent.parent / "ratings"
-                # Ensure ratings directory exists
-                ratings_dir.mkdir(parents=True, exist_ok=True)
-                base_filename = Path(file_path).stem
-                rating_filename = f"{base_filename}_profile_rating.json"
-                rating_file_path = ratings_dir / rating_filename                # Use the utility function for saving
-                success, message = save_rating_to_file(rating_data, str(rating_file_path), "profile")
-                if success:
-                    print(f"✅ Profile rating evaluation completed and saved to {rating_file_path}")
-                    # Add save result to the rating data
-                    rating_data["save_status"] = {
-                        "success": True,
-                        "file_path": str(rating_file_path)
-                    }
-                else:
-                    print(f"❌ Error: Could not save profile rating to file: {message}")
-                    # Add save error to the rating data
-                    rating_data["save_status"] = {
-                        "success": False,
-                        "error": message
-                    }
+                # NOTE: File saving is now handled by the background process in main.py
+                # This eliminates duplicate file saving and ensures proper file organization
+                print(f"✅ Profile rating evaluation completed for {file_path}")
+                print("📁 File will be saved by background process with proper organization")
                 
                 # Print the final profile rating for debugging
                 print(f"Profile rating result: {rating_data}")
@@ -396,57 +375,23 @@ async def evaluate_profile_rating_stream(form_path=None):
                     rating_data["grading_debug"]["sum_check"]["profile_reported"] = calculated_sum_by_python
                     rating_data["grading_debug"]["sum_check"]["profile_expected"] = 10.0
                 # ---- END: Fix and verify profile rating calculation ----
-                
-                # Add metadata about the evaluated file
+                  # Add metadata about the evaluated file
                 rating_data["evaluated_file"] = str(file_path)
                 rating_data["evaluation_timestamp"] = datetime.datetime.now().isoformat()
                 
-                # Create the ratings directory if it doesn't exist
-                # Assuming this script is in app/llm/, so parent.parent is ConvAi-IntroEval
-                ratings_dir = Path(__file__).parent.parent.parent / "ratings"
-                # Ensure ratings directory exists
-                ratings_dir.mkdir(parents=True, exist_ok=True)
-                
-                # Generate a unique filename based on the form file
-                base_filename = Path(file_path).stem
-                rating_filename = f"{base_filename}_profile_rating.json"
-                rating_file_path = ratings_dir / rating_filename
-                
-                # Tell the client we're saving the rating
-                yield f"data: {json.dumps({'status': 'progress', 'message': 'Saving profile rating...'})}\\n\\n"
+                # NOTE: File saving is now handled by the background process in main.py
+                # This eliminates duplicate file saving and ensures proper file organization
+                yield f"data: {json.dumps({'status': 'progress', 'message': 'Profile rating evaluation completed'})}\\n\\n"
                 await asyncio.sleep(0.1)
                 
-                # Save the rating to a file using the utility function
-                success, message = save_rating_to_file(rating_data, str(rating_file_path), "profile")
-                
-                if success:
-                    print(f"✅ [CONSOLE] Saved profile rating to: {rating_file_path}")
-                    # Add save status to the rating data
-                    rating_data["save_status"] = {
-                        "success": True,
-                        "file_path": str(rating_file_path)
-                    }
-                    
-                    # Send the final rating data to the client
-                    completion_data = {
-                        "status": "complete",
-                        "file": str(rating_file_path),
-                        "rating": rating_data.get("profile_rating"), # Use .get for safety
-                        "data": rating_data,
-                        "message": "Profile rating evaluation completed successfully"
-                    }
-                    yield f"data: {json.dumps(completion_data)}\\n\\n"
-                else:
-                    error_msg = f"Could not save profile rating to file: {message}"
-                    print(f"❌ [CONSOLE] {error_msg}")
-                    
-                    # Add save error status to the rating data
-                    rating_data["save_status"] = {
-                        "success": False,
-                        "error": message
-                    }
-                    
-                    yield f"data: {json.dumps({'status': 'error', 'message': error_msg})}\\n\\n"
+                # Send the final rating data to the client
+                completion_data = {
+                    "status": "complete",
+                    "rating": rating_data.get("profile_rating"),
+                    "data": rating_data,
+                    "message": "Profile rating evaluation completed successfully. File will be saved by background process."
+                }
+                yield f"data: {json.dumps(completion_data)}\\n\\n"
             
             except Exception as process_error: # Catch any other unexpected error
                 error_msg = f"Error processing profile rating (stream): {str(process_error)}"

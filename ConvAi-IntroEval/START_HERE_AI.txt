@@ -1,0 +1,16 @@
+🤖 AI ASSISTANT - READ THIS FIRST! 🤖
+
+When starting any new conversation with AI:
+
+1. FIRST: Open and read RTXlogs/AI_CONTEXT_PROTOCOL.md
+2. THEN: Check the latest RTX log file in RTXlogs/
+3. FOLLOW: The RTX logging protocol (log before coding)
+
+Quick Start Commands:
+- "Read RTXlogs/AI_CONTEXT_PROTOCOL.md to understand the project context"
+- "RTX time" (to start logging)
+- "What's the current project status?"
+
+Project: ConvAi-IntroEval User Management System
+Master: Lokesh Kumar A R
+Last Updated: June 8, 2025
