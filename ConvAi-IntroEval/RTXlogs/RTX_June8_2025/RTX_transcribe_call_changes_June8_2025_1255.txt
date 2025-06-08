@@ -1,0 +1,22 @@
+"""
+RTX Log - main.py transcribe_file call update - June 8, 2025 12:55
+
+Modified transcribe_file call in main.py to pass the roll_number parameter.
+
+CHANGE DETAILS:
+--------------
+Modified code: Added roll_number parameter to transcribe_file call
+
+BEFORE:
+------
+transcript, transcript_path = transcribe_file(file_path, TRANSCRIPTION_DIR)
+
+AFTER:
+-----
+transcript, transcript_path = transcribe_file(file_path, TRANSCRIPTION_DIR, roll_number)
+
+PURPOSE:
+-------
+This change passes the user's roll number to the transcribe_file function,
+enabling it to save transcription files in roll number-specific subdirectories.
+"""

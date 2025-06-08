@@ -1,0 +1,23 @@
+"""
+RTX Log Template
+
+CHANGE DETAILS:
+--------------
+Modified [component]: [brief description]
+
+BEFORE:
+------
+[code or structure before the change]
+
+AFTER:
+-----
+[code or structure after the change]
+
+PURPOSE:
+-------
+[why this change was made and what benefits it provides]
+
+RELATED COMPONENTS:
+-----------------
+[list of other components affected by this change, if any]
+"""

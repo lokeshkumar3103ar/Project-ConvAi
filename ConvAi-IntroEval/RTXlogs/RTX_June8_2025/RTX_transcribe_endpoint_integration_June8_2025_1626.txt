@@ -1,0 +1,31 @@
+"""
+RTX Log - Transcribe Endpoint Integration Updates
+
+CHANGE DETAILS:
+--------------
+Modified main.py: Updated transcribe endpoint call to pass roll_number parameter for file organization
+
+BEFORE:
+------
+# In /transcribe endpoint
+extracted_data = extract_fields_from_transcript(transcript_content)
+
+AFTER:
+-----
+# In /transcribe endpoint  
+extracted_data = extract_fields_from_transcript(transcript_content, roll_number)
+
+PURPOSE:
+-------
+- Integrate roll number-based file organization in main transcribe workflow
+- Ensure consistency between streaming and non-streaming form extraction
+- Enable automatic organization of extracted forms by student roll number
+- Maintain unified file organization across all application endpoints
+
+RELATED COMPONENTS:
+-----------------
+- app/llm/form_extractor.py: Updated extract_fields_from_transcript() function signature
+- file_organizer.py: Provides roll number-based organization functionality
+- /extract-fields-stream endpoint: Uses same organization pattern for consistency
+- Directory structure: All extracted forms now organized by roll number when available
+"""

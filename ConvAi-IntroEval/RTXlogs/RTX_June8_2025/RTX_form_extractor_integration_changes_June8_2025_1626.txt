@@ -1,0 +1,74 @@
+"""
+RTX Log - Form Extractor Integration Changes
+
+CHANGE DETAILS:
+--------------
+Modified app/llm/form_extractor.py: Integrated roll number-based file organization system with comprehensive logging
+
+BEFORE:
+------
+def extract_fields_from_transcript(transcript_text: str):
+    # ... processing code ...
+    output_dir = "filled_forms"
+    os.makedirs(output_dir, exist_ok=True)
+    
+    filename = f"extracted_form_{timestamp}.json"
+    file_path = os.path.join(output_dir, filename)
+    
+    with open(file_path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+def extract_fields_from_transcript_stream(transcript_text: str):
+    # ... processing code ...
+    output_dir = "filled_forms"
+    os.makedirs(output_dir, exist_ok=True)
+    
+    filename = f"extracted_form_{timestamp}.json"
+    file_path = os.path.join(output_dir, filename)
+    
+    with open(file_path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+AFTER:
+-----
+from file_organizer import organize_path, log_file_operation
+
+def extract_fields_from_transcript(transcript_text: str, roll_number: str = None):
+    # ... processing code ...
+    filename = f"extracted_form_{timestamp}.json"
+    file_path = organize_path("filled_forms", filename, roll_number)
+    
+    os.makedirs(file_path.parent, exist_ok=True)
+    
+    with open(file_path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+    
+    log_file_operation("CREATE", "form", str(file_path), roll_number)
+
+def extract_fields_from_transcript_stream(transcript_text: str, roll_number: str = None):
+    # ... processing code ...
+    filename = f"extracted_form_{timestamp}.json"
+    file_path = organize_path("filled_forms", filename, roll_number)
+    
+    os.makedirs(file_path.parent, exist_ok=True)
+    
+    with open(file_path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+    
+    log_file_operation("CREATE", "form", str(file_path), roll_number)
+
+PURPOSE:
+-------
+- Integrate roll number-based file organization for extracted forms
+- Add comprehensive file operation logging for tracking and debugging
+- Maintain backward compatibility with existing workflow
+- Enable organized storage of student forms in roll number subdirectories
+- Provide optional roll_number parameter to support both authenticated and legacy usage
+
+RELATED COMPONENTS:
+-----------------
+- file_organizer.py: Uses organize_path() and log_file_operation() functions
+- main.py: Updated to pass roll_number parameter to these functions
+- Directory structure: Creates organized subdirectories under filled_forms/
+- Logging system: All form creation operations are now logged with metadata
+"""

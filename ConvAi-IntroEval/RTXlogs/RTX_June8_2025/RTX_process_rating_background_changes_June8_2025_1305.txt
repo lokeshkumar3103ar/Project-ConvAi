@@ -1,0 +1,56 @@
+"""
+RTX Log - main.py process_rating_background function update - June 8, 2025 13:05
+
+Modified process_rating_background function to save rating files in roll number-specific subdirectories.
+
+CHANGE DETAILS:
+--------------
+Modified function: process_rating_background(form_filepath, transcript_filepath, rating_type)
+- Added code to extract roll number from the filepath
+- Creates user-specific directory within RATINGS_DIR if roll number is available
+- Saves rating files in the user's subdirectory
+
+BEFORE:
+------
+async def process_rating_background(form_filepath: str, transcript_filepath: str, rating_type: str):
+    # ...existing code...
+    if rating_data:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        rating_filename = f"{rating_type}_rating_{timestamp}.json"
+        rating_filepath = RATINGS_DIR / rating_filename
+        # ...rest of function...
+
+AFTER:
+-----
+async def process_rating_background(form_filepath: str, transcript_filepath: str, rating_type: str):
+    # ...existing code...
+    # Try to extract roll number from filepath
+    form_path = Path(form_filepath)
+    transcript_path = Path(transcript_filepath)
+    
+    # Check if parent directory is a roll number
+    roll_number = None
+    if form_path.parent.name.isalnum():  # Simple check if directory name could be a roll number
+        roll_number = form_path.parent.name
+    elif transcript_path.parent.name.isalnum():
+        roll_number = transcript_path.parent.name
+    # ...more code...
+    if rating_data:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        rating_filename = f"{rating_type}_rating_{timestamp}.json"
+        
+        # Create user-specific directory if roll number is available
+        if roll_number:
+            user_ratings_dir = RATINGS_DIR / roll_number
+            user_ratings_dir.mkdir(parents=True, exist_ok=True)
+            rating_filepath = user_ratings_dir / rating_filename
+        else:
+            rating_filepath = RATINGS_DIR / rating_filename
+        # ...rest of function...
+
+PURPOSE:
+-------
+This change enables rating files to be saved in user-specific subdirectories
+based on roll number, organizing ratings by user. The function now tries to extract
+the roll number from the parent directory of either the form file or transcript file.
+"""

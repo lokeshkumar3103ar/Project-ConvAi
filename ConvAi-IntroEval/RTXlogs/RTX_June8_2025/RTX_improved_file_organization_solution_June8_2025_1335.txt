@@ -1,0 +1,32 @@
+"""
+RTX Log - Improved File Organization Solution - June 8, 2025 13:35
+
+SOLUTION OVERVIEW:
+-----------------
+Create a new utility module (file_organizer.py) that centralizes all file organization logic, making it more robust and easier to maintain.
+
+IMPLEMENTATION DETAILS:
+---------------------
+1. Create a new file_organizer.py module with these functions:
+   - get_user_directory(base_dir, roll_number): Creates and returns user directory
+   - organize_path(base_path, filename, roll_number): Creates full path with roll number
+   - extract_roll_number_from_path(path): Extracts roll number from file path
+   - save_file_with_organization(content, base_dir, filename, roll_number, file_type)
+
+2. Update main.py to use these utility functions consistently
+   - Replace all file path construction with calls to the utility functions
+   - Add detailed logging for directory creation and file paths
+
+3. Modify transcribe_file in stt.py to use the new utility functions
+
+4. Update profile_rating_stream and intro_rating_stream to also look in subdirectories
+
+ADVANTAGES:
+----------
+1. Centralized logic: All file organization in one place
+2. Better error handling: Consistent handling of missing roll numbers
+3. More logging: Detailed information about where files are saved
+4. More consistent: Same approach for all file types
+
+This solution should fix the current issues and make the system more maintainable.
+"""

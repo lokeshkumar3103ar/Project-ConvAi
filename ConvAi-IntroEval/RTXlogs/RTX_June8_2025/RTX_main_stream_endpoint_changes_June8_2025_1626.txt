@@ -1,0 +1,50 @@
+"""
+RTX Log - Main Application Stream Endpoint Updates
+
+CHANGE DETAILS:
+--------------
+Modified main.py: Updated /extract-fields-stream endpoint to support roll number extraction and file organization
+
+BEFORE:
+------
+@app.post("/extract-fields-stream")
+async def extract_fields_stream_endpoint(request: ExtractFieldsRequest):
+    transcript_path = request.transcript_path
+    return StreamingResponse(
+        extract_fields_from_transcript_stream(transcript_path), 
+        media_type="text/plain"
+    )
+
+AFTER:
+-----
+@app.post("/extract-fields-stream")
+async def extract_fields_stream_endpoint(request: ExtractFieldsRequest):
+    transcript_path = request.transcript_path
+    
+    # Extract roll number from transcript path for file organization
+    roll_number = extract_roll_number_from_path(transcript_path)
+    
+    # Read transcript content from file
+    with open(transcript_path, 'r', encoding='utf-8') as f:
+        transcript_content = f.read()
+    
+    return StreamingResponse(
+        extract_fields_from_transcript_stream(transcript_content, roll_number), 
+        media_type="text/plain"
+    )
+
+PURPOSE:
+-------
+- Enable roll number-based file organization in streaming form extraction
+- Fix issue where transcript file path was passed instead of content
+- Automatically extract roll number from transcript file path structure
+- Maintain backward compatibility for files without roll number organization
+- Ensure extracted forms are saved in appropriate roll number subdirectories
+
+RELATED COMPONENTS:
+-----------------
+- app/llm/form_extractor.py: Updated to accept roll_number parameter
+- file_organizer.py: Uses extract_roll_number_from_path() function
+- Directory structure: Organizes extracted forms by roll number
+- Stream processing: Maintains real-time form extraction with proper file organization
+"""

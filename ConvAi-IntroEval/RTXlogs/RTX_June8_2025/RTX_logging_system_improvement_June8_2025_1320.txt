@@ -1,0 +1,45 @@
+"""
+RTX Log - Logging System Improvement - June 8, 2025 13:20
+
+CHANGE DETAILS:
+--------------
+Modified: RTXlogs directory structure to use date-based subfolders
+
+BEFORE:
+------
+- All log files were stored directly in the RTXlogs directory
+- No clear organization for logs created on different dates
+- Potential for file clutter as more logs are added
+
+AFTER:
+-----
+- Created date-based subfolders with format: RTX_[Month][Day]_[Year]
+- Moved existing logs into appropriate date subfolder
+- Added README.md explaining the logging structure
+- Created log_template.txt for consistent log formatting
+
+Directory structure:
+RTXlogs/
+├── README.md
+├── log_template.txt
+└── RTX_June8_2025/
+    ├── RTX_auth_changes_June8_2025_1245.txt
+    ├── RTX_form_extraction_changes_June8_2025_1300.txt
+    ├── RTX_Future_Rating_Stream_Updates_June8_2025_1315.txt
+    ├── RTX_June8_2025_1240.txt
+    ├── RTX_process_rating_background_changes_June8_2025_1305.txt
+    ├── RTX_stt_changes_June8_2025_1250.txt
+    ├── RTX_Summary_All_Changes_June8_2025_1310.txt
+    └── RTX_transcribe_call_changes_June8_2025_1255.txt
+
+PURPOSE:
+-------
+This change improves the organization of log files by:
+1. Grouping logs by date for easier navigation
+2. Preventing clutter in the main RTXlogs directory
+3. Providing clear documentation on the logging system
+4. Establishing a consistent format for future logs
+
+This organization will make it easier to track changes over time and 
+find specific logs when troubleshooting is needed.
+"""

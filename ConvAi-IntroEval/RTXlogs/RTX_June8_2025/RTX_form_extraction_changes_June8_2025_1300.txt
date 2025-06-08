@@ -1,0 +1,33 @@
+"""
+RTX Log - main.py form extraction storage update - June 8, 2025 13:00
+
+Modified form extraction storage to save forms in roll number-specific subdirectories.
+
+CHANGE DETAILS:
+--------------
+Modified code: Added roll_number subdirectory creation for form files
+
+BEFORE:
+------
+form_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+form_filename = f"filled_form_{form_timestamp}.json"
+form_filepath = FILLED_FORMS_DIR / form_filename
+
+AFTER:
+-----
+form_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+form_filename = f"filled_form_{form_timestamp}.json"
+
+# Create user-specific directory if roll number is available
+if roll_number:
+    user_forms_dir = FILLED_FORMS_DIR / roll_number
+    user_forms_dir.mkdir(parents=True, exist_ok=True)
+    form_filepath = user_forms_dir / form_filename
+else:
+    form_filepath = FILLED_FORMS_DIR / form_filename
+
+PURPOSE:
+-------
+This change creates roll number-specific subdirectories within the FILLED_FORMS_DIR
+to organize form files by user.
+"""

@@ -80,3 +80,54 @@ async def get_current_teacher(
         raise credentials_exception
     
     return {"username": teacher.username}
+
+async def get_current_user(
+    request: Request,
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db)
+):
+    """
+    Retrieve the current authenticated user (student or teacher) based on JWT token.
+    This function is used to identify the user's roll number for file organization.
+    
+    Args:
+        request: FastAPI request object
+        token: JWT token from Authorization header
+        db: Database session
+        
+    Returns:
+        User or Teacher object if authenticated, None otherwise
+    """
+    try:
+        # First try to get token from cookie
+        cookie_token = await get_token_from_cookie(request)
+        
+        # Use cookie token if available, otherwise use Authorization header token
+        token_to_verify = cookie_token if cookie_token else token
+        
+        if not token_to_verify:
+            return None
+            
+        # Decode JWT token to extract username
+        payload = jwt.decode(token_to_verify, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            return None
+            
+    except JWTError:
+        return None
+
+    # First try to find teacher with this username
+    teacher = db.query(models.Teacher).filter(
+        models.Teacher.username == username
+    ).first()
+    
+    if teacher:
+        return teacher
+    
+    # If not a teacher, try to find student user
+    user = db.query(models.User).filter(
+        models.User.username == username
+    ).first()
+    
+    return user  # Will be None if neither teacher nor user found

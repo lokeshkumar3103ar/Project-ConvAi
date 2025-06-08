@@ -8,6 +8,13 @@ import re
 # Import DISABLE_LLM from .utils
 from .utils import DISABLE_LLM
 
+# Import file organization functions
+import sys
+from pathlib import Path
+if str(Path(__file__).parent.parent.parent) not in sys.path:
+    sys.path.append(str(Path(__file__).parent.parent.parent))
+from file_organizer import organize_path, log_file_operation
+
 def get_extraction_prompt(transcript_text: str) -> str:
     """Creates and returns the prompt for extracting data from transcripts"""
     return f"""
@@ -79,8 +86,16 @@ def get_extraction_prompt(transcript_text: str) -> str:
     Text: {transcript_text}
     \"\"\""""
 
-def extract_fields_from_transcript(transcript_text: str) -> dict:
-    """Returns the complete extracted fields from transcript as a dictionary"""
+def extract_fields_from_transcript(transcript_text: str, roll_number: str = None) -> dict:
+    """Returns the complete extracted fields from transcript as a dictionary
+    
+    Args:
+        transcript_text (str): The transcript text to process
+        roll_number (str, optional): Student roll number for file organization
+    
+    Returns:
+        dict: Status and file path information
+    """
     
     prompt = get_extraction_prompt(transcript_text)
     if DISABLE_LLM:
@@ -102,8 +117,7 @@ def extract_fields_from_transcript(transcript_text: str) -> dict:
                 "temperature": 0.0,  # Remove randomness for consistent output
                 "top_p": 1.0,        # Set top_p to 1.0 for deterministic sampling
                 "top_k": 40,         # Limit token selection to top 40 tokens
-                "seed": 42,          # Fixed seed for reproducible results
-                "stop": ["\n\n"]     # Stop token for clean output termination
+                "seed": 42,          # Fixed seed for reproducible results                "stop": ["\n\n"]     # Stop token for clean output termination
             },
             stream=True  # Stream the HTTP response
         )
@@ -122,7 +136,6 @@ def extract_fields_from_transcript(transcript_text: str) -> dict:
                     if 'response' in json_line:
                         chunk = json_line['response']
                         extracted_text += chunk
-                        
                         # Print the chunk to the console immediately
                         print(chunk, end='', flush=True)
                     
@@ -131,15 +144,20 @@ def extract_fields_from_transcript(transcript_text: str) -> dict:
                         print()  # New line after completion
                         break
             
-            # Create the filled_forms directory if it doesn't exist
-            # Assuming this script is in app/llm/, so parent.parent is ConvAi-IntroEval
-            filled_forms_dir = Path(__file__).parent.parent.parent / "filled_forms"
-            filled_forms_dir.mkdir(parents=True, exist_ok=True)
+            # After streaming is complete, save the extracted data
+            if not extracted_text.strip():
+                print("❌ No data extracted from LLM response")
+                return {"status": "error", "message": "No data returned from LLM"}
             
-            # Generate a unique filename using timestamp
+            print(f"\n✅ LLM extraction completed. Total response length: {len(extracted_text)} characters")
+            
+            # Use file organization system for saving extracted forms
             timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
             filename = f"form_{timestamp}.json"
-            file_path = filled_forms_dir / filename
+            
+            # Use organize_path to get the proper file path with roll number organization
+            file_path = organize_path("filled_forms", filename, roll_number)
+            file_path.parent.mkdir(parents=True, exist_ok=True)
             
             try:
                 # Save the extracted data to a JSON file
@@ -151,6 +169,7 @@ def extract_fields_from_transcript(transcript_text: str) -> dict:
                     json.dump(json_data, f, indent=2, ensure_ascii=False)
                 
                 print(f"✅ Saved extracted data to: {file_path}")
+                log_file_operation("CREATE form", file_path, roll_number)
                 
                 # Return status information (ratings will be triggered separately via streaming)
                 return {
@@ -169,11 +188,12 @@ def extract_fields_from_transcript(transcript_text: str) -> dict:
         print(f"Exception calling LLM: {str(e)}")
         return {"status": "error", "message": f"Exception: {str(e)}"}
 
-async def extract_fields_from_transcript_stream(transcript_text: str):
+async def extract_fields_from_transcript_stream(transcript_text: str, roll_number: str = None):
     """Streaming version of field extraction from transcript
 
     Args:
         transcript_text (str): The transcript text to process
+        roll_number (str, optional): Student roll number for file organization
 
     Yields:
         str: Server-sent events data with extraction progress
@@ -234,48 +254,45 @@ async def extract_fields_from_transcript_stream(transcript_text: str):
                         if len(chunk) > 0 and (len(extracted_text) % 100 < len(chunk)):
                             yield f"data: {json.dumps({'status': 'extracting', 'message': 'Receiving data...', 'text_length': len(extracted_text)})}\n\n"
                     
-                    # Check if the stream is done
-                    if json_line.get('done', False):
+                    # Check if the stream is done                    if json_line.get('done', False):
                         print()  # New line after completion
                         break
-            
-            # Create the filled_forms directory if it doesn't exist
-            # Assuming this script is in app/llm/, so parent.parent is ConvAi-IntroEval
-            filled_forms_dir = Path(__file__).parent.parent.parent / "filled_forms"
-            filled_forms_dir.mkdir(parents=True, exist_ok=True)
-            
-            # Generate a unique filename using timestamp
-            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"form_{timestamp}.json"
-            file_path = filled_forms_dir / filename
-            
-            try:
-                # Tell the client we're saving the data
-                yield f"data: {json.dumps({'status': 'progress', 'message': 'Saving extracted fields...'})}\n\n"
-                await asyncio.sleep(0.1)
                 
-                # Save the extracted data to a JSON file
-                json_data = {
-                    "timestamp": datetime.datetime.now().isoformat(),
-                    "extracted_fields": extracted_text
-                }
-                with open(file_path, "w", encoding="utf-8") as f:
-                    json.dump(json_data, f, indent=2, ensure_ascii=False)
+                # Use file organization system for saving extracted forms
+                timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                filename = f"form_{timestamp}.json"
                 
-                print(f"✅ [CONSOLE] Saved extracted data to: {file_path}")
+                # Use organize_path to get the proper file path with roll number organization
+                file_path = organize_path("filled_forms", filename, roll_number)
+                file_path.parent.mkdir(parents=True, exist_ok=True)
                 
-                # Send completion message
-                completion_data = {
-                    "status": "complete",
-                    "file": str(file_path),
-                    "message": "Extraction completed successfully"
-                }
-                yield f"data: {json.dumps(completion_data)}\n\n"
-            
-            except Exception as save_error:
-                error_msg = f"Error saving JSON file: {str(save_error)}"
-                print(f"❌ [CONSOLE] {error_msg}")
-                yield f"data: {json.dumps({'status': 'error', 'message': error_msg})}\n\n"
+                try:
+                    # Tell the client we're saving the data
+                    yield f"data: {json.dumps({'status': 'progress', 'message': 'Saving extracted fields...'})}\n\n"
+                    await asyncio.sleep(0.1)
+                      # Save the extracted data to a JSON file
+                    json_data = {
+                        "timestamp": datetime.datetime.now().isoformat(),
+                        "extracted_fields": extracted_text
+                    }
+                    with open(file_path, "w", encoding="utf-8") as f:
+                        json.dump(json_data, f, indent=2, ensure_ascii=False)
+                    
+                    print(f"✅ [CONSOLE] Saved extracted data to: {file_path}")
+                    log_file_operation("CREATE form", file_path, roll_number)
+                    
+                    # Send completion message
+                    completion_data = {
+                        "status": "complete",
+                        "file": str(file_path),
+                        "message": "Extraction completed successfully"
+                    }
+                    yield f"data: {json.dumps(completion_data)}\n\n"
+                
+                except Exception as save_error:
+                    error_msg = f"Error saving JSON file: {str(save_error)}"
+                    print(f"❌ [CONSOLE] {error_msg}")
+                    yield f"data: {json.dumps({'status': 'error', 'message': error_msg})}\n\n"
         else:
             error_msg = f"LLM API error for extraction: {response.status_code}"
             print(f"❌ [CONSOLE] {error_msg}")

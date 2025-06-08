@@ -2,6 +2,11 @@ import json
 import re
 from pathlib import Path
 import glob
+import sys
+
+# Add parent directory to path to import file_organizer
+sys.path.append(str(Path(__file__).parent.parent.parent))
+from file_organizer import glob_with_roll_number
 
 DISABLE_LLM = False # ✅ Set to False to enable LLM calls
 
@@ -81,6 +86,7 @@ def get_latest_form_file(form_path=None):
     """
     Gets the latest form JSON file from the filled_forms directory
     or loads a specific form if path is provided.
+    Uses file organization system to search across roll number subdirectories.
     
     Args:
         form_path (str, optional): Path to a specific form file. Defaults to None.
@@ -89,9 +95,6 @@ def get_latest_form_file(form_path=None):
         tuple: (file_path, form_data)
     """
     try:
-        # Assuming this script is in app/llm/, so parent.parent is ConvAi-IntroEval
-        filled_forms_dir = Path(__file__).parent.parent.parent / "filled_forms"
-        
         if form_path:
             # Use the provided path
             file_path = Path(form_path)
@@ -99,12 +102,12 @@ def get_latest_form_file(form_path=None):
                 print(f"❌ Specified form file not found: {form_path}")
                 return None, None
         else:
-            # Find the latest file
-            json_files = list(filled_forms_dir.glob('*.json'))
+            # Find the latest file using file organization system
+            json_files = glob_with_roll_number("filled_forms", "*.json")
             if not json_files:
-                print("❌ No form files found in the filled_forms directory")
+                print("❌ No form files found in the filled_forms directory or subdirectories")
                 return None, None
-                
+            
             # Sort by modified time (newest first)
             file_path = max(json_files, key=lambda x: x.stat().st_mtime)
         
@@ -145,6 +148,7 @@ def get_latest_transcript_file(transcript_path: str = None):
     """
     Gets the latest transcript file from the transcription directory
     or loads a specific transcript if path is provided.
+    Uses file organization system to search across roll number subdirectories.
 
     Args:
         transcript_path (str, optional): Path to a specific transcript file. Defaults to None.
@@ -153,9 +157,6 @@ def get_latest_transcript_file(transcript_path: str = None):
         tuple: (file_path, transcript_content)
     """
     try:
-        # Assuming this script is in app/llm/, so parent.parent is ConvAi-IntroEval
-        transcription_dir = Path(__file__).parent.parent.parent / "transcription"
-
         if transcript_path:
             # Use the provided path
             file_path = Path(transcript_path)
@@ -163,12 +164,12 @@ def get_latest_transcript_file(transcript_path: str = None):
                 print(f"❌ Specified transcript file not found: {transcript_path}")
                 return None, None
         else:
-            # Find the latest file
-            txt_files = list(transcription_dir.glob('*.txt'))
+            # Find the latest file using file organization system
+            txt_files = glob_with_roll_number("transcription", "*.txt")
             if not txt_files:
-                print("❌ No transcript files found in the transcription directory")
+                print("❌ No transcript files found in the transcription directory or subdirectories")
                 return None, None
-
+            
             # Sort by modified time (newest first)
             file_path = max(txt_files, key=lambda x: x.stat().st_mtime)
 

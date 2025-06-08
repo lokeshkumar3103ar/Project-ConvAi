@@ -1,0 +1,31 @@
+"""
+RTX Log - File Organization Issue - June 8, 2025 13:30
+
+ISSUE DETAILS:
+--------------
+The roll number-based directory organization is not working as expected:
+
+1. Files are being saved in the root directories instead of roll number subdirectories:
+   - Transcription files: /transcription/20250608_125228_my_intro_transcription_turbo.txt
+   - Form files: /filled_forms/form_20250608_125326.json
+   - Rating files: /ratings/form_20250608_125326_profile_rating.json
+
+2. Some files have unexpected paths:
+   - Ratings are being saved as: /ratings/transcription/profile_rating_20250608_125339.json
+   - This suggests the path building logic is incorrect
+
+OBSERVATIONS:
+------------
+1. roll_number might be null when files are being processed
+2. The path construction in process_rating_background may be incorrect
+3. There might be an issue with authentication or obtaining the roll number
+
+PLAN:
+-----
+1. Revert previous changes
+2. Implement a more robust solution that:
+   - Properly extracts and validates roll numbers
+   - Has better error handling when roll_number is not available
+   - Uses absolute paths consistently
+   - Logs detailed information about path construction
+"""

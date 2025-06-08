@@ -1,0 +1,31 @@
+"""
+RTX Log - Rating stream functions update - June 8, 2025 13:15
+
+This update would make the profile_rating_stream and intro_rating_stream functions
+also check roll number subdirectories when looking for existing ratings.
+
+SUGGESTED CHANGES (NOT IMPLEMENTED YET):
+======================================
+1. Update profile_rating_stream function:
+   - Change the glob pattern to also check in subdirectories
+   - Current: recent_profile_files = list(RATINGS_DIR.glob("*profile_rating*.json"))
+   - New: recent_profile_files = list(RATINGS_DIR.glob("**/*profile_rating*.json"))
+
+2. Update intro_rating_stream function:
+   - Change the glob pattern to also check in subdirectories
+   - Current: recent_intro_files = list(RATINGS_DIR.glob("*intro_rating*.json"))
+   - New: recent_intro_files = list(RATINGS_DIR.glob("**/*intro_rating*.json"))
+
+3. Update get_rating_file function:
+   - Check both the main directory and roll number subdirectories
+   - Add code to look for the file in all subdirectories if not found in main directory
+
+REASONING:
+=========
+Since we now save ratings in roll number subdirectories, the streaming endpoints
+need to be updated to look in these subdirectories to find existing ratings.
+The double asterisk (**) in the glob pattern means "search recursively in all subdirectories".
+
+This change is recommended for a future update to ensure full compatibility with
+the new directory structure.
+"""

@@ -19,7 +19,7 @@ import shutil
 import traceback
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 import uvicorn
 from fastapi import (
@@ -38,7 +38,7 @@ from fastapi import (
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from argon2 import PasswordHasher #argon2 for password hashing
-from auth import get_current_teacher, create_access_token
+from auth import get_current_teacher, create_access_token, get_current_user
 from argon2.exceptions import VerifyMismatchError
 
 import secrets
@@ -66,6 +66,16 @@ ph = PasswordHasher()
 
 # Import project modules
 from stt import transcribe_file, SUPPORTED_EXTENSIONS
+from auth import get_current_user
+from file_organizer import (
+    get_user_directory,
+    organize_path,
+    extract_roll_number_from_path,
+    save_file_with_organization,
+    glob_with_roll_number,
+    find_latest_file_for_user,
+    log_file_operation
+)
 from app.llm.form_extractor import (
     extract_fields_from_transcript,
     extract_fields_from_transcript_stream
@@ -162,17 +172,18 @@ def validate_file_extension(filename: str) -> bool:
 
 # ==================== BACKGROUND TASKS ====================
 
-async def process_rating_background(form_filepath: str, transcript_filepath: str, rating_type: str):
+async def process_rating_background(form_filepath: str, transcript_filepath: str, rating_type: str, roll_number: str = None):
     """
-    Background task to process ratings asynchronously.
+    Background task to process ratings asynchronously with file organization.
     
     Args:
         form_filepath: Path to the filled form JSON file
         transcript_filepath: Path to the transcript file
         rating_type: Either 'profile' or 'intro'
+        roll_number: Student roll number for file organization (optional)
     """
     try:
-        log_info(f"Starting background {rating_type} rating processing...")
+        log_info(f"Starting background {rating_type} rating processing for roll: {roll_number or 'teacher'}")
         
         if rating_type == "profile":
             # Process profile rating - use sync function, not async
@@ -183,16 +194,19 @@ async def process_rating_background(form_filepath: str, transcript_filepath: str
         else:
             raise ValueError(f"Invalid rating type: {rating_type}")
         
-        # Save the rating to file
+        # Save the rating to file with organization
         if rating_data:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             rating_filename = f"{rating_type}_rating_{timestamp}.json"
-            rating_filepath = RATINGS_DIR / rating_filename
+              # Use file organization system to save the rating
+            rating_filepath = organize_path("ratings", rating_filename, roll_number)
+            rating_filepath.parent.mkdir(parents=True, exist_ok=True)
             
             with open(rating_filepath, 'w', encoding='utf-8') as f:
                 json.dump(rating_data, f, indent=2, ensure_ascii=False)
             
-            log_info(f"✅ {rating_type.title()} rating saved to: {rating_filepath}")
+            log_info(f"✅ {rating_type.title()} rating saved with organization: {rating_filepath}")
+            log_file_operation(f"CREATE {rating_type}_rating", rating_filepath, roll_number)
         else:
             log_error(f"❌ Failed to generate {rating_type} rating - no data returned")
             
@@ -234,22 +248,23 @@ async def transcribe_endpoint(
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     extract_fields: bool = Form(True),
-    generate_ratings: bool = Form(True)
+    generate_ratings: bool = Form(True),
+    current_user: Optional[Union[User, Teacher]] = Depends(get_current_user)
 ):
     """
-    Transcribe uploaded file and optionally extract fields.
+    Transcribe uploaded file and optionally extract fields with file organization.
     This endpoint is specifically designed for frontend compatibility.
     
     Args:
         file: The uploaded audio/video file
         extract_fields: Whether to extract fields from the transcript
         generate_ratings: Whether to generate ratings in the background
-    
-    Returns:
+        current_user: Current authenticated user (injected by dependency)
+      Returns:
         JSON response with transcription_file path and extracted_fields info
     """
     try:
-        log_info(f"📤 Frontend transcribe request: {file.filename}")
+        log_info(f"📤 Frontend transcribe request: {file.filename} (user: {current_user.username if current_user else 'unknown'})")
         
         # Validate file extension
         if not validate_file_extension(file.filename):
@@ -257,30 +272,41 @@ async def transcribe_endpoint(
                 status_code=400,
                 detail=f"Unsupported file type. Supported extensions: {', '.join(SUPPORTED_EXTENSIONS)}"
             )
-        
-        # Generate safe filename and save uploaded file
+          # Extract user information for file organization
+        roll_number = current_user.roll_number if current_user and hasattr(current_user, 'roll_number') else None
+        user_info = f"roll: {roll_number}" if roll_number else f"teacher: {current_user.username if current_user else 'unknown'}"
+        log_info(f"👤 User info for file organization: {user_info}")
+          # Generate safe filename and save uploaded file with organization
         safe_filename = get_safe_filename(file.filename)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         final_filename = f"{timestamp}_{safe_filename}"
-        file_path = VIDEOS_DIR / final_filename
         
-        # Save uploaded file
-        with open(file_path, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+        # Use file organization system to save the uploaded file
+        success, file_path, status_message = save_file_with_organization(
+            content=file.file.read(),
+            base_dir=Path("videos"),
+            filename=final_filename,
+            roll_number=roll_number,
+            file_type="binary"
+        )
         
-        log_info(f"💾 File saved: {file_path}")
+        if not success:
+            raise HTTPException(status_code=500, detail=f"Failed to save uploaded file: {status_message}")
         
-        # Transcribe the file
+        log_info(f"💾 File saved with organization: {file_path}")
+        log_file_operation("SAVE video", file_path, roll_number)
+        
+        # Transcribe the file with roll number for organized output
         log_info("🎤 Starting transcription...")
-        transcript, transcript_path = transcribe_file(file_path, TRANSCRIPTION_DIR)
+        transcript, transcript_path = transcribe_file(file_path, TRANSCRIPTION_DIR, roll_number)
         log_info(f"✅ Transcription completed: {transcript_path}")
+        log_file_operation("CREATE transcript", transcript_path, roll_number)
         
         response_data = {
             "transcription_file": str(transcript_path),
             "transcript": transcript
         }
-        
-        # Extract fields if requested
+          # Extract fields if requested
         if extract_fields and not DISABLE_LLM:
             try:
                 log_info("🧠 Starting field extraction...")
@@ -290,18 +316,21 @@ async def transcribe_endpoint(
                     transcript_content = f.read()
                 
                 # extract_fields_from_transcript is a sync function, not async
-                extracted_data = extract_fields_from_transcript(transcript_content)
+                extracted_data = extract_fields_from_transcript(transcript_content, roll_number)
                 
                 if extracted_data:
-                    # Save extracted fields
+                    # Save extracted fields with file organization
                     form_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                     form_filename = f"filled_form_{form_timestamp}.json"
-                    form_filepath = FILLED_FORMS_DIR / form_filename
+                    # Use file organization system to save the form
+                    form_filepath = organize_path("filled_forms", form_filename, roll_number)
+                    form_filepath.parent.mkdir(parents=True, exist_ok=True)
                     
                     with open(form_filepath, 'w', encoding='utf-8') as f:
                         json.dump(extracted_data, f, indent=2, ensure_ascii=False)
                     
-                    log_info(f"✅ Fields extracted and saved: {form_filepath}")
+                    log_info(f"✅ Fields extracted and saved with organization: {form_filepath}")
+                    log_file_operation("CREATE form", form_filepath, roll_number)
                     
                     response_data["extracted_fields"] = {
                         "status": "saved",
@@ -316,13 +345,15 @@ async def transcribe_endpoint(
                             process_rating_background,
                             str(form_filepath),
                             str(transcript_path),
-                            "profile"
+                            "profile",
+                            roll_number
                         )
                         background_tasks.add_task(
                             process_rating_background,
                             str(form_filepath),
                             str(transcript_path),
-                            "intro"
+                            "intro",
+                            roll_number
                         )
                         response_data["extracted_fields"]["ratings_status"] = "generating_in_background"
                     
@@ -362,6 +393,10 @@ async def extract_fields_stream(transcript_path: str):
     """
     try:
         log_info(f"🔄 Checking for existing extracted fields for: {transcript_path}")
+          # Extract roll number from transcript path for file organization
+        roll_number = extract_roll_number_from_path(transcript_path)
+        user_info = f"roll: {roll_number}" if roll_number else "teacher/unknown"
+        log_info(f"👤 Extracted user info from path: {user_info}")
         
         if DISABLE_LLM:
             # Return a simple SSE response indicating LLM is disabled
@@ -390,7 +425,6 @@ async def extract_fields_stream(transcript_path: str):
                     
                     # Use the already loaded form data
                     extracted_data = form_data
-                    
                     # Send the extracted data as a completion message
                     yield f"data: {json.dumps({'status': 'completed', 'data': extracted_data, 'message': 'Field extraction already completed'})}\n\n"
                     yield f"data: {json.dumps({'status': 'done'})}\n\n"
@@ -398,7 +432,17 @@ async def extract_fields_stream(transcript_path: str):
                     log_info("🔄 No existing form found, performing live extraction...")
                     # Only if no extracted data exists, perform live extraction
                     try:
-                        async for chunk in extract_fields_from_transcript_stream(transcript_path):
+                        # Read the transcript content from the file
+                        transcript_file_path = Path(transcript_path)
+                        if not transcript_file_path.exists():
+                            yield f"data: {json.dumps({'status': 'error', 'message': f'Transcript file not found: {transcript_path}'})}\n\n"
+                            return
+                        
+                        with open(transcript_file_path, 'r', encoding='utf-8') as f:
+                            transcript_content = f.read()
+                        
+                        # Pass the transcript content and extracted roll_number to the extraction function
+                        async for chunk in extract_fields_from_transcript_stream(transcript_content, roll_number):
                             yield chunk
                     except Exception as extraction_error:
                         log_error(f"❌ Live extraction failed: {str(extraction_error)}", extraction_error)
@@ -420,7 +464,7 @@ async def extract_fields_stream(transcript_path: str):
 @app.get("/profile-rating-stream")
 async def profile_rating_stream():
     """
-    Stream profile rating generation.
+    Stream profile rating generation with file organization support.
     Expected by frontend for real-time profile rating.
     NOTE: This checks for existing ratings to avoid duplicate processing.
     """
@@ -433,8 +477,8 @@ async def profile_rating_stream():
             
             return StreamingResponse(generate_disabled_response(), media_type="text/event-stream")
         
-        # Check if we already have a recent profile rating
-        recent_profile_files = list(RATINGS_DIR.glob("*profile_rating*.json"))
+        # Check if we already have a recent profile rating using file organization
+        recent_profile_files = glob_with_roll_number("ratings", "*profile_rating*.json")
         if recent_profile_files:
             # Get the most recent profile rating
             latest_rating_file = max(recent_profile_files, key=lambda x: x.stat().st_mtime)
@@ -456,14 +500,17 @@ async def profile_rating_stream():
             
             return StreamingResponse(generate_existing_rating(), media_type="text/event-stream")
         
-        # If no existing rating, get the form file and generate new rating
-        form_filepath = get_latest_form_file(str(FILLED_FORMS_DIR))
-        
-        if not form_filepath:
+        # If no existing rating, get the form file and generate new rating using file organization
+        form_files = glob_with_roll_number("filled_forms", "*.json")
+        if not form_files:
             async def generate_error_response():
                 yield f"data: {json.dumps({'status': 'error', 'message': 'No form file found for rating'})}\n\n"
             
             return StreamingResponse(generate_error_response(), media_type="text/event-stream")
+        
+        # Get the most recent form file
+        form_filepath = max(form_files, key=lambda x: x.stat().st_mtime)
+        log_info(f"📄 Using form file for rating: {form_filepath}")
         
         # Generate new profile rating using streaming
         async def generate_rating_stream():
@@ -500,9 +547,8 @@ async def intro_rating_stream():
                 yield f"data: {json.dumps({'status': 'disabled', 'message': 'LLM functionality is disabled'})}\n\n"
             
             return StreamingResponse(generate_disabled_response(), media_type="text/event-stream")
-        
-        # Check if we already have a recent intro rating
-        recent_intro_files = list(RATINGS_DIR.glob("*intro_rating*.json"))
+          # Check if we already have a recent intro rating using file organization
+        recent_intro_files = glob_with_roll_number("ratings", "*intro_rating*.json")
         if recent_intro_files:
             # Get the most recent intro rating
             latest_rating_file = max(recent_intro_files, key=lambda x: x.stat().st_mtime)
@@ -523,15 +569,17 @@ async def intro_rating_stream():
                     yield f"data: {json.dumps({'status': 'error', 'message': str(e)})}\n\n"
             
             return StreamingResponse(generate_existing_rating(), media_type="text/event-stream")
-        
-        # If no existing rating, get the transcript file and generate new rating
-        transcript_filepath = get_latest_transcript_file(str(TRANSCRIPTION_DIR))
-        
-        if not transcript_filepath:
+          # If no existing rating, get the transcript file and generate new rating using file organization
+        transcript_files = glob_with_roll_number("transcription", "*.txt")
+        if not transcript_files:
             async def generate_error_response():
                 yield f"data: {json.dumps({'status': 'error', 'message': 'No transcript file found for rating'})}\n\n"
             
             return StreamingResponse(generate_error_response(), media_type="text/event-stream")
+        
+        # Get the most recent transcript file
+        transcript_filepath = max(transcript_files, key=lambda x: x.stat().st_mtime)
+        log_info(f"📄 Using transcript file for rating: {transcript_filepath}")
         
         # Generate new intro rating using streaming
         async def generate_rating_stream():

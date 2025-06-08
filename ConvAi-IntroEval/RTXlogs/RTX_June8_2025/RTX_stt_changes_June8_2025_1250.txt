@@ -1,0 +1,41 @@
+"""
+RTX Log - stt.py changes - June 8, 2025 12:50
+
+Modified transcribe_file function in stt.py to save transcriptions in roll number subdirectories.
+
+CHANGE DETAILS:
+--------------
+Modified function: transcribe_file(file_path, output_dir, roll_number=None)
+- Added optional roll_number parameter
+- Creates user-specific subdirectory within output_dir if roll_number is provided
+- Saves transcription files in the user's subdirectory
+
+BEFORE:
+------
+def transcribe_file(file_path: Path, output_dir: Path) -> tuple[str, Path]:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    # ... existing code ...
+    output_file = output_dir / f"{file_path.stem}_transcription_{model_size}.txt"
+    # ... rest of function ...
+
+AFTER:
+-----
+def transcribe_file(file_path: Path, output_dir: Path, roll_number: str = None) -> tuple[str, Path]:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Create roll_number subdirectory if roll_number is provided
+    if roll_number:
+        user_output_dir = output_dir / roll_number
+        user_output_dir.mkdir(parents=True, exist_ok=True)
+    else:
+        user_output_dir = output_dir
+        
+    # ... existing code ...
+    output_file = user_output_dir / f"{file_path.stem}_transcription_{model_size}.txt"
+    # ... rest of function ...
+
+PURPOSE:
+-------
+This change enables transcription files to be saved in user-specific subdirectories
+based on roll number, organizing content by user.
+"""

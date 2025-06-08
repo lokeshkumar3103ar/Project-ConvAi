@@ -1,0 +1,24 @@
+"""
+RTX Log - auth.py changes - June 8, 2025 12:45
+
+Added get_current_user function to auth.py to retrieve the current authenticated user.
+
+CHANGE DETAILS:
+--------------
+Added new function: get_current_user(request, token, db)
+- Retrieves current user based on JWT token in Authorization header or cookie
+- Returns User or Teacher object if authenticated, None otherwise
+- This function will be used to identify the user's roll number for file organization
+
+PURPOSE:
+-------
+This function is required to access the current user's roll number, 
+which will be used to create user-specific subdirectories for saved files.
+
+FUNCTION DETAILS:
+---------------
+1. Gets token from cookie or Authorization header
+2. Decodes JWT token to extract username
+3. Queries database for user or teacher with matching username
+4. Returns user/teacher object or None if not found/authenticated
+"""

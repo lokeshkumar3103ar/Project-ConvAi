@@ -1,0 +1,30 @@
+"""
+Change Log for RTX on June 8, 2025
+
+This file documents changes made to implement roll number-based folder organization
+for videos, transcriptions, and ratings in the ConvAi-IntroEval application.
+
+OVERVIEW
+========
+Modified the application to save files in user-specific subdirectories based on 
+roll numbers within existing parent directories:
+- /videos/{roll_number}/
+- /transcription/{roll_number}/
+- /ratings/{roll_number}/
+
+CHANGES
+=======
+1. Added get_current_user function in auth.py
+2. Modified transcribe_endpoint in main.py to create roll number subdirectories
+3. Modified the transcribe_file function in stt.py to save in roll number subdirectories
+4. Updated process_rating_background in main.py to save ratings in roll number subdirectories
+5. Added roll_number to form paths in main.py
+
+DETAILS
+=======
+Each function now checks for the current user's roll number and creates 
+appropriate subdirectories as needed before saving files.
+
+File paths have been updated throughout the application to reflect this
+new organization structure.
+"""
