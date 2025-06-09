@@ -310,7 +310,7 @@ input:focus, button:focus {
 .sidebar {
     flex: 1 1 250px;
     max-width: 280px;
-    background: var(--card-bg);
+    background: var(--content-box-bg);
     border: 2px solid var(--content-box-border);
     border-radius: 15px;
     padding: 20px;
@@ -338,7 +338,7 @@ input:focus, button:focus {
 .student-item {
     padding: 12px 16px;
     border-radius: 12px;
-    background: var(--content-box-bg);
+    background: var(--card-bg);
     border: 1.5px solid var(--content-box-border);
     cursor: pointer;
     transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
@@ -383,13 +383,14 @@ input:focus, button:focus {
 /* =========================
    SEARCH MODAL
    ========================= */
+
 .modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.7);
     display: none;
     align-items: center;
     justify-content: center;
@@ -399,6 +400,7 @@ input:focus, button:focus {
 .modal-content {
     background: var(--content-box-bg);
     padding: 2rem 2.5rem;
+    border: 2px solid var(--content-box-border);
     border-radius: 15px;
     box-shadow: var(--box-shadow);
     width: 90%;

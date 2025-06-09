@@ -15,21 +15,21 @@
 <body>
     <div class="mainframe">
         <!-- Left Taskbar -->
-            <div class="left-taskbar">
-                <div class="theme-toggle-container">
-                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
-                        <i class="fas fa-moon" id="theme-icon"></i>
-                    </button>
-                </div>
-                <div class="search-container">
-                    <!-- Search Button -->
-                    <button class="theme-toggle-btn search-btn" aria-label="search student" onclick="openSearchModal()">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
+        <div class="left-taskbar">
+            <div class="theme-toggle-container">
+                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
             </div>
+            <div class="search-container">
+                <!-- Search Button -->
+                <button class="theme-toggle-btn search-btn" aria-label="search student" onclick="openSearchModal()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
         <div class="inner-frame">
-            
+
 
             <!-- Search Modal -->
             <div id="searchModal" class="modal">
@@ -103,7 +103,7 @@
 
         // Modal Functions
         function openSearchModal() {
-            document.getElementById('searchModal').style.display = 'block';
+            document.getElementById('searchModal').style.display = 'flex';
             document.getElementById('studentRoll').focus();
         }
 
