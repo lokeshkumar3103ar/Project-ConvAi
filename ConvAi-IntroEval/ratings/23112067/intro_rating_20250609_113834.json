@@ -1,0 +1,33 @@
+{
+  "intro_rating": "9.0",
+  "grading_explanation": {
+    "grammar_and_clarity": "2.5/3.0 – The candidate's speech is mostly fluent and clear, with occasional awkward phrasing (e.g., 'Applications at IIT Madras...', 'I am comfortably with tools'). No significant grammatical errors or clarity issues.",
+    "structure": "1.5/1.5 – Excellent logical flow, easy to follow.",
+    "info_coverage": "3.0/3.5 – The candidate covers all key areas well, except for personal interests which is briefly mentioned.",
+    "relevance_to_role": "2.0/2.0 – The candidate clearly and effectively connects their strengths, experiences, and goals to a typical desired job role in AI, ML, data science, or prompt engineering."
+  },
+  "insights": [
+    "Tone: Confident and enthusiastic",
+    "Style: Formal yet conversational",
+    "Fluency: Smooth and well-paced"
+  ],
+  "feedback": [
+    "Specifically mention personal interests or unique qualities in more detail to give a clearer picture of who you are.",
+    "Ensure grammatical consistency throughout your introduction, particularly when listing certifications and projects (e.g., avoid using 'and' at the beginning of each item).",
+    "Consider focusing on highlighting one or two key achievements or experiences in depth instead of listing multiple projects."
+  ],
+  "grading_debug": {
+    "grammar_clarity_score": "2.5",
+    "structure_score": "1.5",
+    "info_coverage_score": 3.0,
+    "relevance_score": "2.0",
+    "calculated_sum": "9.0",
+    "sum_check": {
+      "intro_expected": 10.0,
+      "intro_reported": "9.0"
+    },
+    "notes": "The candidate has a clear, confident introduction with excellent structure and relevant content for their target role. They could improve by being more consistent in grammar, focusing on key achievements, and providing more detail about personal interests."
+  },
+  "evaluated_file": "C:\\Users\\lokes\\Downloads\\KAMPYUTER\\College Projects\\Project ConvAi\\Project-ConvAi\\ConvAi-IntroEval\\transcription\\23112067\\20250609_113335_my_intro_transcription_turbo.txt",
+  "evaluation_timestamp": "2025-06-09T11:38:34.692234"
+}

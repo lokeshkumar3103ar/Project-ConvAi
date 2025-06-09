@@ -610,18 +610,43 @@ async def get_rating_file(filename: str):
     try:
         log_info(f"📄 Loading rating file: {filename}")
         
-        # Look for the file in the ratings directory
-        rating_file = RATINGS_DIR / filename
+        # Look for the file in both root and roll number subdirectories
+        matching_files = glob_with_roll_number(RATINGS_DIR, filename)
         
-        if not rating_file.exists():
+        if not matching_files:
+            # Try with just the filename in case the path has issues
+            log_info(f"⚠️ Exact filename not found, trying pattern matching: {filename}")
+            
+            # Try different patterns to maximize chances of finding the file
+            patterns = [
+                f"**/{filename}",  # Full recursive search
+                f"*/*/{filename}",  # Two levels deep (for roll number subdirectories)
+                f"*/{filename}",    # One level deep
+                f"*{filename}*"     # Partial match anywhere
+            ]
+            
+            for pattern in patterns:
+                log_info(f"🔍 Searching with pattern: {pattern}")
+                found_files = glob_with_roll_number(RATINGS_DIR, pattern)
+                if found_files:
+                    matching_files = found_files
+                    log_info(f"✅ Found {len(matching_files)} matching files with pattern: {pattern}")
+                    break
+            
+        if not matching_files:
+            log_error(f"❌ Rating file not found: {filename}")
             raise HTTPException(status_code=404, detail=f"Rating file '{filename}' not found")
+        
+        # Use the first matching file (should be only one with that exact name)
+        rating_file = matching_files[0]
+        log_info(f"📄 Using rating file: {rating_file}")
         
         # Load and return the rating data
         with open(rating_file, 'r', encoding='utf-8') as f:
             rating_data = json.load(f)
         
         # Log the data structure for debugging
-        log_info(f"✅ Rating data loaded: {json.dumps(rating_data)[:200]}...")
+        log_info(f"✅ Rating data loaded from {rating_file}: {json.dumps(rating_data)[:200]}...")
         
         return JSONResponse(content={
             "success": True,
@@ -651,7 +676,8 @@ async def check_rating_status(form_id: str = None):
             now = datetime.now()
             recent_ratings = []
             
-            for rating_file in RATINGS_DIR.glob("*.json"):
+            # Use glob_with_roll_number to search in both root and roll number subdirectories
+            for rating_file in glob_with_roll_number(RATINGS_DIR, "*.json"):
                 try:
                     file_time = datetime.fromtimestamp(rating_file.stat().st_mtime)
                     if (now - file_time).total_seconds() < 1800:  # 30 minutes
@@ -662,19 +688,25 @@ async def check_rating_status(form_id: str = None):
                             
                         recent_ratings.append({
                             "filename": rating_file.name,
+                            "filepath": str(rating_file),
                             "type": "profile" if "profile" in rating_file.name else "intro",
                             "created": file_time.isoformat()
                         })
                 except Exception as file_error:
                     log_error(f"⚠️ Skipping invalid rating file {rating_file.name}", file_error)
                     continue
-              # Sort recent_ratings by creation time (newest first)
+            
+            # Log the number of recent ratings found
+            log_info(f"📊 Found {len(recent_ratings)} recent rating files")
+            
+            # Sort recent_ratings by creation time (newest first)
             recent_ratings.sort(key=lambda x: x["created"], reverse=True)
             
             # Get the most recent file for each type
-            profile_files = [r["filename"] for r in recent_ratings if r["type"] == "profile"]
-            intro_files = [r["filename"] for r in recent_ratings if r["type"] == "intro"]
-              # Take only the most recent file for each type
+            profile_files = [r["filepath"] for r in recent_ratings if r["type"] == "profile"]
+            intro_files = [r["filepath"] for r in recent_ratings if r["type"] == "intro"]
+            
+            # Take only the most recent file for each type
             most_recent_profile = profile_files[0] if profile_files else None
             most_recent_intro = intro_files[0] if intro_files else None
             
@@ -684,13 +716,19 @@ async def check_rating_status(form_id: str = None):
             # Create filtered recent_ratings with only the most recent files
             filtered_recent_ratings = []
             if most_recent_profile:
-                profile_entry = next((r for r in recent_ratings if r["filename"] == most_recent_profile), None)
+                profile_entry = next((r for r in recent_ratings if r["filepath"] == most_recent_profile), None)
                 if profile_entry:
                     filtered_recent_ratings.append(profile_entry)
             if most_recent_intro:
-                intro_entry = next((r for r in recent_ratings if r["filename"] == most_recent_intro), None)
+                intro_entry = next((r for r in recent_ratings if r["filepath"] == most_recent_intro), None)
                 if intro_entry:
                     filtered_recent_ratings.append(intro_entry)
+            
+            # Extract just the filenames for the response (not full paths)
+            profile_filenames = [Path(most_recent_profile).name] if most_recent_profile else []
+            intro_filenames = [Path(most_recent_intro).name] if most_recent_intro else []
+            log_info(f"📝 Returning profile filenames: {profile_filenames}")
+            log_info(f"📝 Returning intro filenames: {intro_filenames}")
             
             return JSONResponse(content={
                 "success": True,
@@ -698,51 +736,75 @@ async def check_rating_status(form_id: str = None):
                 "recent_ratings": filtered_recent_ratings,  # Only most recent files
                 "profile_ready": most_recent_profile is not None,
                 "intro_ready": most_recent_intro is not None,
-                "profile_files": [most_recent_profile] if most_recent_profile else [],
-                "intro_files": [most_recent_intro] if most_recent_intro else [],
+                "profile_files": profile_filenames,
+                "intro_files": intro_filenames,
                 "status": "completed" if (most_recent_profile or most_recent_intro) else "pending"
             })
         
         # Look for ratings related to the specific form_id
+        log_info(f"🔍 Looking for ratings related to form_id: {form_id}")
         profile_files = []
         intro_files = []
         
-        # Try to find files with the form_id in the name
+        # Try to find files with the form_id in the name - use glob_with_roll_number
         for profile_pattern in [f"*profile*{form_id}*.json", "*profile_rating_*.json"]:
-            for file in RATINGS_DIR.glob(profile_pattern):
-                try:
-                    # Quick validation
-                    with open(file, 'r', encoding='utf-8') as f:
-                        json.load(f)
-                    profile_files.append(file)
-                except Exception:
-                    continue
-                    
+            log_info(f"🔍 Searching for profile ratings with pattern: {profile_pattern}")
+            found_files = glob_with_roll_number(RATINGS_DIR, profile_pattern)
+            profile_files.extend(found_files)
+            log_info(f"📊 Found {len(found_files)} profile rating files with pattern: {profile_pattern}")
+            
         for intro_pattern in [f"*intro*{form_id}*.json", "*intro_rating_*.json"]:
-            for file in RATINGS_DIR.glob(intro_pattern):
-                try:
-                    # Quick validation
-                    with open(file, 'r', encoding='utf-8') as f:
-                        json.load(f)
-                    intro_files.append(file)
-                except Exception:
-                    continue
+            log_info(f"🔍 Searching for intro ratings with pattern: {intro_pattern}")
+            found_files = glob_with_roll_number(RATINGS_DIR, intro_pattern)
+            intro_files.extend(found_files)
+            log_info(f"📊 Found {len(found_files)} intro rating files with pattern: {intro_pattern}")
+        
+        # Filter files that are valid JSON
+        valid_profile_files = []
+        valid_intro_files = []
+        
+        for file in profile_files:
+            try:
+                with open(file, 'r', encoding='utf-8') as f:
+                    json.load(f)
+                valid_profile_files.append(file)
+            except Exception as e:
+                log_error(f"⚠️ Skipping invalid profile rating file {file.name}", e)
+                continue
+                
+        for file in intro_files:
+            try:
+                with open(file, 'r', encoding='utf-8') as f:
+                    json.load(f)
+                valid_intro_files.append(file)
+            except Exception as e:
+                log_error(f"⚠️ Skipping invalid intro rating file {file.name}", e)
+                continue
         
         # Get the most recent files if profile or intro files are found
-        if profile_files:
-            profile_files = [max(profile_files, key=lambda x: x.stat().st_mtime)]
+        if valid_profile_files:
+            valid_profile_files = [max(valid_profile_files, key=lambda x: x.stat().st_mtime)]
+            log_info(f"📋 Most recent profile file for form_id {form_id}: {valid_profile_files[0]}")
         
-        if intro_files:
-            intro_files = [max(intro_files, key=lambda x: x.stat().st_mtime)]
+        if valid_intro_files:
+            valid_intro_files = [max(valid_intro_files, key=lambda x: x.stat().st_mtime)]
+            log_info(f"📋 Most recent intro file for form_id {form_id}: {valid_intro_files[0]}")
+        
+        # Extract just the filenames for the response (not full paths)
+        profile_filenames = [f.name for f in valid_profile_files]
+        intro_filenames = [f.name for f in valid_intro_files]
+        
+        log_info(f"📝 Returning profile filenames for form_id {form_id}: {profile_filenames}")
+        log_info(f"📝 Returning intro filenames for form_id {form_id}: {intro_filenames}")
         
         return JSONResponse(content={
             "success": True,
             "form_id": form_id,
-            "profile_ready": len(profile_files) > 0,
-            "intro_ready": len(intro_files) > 0,
-            "profile_files": [f.name for f in profile_files],
-            "intro_files": [f.name for f in intro_files],
-            "status": "completed" if (profile_files or intro_files) else "pending"
+            "profile_ready": len(valid_profile_files) > 0,
+            "intro_ready": len(valid_intro_files) > 0,
+            "profile_files": profile_filenames,
+            "intro_files": intro_filenames,
+            "status": "completed" if (valid_profile_files or valid_intro_files) else "pending"
         })
         
     except Exception as e:

@@ -162,12 +162,26 @@ def glob_with_roll_number(
         user_dir = base_dir / roll_number
         if user_dir.exists():
             matching_files.extend(list(user_dir.glob(pattern)))
+            print(f"Found {len(matching_files)} files in {user_dir} with pattern '{pattern}'")
     else:
         # Search in root directory
-        matching_files.extend(list(base_dir.glob(pattern)))
+        root_matches = list(base_dir.glob(pattern))
+        matching_files.extend(root_matches)
+        print(f"Found {len(root_matches)} files in root directory {base_dir} with pattern '{pattern}'")
         
         # Also search recursively in all subdirectories
-        matching_files.extend(list(base_dir.glob(f"**/{pattern}")))
+        # First check if the pattern already contains a directory part
+        if "/" in pattern or "\\" in pattern:
+            # Pattern already has directory parts, use it as is
+            recursive_matches = list(base_dir.glob(pattern))
+            matching_files.extend(recursive_matches)
+            print(f"Found {len(recursive_matches)} files with pattern '{pattern}' (direct)")
+        else:
+            # Add **/ prefix to search in all subdirectories
+            recursive_pattern = f"**/{pattern}"
+            recursive_matches = list(base_dir.glob(recursive_pattern))
+            matching_files.extend(recursive_matches)
+            print(f"Found {len(recursive_matches)} files with pattern '{recursive_pattern}' (recursive)")
     
     # Remove duplicates and sort by modification time (newest first)
     unique_files = list(set(matching_files))
