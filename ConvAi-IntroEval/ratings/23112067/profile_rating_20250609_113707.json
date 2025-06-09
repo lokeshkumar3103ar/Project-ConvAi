@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.0",
+  "grading_explanation": {
+    "completeness": "2.5/3 – 18 of 35 fields filled (51% completion).",
+    "relevance": "2.0/2 – Strong alignment: Skills like Python, machine learning, deep learning, data analysis directly match the target role.",
+    "projects_or_internships": "2.5/3 – Very good: The project (ConvAi) is well-detailed with technologies mentioned and clear problem statement, solution, and outcomes, but there's only one project detailed.",
+    "extra_achievements": "1.0/2 – Moderate: At least 1 meaningful achievement (Excellence in Academia Award, ranked second at Hindustan University for academic performance) mentioned"
+  },
+  "grading_debug": {
+    "completeness_score": "2.5",
+    "relevance_score": "2.0",
+    "projects_score": "2.5",
+    "achievements_score": "1.0",
+    "calculated_sum": "8.0",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.0"
+    },
+    "notes": "Strengths: Strong technical skills and relevant achievements. Weaknesses: Lack of work experience, more projects could be beneficial."
+  },
+  "evaluated_file": "filled_forms\\23112067\\form_20250609_113613.json",
+  "evaluation_timestamp": "2025-06-09T11:37:07.995739"
+}

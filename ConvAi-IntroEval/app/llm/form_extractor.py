@@ -117,7 +117,8 @@ def extract_fields_from_transcript(transcript_text: str, roll_number: str = None
                 "temperature": 0.0,  # Remove randomness for consistent output
                 "top_p": 1.0,        # Set top_p to 1.0 for deterministic sampling
                 "top_k": 40,         # Limit token selection to top 40 tokens
-                "seed": 42,          # Fixed seed for reproducible results                "stop": ["\n\n"]     # Stop token for clean output termination
+                "seed": 42,          # Fixed seed for reproducible results                
+                "stop": ["\n\n"]     # Stop token for clean output termination
             },
             stream=True  # Stream the HTTP response
         )

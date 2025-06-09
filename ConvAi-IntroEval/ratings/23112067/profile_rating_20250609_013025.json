@@ -1,0 +1,23 @@
+{
+  "profile_rating": "9.2",
+  "grading_explanation": {
+    "completeness": "2.73/3 – 25 of 35 fields filled (71% completion).",
+    "relevance": "2.0/2 – Strong alignment: Skills like Python, machine learning, and deep learning directly match the target role.",
+    "projects_or_internships": "2.5/3 – Very good: 1 well-detailed project with technologies, problem statement, solution, and some outcomes mentioned.",
+    "extra_achievements": "2.0/2 – Outstanding: Multiple significant achievements (certifications, awards, leadership roles)"
+  },
+  "grading_debug": {
+    "completeness_score": "2.73",
+    "relevance_score": "2.0",
+    "projects_score": "2.5",
+    "achievements_score": "2.0",
+    "calculated_sum": "9.2",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "9.2"
+    },
+    "notes": "Strengths: Strong technical skills and impressive achievements; Weaknesses: Lack of specific work experience and missing details in the profile."
+  },
+  "evaluated_file": "filled_forms\\23112067\\form_20250609_013007.json",
+  "evaluation_timestamp": "2025-06-09T01:30:25.123697"
+}

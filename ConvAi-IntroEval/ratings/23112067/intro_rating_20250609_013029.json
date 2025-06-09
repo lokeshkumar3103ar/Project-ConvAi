@@ -1,0 +1,33 @@
+{
+  "intro_rating": "9.0",
+  "grading_explanation": {
+    "grammar_and_clarity": "2.5/3.0 – The candidate's grammar is mostly fluent, but there are a few minor grammatical errors.",
+    "structure": "1.5/1.5 – Excellent logical flow, easy to follow",
+    "info_coverage": "3.0/3.5 – Covers all key areas thoroughly",
+    "relevance_to_role": "2.0/2.0 – Clearly and effectively connects strengths, experiences, or goals to a typical desired job role in their field"
+  },
+  "insights": [
+    "Tone: Confident and enthusiastic",
+    "Style: Structured",
+    "Fluency: Smooth and well-paced"
+  ],
+  "feedback": [
+    "Consider providing a brief summary or thesis statement at the beginning to grab the attention of the listener and make a strong first impression.",
+    "Ensure that all certifications, projects, and skills are relevant to the desired job role. If some items may not be directly related, explain how they can still contribute positively to the role.",
+    "Consider providing more specific examples or anecdotes for certain skills or experiences to make them stand out and be more memorable."
+  ],
+  "grading_debug": {
+    "grammar_clarity_score": "2.5",
+    "structure_score": "1.5",
+    "info_coverage_score": 3.0,
+    "relevance_score": "2.0",
+    "calculated_sum": "9.0",
+    "sum_check": {
+      "intro_expected": "10.0",
+      "intro_reported": "9.0"
+    },
+    "notes": "The candidate's self-introduction is well-structured, grammatically clear, and covers all key areas. The connections to a professional role are clear and relevant."
+  },
+  "evaluated_file": "C:\\Users\\lokes\\Downloads\\KAMPYUTER\\College Projects\\Project ConvAi\\Project-ConvAi\\ConvAi-IntroEval\\transcription\\23112067\\20250609_012924_my_intro_transcription_turbo.txt",
+  "evaluation_timestamp": "2025-06-09T01:30:29.361090"
+}
