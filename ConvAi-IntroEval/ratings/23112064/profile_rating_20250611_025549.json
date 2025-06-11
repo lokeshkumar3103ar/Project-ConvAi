@@ -1,0 +1,23 @@
+{
+  "profile_rating": "6.7",
+  "grading_explanation": {
+    "completeness": "2.0/3 – 18 of 35 fields filled (51% completion).",
+    "relevance": "1.7/2 – While the candidate has a degree in Data Science and relevant skills, some key roles or technologies are missing from their work experience.",
+    "projects_or_internships": "2.0/3 – The projects mentioned are well-described, but there's only one detailed project.",
+    "extra_achievements": "1.0/2 – The candidate has several notable achievements and activities, which show strong professional growth."
+  },
+  "grading_debug": {
+    "completeness_score": "2.0",
+    "relevance_score": "1.7",
+    "projects_score": "2.0",
+    "achievements_score": "1.0",
+    "calculated_sum": "6.7",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "6.7"
+    },
+    "notes": "The candidate's profile is generally strong in terms of achievements and projects but lacks specific details in some areas such as work experience."
+  },
+  "evaluated_file": "filled_forms\\23112064\\form_20250611_025521.json",
+  "evaluation_timestamp": "2025-06-11T02:55:31.072833"
+}

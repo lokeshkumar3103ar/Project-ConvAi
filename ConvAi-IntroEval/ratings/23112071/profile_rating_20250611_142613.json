@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.5",
+  "grading_explanation": {
+    "completeness": "3.0/3 – 3 of 35 fields filled (8.57% completion).",
+    "relevance": "1.5/2 – Strong alignment: Most key skills present but missing some important elements (e.g., experience in deep learning algorithms, knowledge of other specific tools and technologies)",
+    "projects_or_internships": "2.0/3 – Good: 1+ projects with decent detail (technologies + problem/solution mentioned)",
+    "extra_achievements": "2.0/2 – Outstanding: Multiple significant achievements (certifications, awards, leadership roles)"
+  },
+  "grading_debug": {
+    "completeness_score": "3.0",
+    "relevance_score": "1.5",
+    "projects_score": "2.0",
+    "achievements_score": "2.0",
+    "calculated_sum": "8.5",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.5"
+    },
+    "notes": "The candidate has a strong educational background and outstanding achievements; however, the profile completeness is lacking, and there's room for improvement in detailing work experience and project roles. Also, while some relevant skills are mentioned, further clarification about specific experiences with deep learning algorithms would be beneficial."
+  },
+  "evaluated_file": "filled_forms\\23112071\\form_20250611_142547.json",
+  "evaluation_timestamp": "2025-06-11T14:25:58.173701"
+}

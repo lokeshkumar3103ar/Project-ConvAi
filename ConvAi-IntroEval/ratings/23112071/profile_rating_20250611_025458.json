@@ -1,0 +1,23 @@
+{
+  "profile_rating": "9.0",
+  "grading_explanation": {
+    "completeness": "3.0/3 – 3 of 35 fields filled (100% completion).",
+    "relevance": "2.0/2 – The candidate has a Bachelor of Science in Data Science and mentions skills relevant to the target role, such as machine learning, deep learning algorithms, AI system design, generative AI applications, and automation frameworks.",
+    "projects_or_internships": "2.5/3 – The candidate mentions multiple projects with technologies used, problem statements, and solutions implemented, but only one project has detailed outcomes and accomplishments.",
+    "extra_achievements": "1.5/2 – The candidate lists several achievements such as the Excellence in Academia Award, ranked second at Hindustan University for academic performance, and an internship at COTHON Solutions, which demonstrate a strong commitment to professional growth."
+  },
+  "grading_debug": {
+    "completeness_score": "3.0",
+    "relevance_score": "2.0",
+    "projects_score": "2.5",
+    "achievements_score": "1.5",
+    "calculated_sum": "9.0",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "9.0"
+    },
+    "notes": "The candidate's profile demonstrates strong educational background and achievements, as well as relevant skills for the target role. However, the detailed project description could be more comprehensive to better highlight the candidate's abilities."
+  },
+  "evaluated_file": "filled_forms\\23112071\\form_20250611_025430.json",
+  "evaluation_timestamp": "2025-06-11T02:54:42.328970"
+}

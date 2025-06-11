@@ -12,10 +12,13 @@ import re
 from datetime import datetime
 from bs4 import BeautifulSoup
 
-# Configuration paths
-FILLED_FORMS_PATH = r"C:\Users\lokes\Downloads\KAMPYUTER\College Projects\Project ConvAi\Project-ConvAi\ConvAi-IntroEval\filled_forms"
-HTML_TEMPLATE_PATH = r"C:\Users\lokes\Downloads\KAMPYUTER\College Projects\Project ConvAi\Project-ConvAi\extras\ConvAI_Form_Updated.html"
-OUTPUT_PATH = r"C:\Users\lokes\Downloads\KAMPYUTER\College Projects\Project ConvAi\Project-ConvAi\ConvAi-IntroEval\Student_Intro_Eval"
+# Configuration paths - made relative to work on any computer
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)  # Go up one level from python scripts folder
+
+FILLED_FORMS_PATH = os.path.join(PROJECT_ROOT, "ConvAi-IntroEval", "filled_forms")
+HTML_TEMPLATE_PATH = os.path.join(PROJECT_ROOT, "extras", "ConvAI_Form_Updated.html")
+OUTPUT_PATH = os.path.join(PROJECT_ROOT, "ConvAi-IntroEval", "Student_Intro_Eval")
 
 # HTML Template (if the file path doesn't work)
 HTML_TEMPLATE = '''<!DOCTYPE html>
@@ -257,7 +260,8 @@ def extract_field_value(text, field_pattern):
 def parse_json_fields(json_data):
     """Parse JSON data and extract structured fields"""
     extracted_text = json_data.get('extracted_fields', '')
-      # Define field mappings from JSON to HTML form fields
+    
+    # Define field mappings from JSON to HTML form fields
     field_mappings = {
         'name': ['Name', 'Full Name'],
         'age': ['Age'],
@@ -292,7 +296,8 @@ def parse_json_fields(json_data):
         'extracurricular_activities': ['Extracurricular activities'],
         'relevant_hobbies': ['Relevant hobbies', 'Hobbies'],
         'career_goals': ['Career goals'],
-        'preferred_location': ['Preferred location'],        'relocate': ['Willingness to relocate'],
+        'preferred_location': ['Preferred location'],
+        'relocate': ['Willingness to relocate'],
         'work_env': ['Work environment preference'],
         'salary_range': ['Expected Salary Range', 'Salary']
     }
@@ -410,74 +415,114 @@ def populate_html_form(html_template, field_data):
     return html_content
 
 
+def extract_date_from_filename(filename):
+    """Extract date from filename like form_20241201_123456.json"""
+    match = re.search(r'(\d{8})', filename)
+    if match:
+        return match.group(1)
+    return datetime.now().strftime('%Y%m%d')
+
+
 def process_json_files():
-    """Process all JSON files in the filled forms directory"""
+    """Process all JSON files in the filled forms directory structure"""
+    print(f"Script directory: {SCRIPT_DIR}")
+    print(f"Project root: {PROJECT_ROOT}")
+    print(f"Looking for files in: {FILLED_FORMS_PATH}")
+    print(f"Template path: {HTML_TEMPLATE_PATH}")
+    print(f"Output path: {OUTPUT_PATH}")
+    
     if not os.path.exists(FILLED_FORMS_PATH):
         print(f"Error: Filled forms directory not found: {FILLED_FORMS_PATH}")
+        print("Please ensure the directory structure is correct relative to this script.")
         return
     
     # Create output directory if it doesn't exist
-    os.makedirs(OUTPUT_PATH, exist_ok=True)
-    
-    # Get all form JSON files (not the filled_form files which just contain status)
-    json_files = [f for f in os.listdir(FILLED_FORMS_PATH) 
-                  if f.startswith('form_') and f.endswith('.json')]
-    
-    if not json_files:
-        print("No form JSON files found to process")
+    try:
+        os.makedirs(OUTPUT_PATH, exist_ok=True)
+        print(f"Output directory ready: {OUTPUT_PATH}")
+    except Exception as e:
+        print(f"Error creating output directory: {e}")
         return
     
-    print(f"Found {len(json_files)} JSON files to process")
-    
-    for json_file in json_files:
-        json_path = os.path.join(FILLED_FORMS_PATH, json_file)
+    # Look for roll number subdirectories
+    total_processed = 0
+    for item in os.listdir(FILLED_FORMS_PATH):
+        roll_path = os.path.join(FILLED_FORMS_PATH, item)
         
-        try:
-            print(f"Processing: {json_file}")
-            
-            # Read JSON data
-            with open(json_path, 'r', encoding='utf-8') as f:
-                json_data = json.load(f)
-            
-            # Parse fields from JSON
-            field_data = parse_json_fields(json_data)
-            
-            # Load HTML template
-            try:
-                if os.path.exists(HTML_TEMPLATE_PATH):
-                    with open(HTML_TEMPLATE_PATH, 'r', encoding='utf-8') as f:
-                        html_template = f.read()
-                else:
-                    html_template = HTML_TEMPLATE
-                    print(f"Using embedded template (file not found: {HTML_TEMPLATE_PATH})")
-            except Exception as e:
-                print(f"Error reading template, using embedded: {e}")
-                html_template = HTML_TEMPLATE
-            
-            # Populate HTML form
-            populated_html = populate_html_form(html_template, field_data)
-            
-            # Generate output filename
-            base_name = json_file.replace('form_', '').replace('.json', '')
-            output_filename = f"student_form_{base_name}.html"
-            output_path = os.path.join(OUTPUT_PATH, output_filename)
-            
-            # Save populated HTML
-            with open(output_path, 'w', encoding='utf-8') as f:
-                f.write(populated_html)
-            
-            print(f"Generated: {output_filename}")
-            
-            # Print summary of extracted fields
-            print("Extracted fields summary:")
-            for field, value in field_data.items():
-                if value:
-                    print(f"  {field}: {value[:50]}{'...' if len(value) > 50 else ''}")
-            print("-" * 50)
-            
-        except Exception as e:
-            print(f"Error processing {json_file}: {e}")
+        # Skip if not a directory
+        if not os.path.isdir(roll_path):
             continue
+        
+        roll_number = item
+        print(f"\nProcessing roll number: {roll_number}")
+        
+        # Get all form JSON files in this roll number directory
+        json_files = [f for f in os.listdir(roll_path) 
+                      if f.startswith('form_') and f.endswith('.json')]
+        
+        if not json_files:
+            print(f"No form JSON files found for {roll_number}")
+            continue
+        
+        print(f"Found {len(json_files)} JSON files for {roll_number}")
+        
+        for json_file in json_files:
+            json_path = os.path.join(roll_path, json_file)
+            
+            try:
+                print(f"Processing: {json_file}")
+                
+                # Read JSON data
+                with open(json_path, 'r', encoding='utf-8') as f:
+                    json_data = json.load(f)
+                
+                # Parse fields from JSON
+                field_data = parse_json_fields(json_data)
+                
+                # Load HTML template
+                try:
+                    if os.path.exists(HTML_TEMPLATE_PATH):
+                        with open(HTML_TEMPLATE_PATH, 'r', encoding='utf-8') as f:
+                            html_template = f.read()
+                        print(f"Using template file: {HTML_TEMPLATE_PATH}")
+                    else:
+                        html_template = HTML_TEMPLATE
+                        print(f"Using embedded template (file not found: {HTML_TEMPLATE_PATH})")
+                except Exception as e:
+                    print(f"Error reading template, using embedded: {e}")
+                    html_template = HTML_TEMPLATE
+                
+                # Populate HTML form
+                populated_html = populate_html_form(html_template, field_data)
+                
+                # Extract date from filename
+                date_str = extract_date_from_filename(json_file)
+                
+                # Generate output filename as rollnumber_date.html
+                output_filename = f"{roll_number}_{date_str}.html"
+                output_path = os.path.join(OUTPUT_PATH, output_filename)
+                
+                # Save populated HTML
+                with open(output_path, 'w', encoding='utf-8') as f:
+                    f.write(populated_html)
+                
+                print(f"Generated: {output_filename}")
+                total_processed += 1
+                
+                # Print summary of extracted fields
+                print("Extracted fields summary:")
+                for field, value in field_data.items():
+                    if value:
+                        print(f"  {field}: {value[:50]}{'...' if len(value) > 50 else ''}")
+                print("-" * 50)
+                
+            except Exception as e:
+                print(f"Error processing {json_file}: {e}")
+                continue
+    
+    if total_processed == 0:
+        print("No files were processed. Check the directory structure.")
+        print("Expected structure: filled_forms/rollnumber/form_*.json")
 
 
 def main():
@@ -493,4 +538,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    

@@ -1,0 +1,23 @@
+{
+  "profile_rating": "9.5",
+  "grading_explanation": {
+    "completeness": "3.0/3 – 3 of 35 fields filled (100% completion).",
+    "relevance": "2.0/2 – Relevant skills in AI, ML, and prompt engineering for the target role. Strong alignment with target job role.",
+    "projects_or_internships": "2.5/3 – Mentioned projects with technologies, problem statement, solution, and some outcomes (ConvAi, Project 11).",
+    "extra_achievements": "2.0/2 – Outstanding achievements like first place at AI Genesis and INNOTHON 2025, Excellence in Academia Award, ranked second at Hindustan University."
+  },
+  "grading_debug": {
+    "completeness_score": "3.0",
+    "relevance_score": "2.0",
+    "projects_score": "2.5",
+    "achievements_score": "2.0",
+    "calculated_sum": "9.5",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "9.5"
+    },
+    "notes": "The profile shows a strong candidate for AI/ML engineering roles with good project experience and significant achievements. Some areas to improve could be specifying the role in work experience section and providing more details about skills gained."
+  },
+  "evaluated_file": "filled_forms\\23112003\\form_20250612_003642.json",
+  "evaluation_timestamp": "2025-06-12T00:36:52.202342"
+}

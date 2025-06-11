@@ -1,0 +1,23 @@
+{
+  "profile_rating": "9.0",
+  "grading_explanation": {
+    "completeness": "3.0/3 – 3 of 35 fields filled (85.71% completion).",
+    "relevance": "2.0/2 – The candidate's education is in Data Science, and they have experience with machine learning and deep learning which are relevant to AI, ML, and data science roles.",
+    "projects_or_internships": "2.5/3 – There is one well-detailed project mentioned (ConAi), with technologies, problem statement, solution, and outcomes.",
+    "extra_achievements": "1.5/2 – The candidate has several achievements such as GitHub Foundations, Data Literacy from Datacamp, Google Data Analytics specialization, Excellence in Academia Award, and Ranked second at Hindustan University for academic performance."
+  },
+  "grading_debug": {
+    "completeness_score": "3.0",
+    "relevance_score": "2.0",
+    "projects_score": "2.5",
+    "achievements_score": "1.5",
+    "calculated_sum": "9.0",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "9.0"
+    },
+    "notes": "The candidate has strong academic performance and relevant skills for the target role, however, they might want to provide more details about their work experience."
+  },
+  "evaluated_file": "filled_forms\\23112064\\form_20250611_183849.json",
+  "evaluation_timestamp": "2025-06-11T18:38:59.442093"
+}

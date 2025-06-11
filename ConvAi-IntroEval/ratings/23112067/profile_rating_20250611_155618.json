@@ -1,0 +1,23 @@
+{
+  "profile_rating": "9.5",
+  "grading_explanation": {
+    "completeness": "3.0/3 – 3 of 35 fields filled (100% completion).",
+    "relevance": "2.0/2 – Bachelor's degree in Data Science, skills in machine learning, deep learning, and AI system design align well with the target roles: AI engineer, ML engineer, prompt engineer, data scientist.",
+    "projects_or_internships": "2.5/3 – Project details are provided for three projects (ConvAi, Project 11, Face and QR attendance), all of which demonstrate a solid understanding of machine learning, deep learning, and AI system design.",
+    "extra_achievements": "2.0/2 – The candidate has multiple significant achievements such as first place at AI Genesis and INNOTHON 2025, Excellence in Academia Award, ranked second at Hindustan University for academic performance."
+  },
+  "grading_debug": {
+    "completeness_score": "3.0",
+    "relevance_score": "2.0",
+    "projects_score": "2.5",
+    "achievements_score": "2.0",
+    "calculated_sum": "9.5",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "9.5"
+    },
+    "notes": "The candidate has a strong educational background and relevant skills for the target roles. However, it would be beneficial to have more specific information about work experience, especially key responsibilities and achievements."
+  },
+  "evaluated_file": "filled_forms\\23112067\\form_20250611_155551.json",
+  "evaluation_timestamp": "2025-06-11T15:56:02.848599"
+}

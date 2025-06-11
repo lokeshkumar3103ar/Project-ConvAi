@@ -1,0 +1,23 @@
+{
+  "profile_rating": "9.3",
+  "grading_explanation": {
+    "completeness": "2.95/3 – 30 of 35 fields filled (86% completion).",
+    "relevance": "1.9/2 – Lokesh has a Bachelor's degree in Data Science, with relevant skills such as Python, machine learning, and deep learning. However, he lacks significant work experience specifically related to AI, ML engineer or prompt engineering roles.",
+    "projects_or_internships": "2.5/3 – Lokesh has several projects (ConvAi, Project 11, Face and QR attendance) that demonstrate his technical skills in machine learning, deep learning, and data analysis. The detailed descriptions provided give a good overview of the problem statements, solutions implemented, and outcomes achieved.",
+    "extra_achievements": "2.0/2 – Lokesh has several significant achievements such as winning first place at AI Genesis and INNOTHON 2025, receiving the Excellence in Academia Award, and being ranked second at Hindustan University for academic performance."
+  },
+  "grading_debug": {
+    "completeness_score": "2.95",
+    "relevance_score": "1.9",
+    "projects_score": "2.5",
+    "achievements_score": "2.0",
+    "calculated_sum": "9.3",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "9.3"
+    },
+    "notes": "Lokesh's profile shows a strong background in technical skills, projects, and achievements relevant to an AI or ML engineer role. However, his lack of significant work experience specific to the target role may require additional attention."
+  },
+  "evaluated_file": "filled_forms\\23112071_20250611_015340\\form_20250611_015520.json",
+  "evaluation_timestamp": "2025-06-11T01:55:33.102303"
+}

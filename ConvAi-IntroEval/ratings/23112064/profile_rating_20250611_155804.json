@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.0",
+  "grading_explanation": {
+    "completeness": "3.0/3 – 3 of 35 fields filled (86% completion).",
+    "relevance": "1.5/2 – Strong alignment: Most key skills present but missing some important elements (Python, machine learning, deep learning, AI system design) and relevant for the target role.",
+    "projects_or_internships": "2.0/3 – Good: 1+ projects with decent detail (technologies + problem/solution mentioned). The candidate has demonstrated the ability to implement projects using AI and automation technologies.",
+    "extra_achievements": "1.5/2 – Strong: Several achievements or activities with clear relevance to professional growth."
+  },
+  "grading_debug": {
+    "completeness_score": "3.0",
+    "relevance_score": "1.5",
+    "projects_score": "2.0",
+    "achievements_score": "1.5",
+    "calculated_sum": "8.0",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.0"
+    },
+    "notes": "[The candidate has demonstrated skills relevant to the target role with a strong background in AI and automation. The projects presented show their ability to work on practical applications. Some improvements could include specifying roles within the projects for better understanding, providing more detailed descriptions of the outcomes/accomplishments, and listing more achievements that are directly related to the specific job role.]"
+  },
+  "evaluated_file": "filled_forms\\23112064\\form_20250611_155734.json",
+  "evaluation_timestamp": "2025-06-11T15:57:45.902134"
+}

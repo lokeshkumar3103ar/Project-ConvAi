@@ -1,7 +1,24 @@
+"""
+ConvAi LLM Utilities Module
+
+This module provides essential utilities for the ConvAi introduction evaluation system:
+- LLM response preprocessing and JSON extraction (Mistral LLM specific)
+- Form and transcript file loading with roll number directory support
+- Rating calculation validation and correction logic
+- File saving operations for evaluation results
+
+Key Functions:
+- preprocess_llm_json_response(): Cleans and extracts JSON from Mistral LLM responses
+- get_latest_form_file(): Loads student form data from filled_forms directory
+- get_latest_transcript_file(): Loads interview transcripts from transcription directory
+- fix_json_and_rating_calculation(): Validates and corrects rating scores
+- save_rating_to_file(): Saves evaluation results to JSON files
+
+Note: This module is optimized for Mistral LLM and ConvAi's file organization system.
+"""
 import json
 import re
 from pathlib import Path
-import glob
 import sys
 
 # Add parent directory to path to import file_organizer
@@ -10,77 +27,120 @@ from file_organizer import glob_with_roll_number
 
 DISABLE_LLM = False # ✅ Set to False to enable LLM calls
 
-# Moved from call_llm.py
 def preprocess_llm_json_response(response_text):
     """
-    Preprocesses and fixes common JSON format issues in LLM responses
+    Preprocessing for Mistral LLM JSON responses
+    Cleans and extracts JSON content from Mistral's response format
     
     Args:
-        response_text (str): Raw response text from LLM
+        response_text (str): Raw response text from Mistral LLM
         
     Returns:
         str: Preprocessed and cleaned text ready for JSON parsing
     """
-    # Check if the response is empty
-    if not response_text or response_text.isspace():
+    if not response_text or not response_text.strip():
         return "{}"
     
-    # Remove any non-JSON content at the beginning and end (e.g., markdown code block markers)
-    response_text = re.sub(r'^```json\s*', '', response_text)
-    response_text = re.sub(r'^```\s*', '', response_text)
-    response_text = re.sub(r'\s*```$', '', response_text)
+    # Step 1: Handle common Mistral format (explanatory text followed by JSON)
+    lines = response_text.split('\n')
+    json_started = False
+    json_lines = []
     
-    # Fix missing commas between elements in arrays/objects
-    response_text = re.sub(r'(["\d])\s*\n\s*"', r'\1,\n"', response_text)
+    for line in lines:
+        # Skip explanatory text until we hit the first backtick or opening brace
+        if not json_started:
+            if line.strip().startswith('```') or line.strip().startswith('{'):
+                json_started = True
+                if line.strip().startswith('{'):
+                    json_lines.append(line)
+            continue
+        
+        # Stop collecting when we hit closing backticks
+        if line.strip() == '```':
+            break
+            
+        # Skip opening backticks line
+        if line.strip().startswith('```'):
+            continue
+            
+        json_lines.append(line)
     
-    # Fix incorrect comment syntax in JSON (common LLM mistake)
-    response_text = re.sub(r'//.*?$', '', response_text, flags=re.MULTILINE)
+    # Reconstruct the JSON
+    cleaned_response = '\n'.join(json_lines)
+      # Step 2: Basic fallback regex extraction if line parsing didn't work
+    if not cleaned_response.strip():
+        cleaned_response = response_text
+        
+        # Remove explanatory text before JSON - find first { or [
+        json_start = -1
+        for i, char in enumerate(cleaned_response):
+            if char in '{[':
+                json_start = i
+                break
+        
+        if json_start > 0:
+            cleaned_response = cleaned_response[json_start:]
+        
+        # Remove markdown code blocks
+        cleaned_response = re.sub(r'```(?:json)?\s*', '', cleaned_response, flags=re.IGNORECASE)
+        cleaned_response = re.sub(r'Here is.*?:\s*', '', cleaned_response, flags=re.IGNORECASE)
+        
+    # Step 3: Extract JSON content
+    json_match = re.search(r'\{.*\}', cleaned_response, re.DOTALL)
+    if json_match:
+        cleaned_response = json_match.group(0)    # Step 4: Basic JSON cleaning
+    # Fix missing commas between basic elements first
+    cleaned_response = re.sub(r'(["\d}])\s*\n\s*"', r'\1,\n"', cleaned_response)
+    cleaned_response = re.sub(r'(["\d}])\s+"', r'\1,"', cleaned_response)
     
-    # Fix double/triple/etc. commas
-    response_text = re.sub(r',\s*,+', ',', response_text)
+    # Fix the specific case: quoted string ending with period, space, comma, then newline and quote
+    # Pattern: "text." ,\n"next_key" should become "text.",\n"next_key"
+    cleaned_response = re.sub(r'(\."\s*),\s*\n\s*"([^"]*":\s*)', r'\1,\n"\2', cleaned_response)
     
-    # Fix trailing commas in objects and arrays
-    response_text = re.sub(r',(\s*[}\]])', r'\1', response_text)
+    # Fix missing commas after quoted strings with various endings
+    cleaned_response = re.sub(r'([".!?])\s*\n\s*"([^"]*":\s*)', r'\1,\n"\2', cleaned_response)
     
-    # Make sure we have valid JSON opening and closing
-    if not response_text.strip().startswith('{') and not response_text.strip().startswith('['):
-        response_text = '{' + response_text + '}'
+    # Fix missing commas after numbers followed by newlines and quotes
+    cleaned_response = re.sub(r'(\d)\s*\n\s*"([^"]*":\s*)', r'\1,\n"\2', cleaned_response)
     
-    # Fix truncated or incomplete JSON - try to balance brackets
-    open_braces = response_text.count('{')
-    close_braces = response_text.count('}')
-    open_brackets = response_text.count('[')
-    close_brackets = response_text.count(']')
+    # Remove comments (common LLM mistake)
+    cleaned_response = re.sub(r'//.*?$', '', cleaned_response, flags=re.MULTILINE)
     
-    # Add missing closing braces/brackets
+    # Fix multiple commas and trailing commas
+    cleaned_response = re.sub(r',\s*,+', ',', cleaned_response)
+    cleaned_response = re.sub(r',(\s*[}\]])', r'\1', cleaned_response)
+    
+    # Fix structural issues - ensure proper brace matching
+    open_braces = cleaned_response.count('{')
+    close_braces = cleaned_response.count('}')
     if open_braces > close_braces:
-        response_text += '}' * (open_braces - close_braces)
-    if open_brackets > close_brackets:
-        response_text += ']' * (open_brackets - close_brackets)
+        # Add missing closing braces
+        missing_braces = open_braces - close_braces
+        cleaned_response = cleaned_response.rstrip() + '\n' + '}' * missing_braces
+    elif close_braces > open_braces:
+        # Remove extra closing braces from the end
+        extra_braces = close_braces - open_braces
+        for _ in range(extra_braces):
+            # Remove the last occurrence of }
+            last_brace_idx = cleaned_response.rfind('}')
+            if last_brace_idx != -1:
+                cleaned_response = cleaned_response[:last_brace_idx] + cleaned_response[last_brace_idx+1:]
     
-    # Remove any text after the last closing bracket/brace that would make it invalid JSON
-    last_close_brace = response_text.rfind('}')
-    last_close_bracket = response_text.rfind(']')
-    last_close = max(last_close_brace, last_close_bracket)
+    # Clean up whitespace
+    cleaned_response = cleaned_response.strip()
     
-    if last_close > 0:
-        response_text = response_text[:last_close+1]
+    # Ensure valid JSON structure
+    if not cleaned_response.startswith('{') and not cleaned_response.startswith('['):
+        cleaned_response = '{' + cleaned_response + '}'
     
-    # Try to parse it - if it fails, try a more aggressive cleaning
+    # Final validation and fix common errors
     try:
-        json.loads(response_text)
-    except json.JSONDecodeError as e:
-        print(f"Initial JSON preprocessing couldn't fix all issues: {e}. Attempting more aggressive cleaning...")
-        
-        # Try more aggressive cleaning - e.g., if there's a specific pattern that's consistently problematic
-        # Fix missing quotes around keys (a common LLM error)
-        response_text = re.sub(r'([{,]\s*)(\w+)(\s*:)', r'\1"\2"\3', response_text)
-        
-        # Fix the common error with grading_debug comments
-        response_text = re.sub(r'("intro_reported":\s*)"([0-9.]+)"\s*//.*', r'\1"\2"', response_text)
-        response_text = re.sub(r'("profile_reported":\s*)"([0-9.]+)"\s*//.*', r'\1"\2"', response_text)
+        json.loads(cleaned_response)
+    except json.JSONDecodeError:
+        # Fix unquoted keys
+        cleaned_response = re.sub(r'([{,]\s*)(\w+)(\s*:)', r'\1"\2"\3', cleaned_response)
     
-    return response_text
+    return cleaned_response
 
 def get_latest_form_file(form_path=None):
     """
@@ -189,23 +249,59 @@ def get_latest_transcript_file(transcript_path: str = None):
 
 def enhance_info_coverage_calculation(rating_data, debug_info, info_coverage):
     """
-    Placeholder for enhancing information coverage calculation.
-    This was a fallback in call_llm.py.
+    Enhance information coverage calculation based on rating data and debug info.
+    Validates the score and ensures it's within the expected range for intro evaluation.
+    
+    Args:
+        rating_data (dict): The rating data containing evaluation results
+        debug_info (dict): Debug information from the rating process
+        info_coverage (float): Current information coverage score
+        
+    Returns:
+        float: Enhanced/validated information coverage score
     """
-    print("[⚠️ WARNING] Using placeholder enhance_info_coverage_calculation function in utils.py")
-    # Basic pass-through, replace with actual logic if needed
-    return info_coverage
+    try:
+        # Ensure info_coverage is within valid range (0.0 to 2.5 for intro evaluation)
+        if info_coverage < 0.0:
+            info_coverage = 0.0
+        elif info_coverage > 2.5:
+            info_coverage = 2.5
+            
+        # Round to one decimal place for consistency
+        return round(info_coverage, 1)
+        
+    except (ValueError, TypeError):
+        # If there's an error, return a safe default
+        return 0.0
 
 def generate_default_feedback(rating_data):
     """
-    Placeholder for generating default feedback if LLM doesn't provide it.
-    This was a fallback in call_llm.py.
+    Generate default feedback if LLM doesn't provide adequate feedback.
+    Ensures the rating data contains meaningful feedback for the user.
+    
+    Args:
+        rating_data (dict): The rating data that may need default feedback
+        
+    Returns:
+        dict: Updated rating data with proper feedback
     """
-    print("[⚠️ WARNING] Using placeholder generate_default_feedback function in utils.py")
-    # Basic pass-through, replace with actual logic if needed
-    # Example: Ensure 'feedback' key exists
+    # Ensure 'feedback' key exists and has meaningful content
     if "feedback" not in rating_data or not rating_data["feedback"]:
-        rating_data["feedback"] = ["No specific feedback generated by LLM. Consider re-evaluating or checking LLM output.", "Ensure all sections of the introduction are well-covered."]
+        rating_data["feedback"] = [
+            "Please review your introduction for clarity and completeness.",
+            "Ensure all key personal and professional details are included.",
+            "Consider improving the structure and flow of your introduction."
+        ]
+    elif isinstance(rating_data["feedback"], list) and len(rating_data["feedback"]) == 0:
+        rating_data["feedback"] = [
+            "No specific feedback was generated. Please review your introduction.",
+            "Consider re-evaluating the content for completeness and clarity."
+        ]
+    
+    # Ensure feedback is always a list
+    if isinstance(rating_data["feedback"], str):
+        rating_data["feedback"] = [rating_data["feedback"]]
+        
     return rating_data
 
 def fix_json_and_rating_calculation(rating_text, rating_type="profile", enhance_info_coverage_calculation_func=None, generate_default_feedback_func=None):
@@ -239,57 +335,53 @@ def fix_json_and_rating_calculation(rating_text, rating_type="profile", enhance_
     
     try:
         rating_data = json.loads(processed_text)
-        
-        # Clean rating values that might be in format like "2.61/10"
-        # Profile rating cleanup
+          # Clean rating values that might be in format like "2.61/10"
         if "profile_rating" in rating_data:
             profile_rating_str = str(rating_data["profile_rating"])
             if "/" in profile_rating_str:
-                # Extract just the number before the slash
                 cleaned_rating = profile_rating_str.split("/")[0].strip()
                 print(f"⚠️ Fixing profile_rating format from '{profile_rating_str}' to '{cleaned_rating}'")
                 rating_data["profile_rating"] = cleaned_rating
         
-        # Intro rating cleanup
         if "intro_rating" in rating_data:
             intro_rating_str = str(rating_data["intro_rating"])
             if "/" in intro_rating_str:
-                # Extract just the number before the slash
                 cleaned_rating = intro_rating_str.split("/")[0].strip()
                 print(f"⚠️ Fixing intro_rating format from '{intro_rating_str}' to '{cleaned_rating}'")
-                rating_data["intro_rating"] = cleaned_rating            # Clean category values in grading_explanation (they're fine to display with slashes)
-            # No need to remove the slash format as it's part of the explanation
-            if "grading_explanation" in rating_data and isinstance(rating_data["grading_explanation"], dict):
-                print(f"✅ Found grading_explanation - ensuring category values are properly formatted")
-                # We don't remove slashes from grading_explanation values as they're descriptive text
-                # Just ensure they're all strings
-                for category, value in rating_data["grading_explanation"].items():
-                    if not isinstance(value, str):
-                        rating_data["grading_explanation"][category] = str(value)
-                        print(f"  ⚠️ Converted {category} value to string: {value}")
-                      # Check for completeness format in grading_explanation
-                    if category == "completeness" and "/" in value:
-                        parts = value.split("/", 1)  # Split at first slash
-                        score_part = parts[0].strip()
-                        try:
-                            score_value = float(score_part)
-                            if score_value > 3.0:
-                                # Fix the completeness value in the explanation
-                                corrected_value = "3.0/" + parts[1]
-                                rating_data["grading_explanation"]["completeness"] = corrected_value
-                                print(f"  ⚠️ Fixed completeness in grading_explanation: {value} -> {corrected_value}")
-                        except ValueError:
-                            pass# Basic sum check and correction
+                rating_data["intro_rating"] = cleaned_rating
+        
+        # Clean grading_explanation values
+        if "grading_explanation" in rating_data and isinstance(rating_data["grading_explanation"], dict):
+            print(f"✅ Found grading_explanation - ensuring category values are properly formatted")
+            for category, value in rating_data["grading_explanation"].items():
+                if not isinstance(value, str):
+                    rating_data["grading_explanation"][category] = str(value)
+                    print(f"  ⚠️ Converted {category} value to string: {value}")
+                
+                # Fix completeness format if it exceeds max score
+                if category == "completeness" and "/" in value:
+                    parts = value.split("/", 1)
+                    score_part = parts[0].strip()
+                    try:
+                        score_value = float(score_part)
+                        if score_value > 3.0:
+                            corrected_value = "3.0/" + parts[1]
+                            rating_data["grading_explanation"]["completeness"] = corrected_value
+                            print(f"  ⚠️ Fixed completeness in grading_explanation: {value} -> {corrected_value}")
+                    except ValueError:
+                        pass        
+        # Validate and correct scores based on rating type
         if rating_type == "profile":
             debug_info = rating_data.get("grading_debug", {})
-            try:                # Fix completeness score if it exceeds max 3.0 points
+            try:
+                # Fix completeness score if it exceeds max 3.0 points
                 if "completeness_score" in debug_info:
                     original_completeness = extract_numeric_score(debug_info.get("completeness_score", 0.0))
                     if original_completeness > 3.0:
                         print(f"⚠️ Completeness score {original_completeness} exceeds max 3.0, capping to 3.0")
                         debug_info["completeness_score"] = "3.0"
                 
-                # Recalculate with proper completeness capping
+                # Calculate correct sum for profile rating
                 completeness_score = min(3.0, extract_numeric_score(debug_info.get("completeness_score", 0.0)))
                 relevance_score = extract_numeric_score(debug_info.get("relevance_score", 0.0))
                 projects_score = extract_numeric_score(debug_info.get("projects_score", 0.0))
@@ -299,7 +391,7 @@ def fix_json_and_rating_calculation(rating_text, rating_type="profile", enhance_
                 print(f"⚠️ Error extracting profile scores: {e}")
                 calculated_sum = 0.0
             
-            # Safe conversion of profile_rating to float
+            # Correct the rating if there's a discrepancy
             try:
                 llm_reported_rating = extract_numeric_score(rating_data.get("profile_rating", 0.0))
             except (ValueError, TypeError) as e:
@@ -307,14 +399,13 @@ def fix_json_and_rating_calculation(rating_text, rating_type="profile", enhance_
                 llm_reported_rating = calculated_sum
 
             if abs(llm_reported_rating - calculated_sum) > 0.01:
-                print(f"⚠️ Correcting {rating_type} sum. LLM: {llm_reported_rating}, Calculated: {calculated_sum}")
+                print(f"⚠️ Correcting profile sum. LLM: {llm_reported_rating}, Calculated: {calculated_sum}")
                 rating_data["profile_rating"] = str(calculated_sum)
-                # Also ensure debug info is consistent
                 if "grading_debug" not in rating_data:
                     rating_data["grading_debug"] = {}
                 rating_data["grading_debug"]["calculated_sum"] = str(calculated_sum)
                 if "sum_check" in rating_data["grading_debug"]:
-                     rating_data["grading_debug"]["sum_check"]["profile_reported"] = str(calculated_sum)
+                    rating_data["grading_debug"]["sum_check"]["profile_reported"] = str(calculated_sum)
         
         elif rating_type == "intro":
             debug_info = rating_data.get("grading_debug", {})
@@ -332,8 +423,7 @@ def fix_json_and_rating_calculation(rating_text, rating_type="profile", enhance_
                 debug_info["info_coverage_score"] = info_coverage
             
             calculated_sum = round(grammar_clarity + structure + info_coverage + relevance, 1)
-            
-            # Safe conversion of intro_rating to float
+              # Safe conversion of intro_rating to float
             try:
                 llm_reported_rating = extract_numeric_score(rating_data.get("intro_rating", 0.0))
             except (ValueError, TypeError) as e:
@@ -341,12 +431,13 @@ def fix_json_and_rating_calculation(rating_text, rating_type="profile", enhance_
                 llm_reported_rating = calculated_sum
 
             if abs(llm_reported_rating - calculated_sum) > 0.01:
-                print(f"⚠️ Correcting {rating_type} sum. LLM: {llm_reported_rating}, Calculated: {calculated_sum}")
+                print(f"⚠️ Correcting intro sum. LLM: {llm_reported_rating}, Calculated: {calculated_sum}")
                 rating_data["intro_rating"] = str(calculated_sum)
-                if "grading_debug" in rating_data:
-                    rating_data["grading_debug"]["calculated_sum"] = str(calculated_sum)
-                    if "sum_check" in rating_data["grading_debug"]:
-                        rating_data["grading_debug"]["sum_check"]["intro_reported"] = str(calculated_sum)
+                if "grading_debug" not in rating_data:
+                    rating_data["grading_debug"] = {}
+                rating_data["grading_debug"]["calculated_sum"] = str(calculated_sum)
+                if "sum_check" in rating_data["grading_debug"]:
+                    rating_data["grading_debug"]["sum_check"]["intro_reported"] = str(calculated_sum)
         
         # Ensure the score is within valid range (0-10)
         score_key = f"{rating_type}_rating"

@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.7",
+  "grading_explanation": {
+    "completeness": "2.7/3 – 27 of 35 fields filled (77% completion).",
+    "relevance": "1.5/2 – AI projects with machine learning and deep learning show a good alignment to the stated target role",
+    "projects_or_internships": "2.5/3 – Multiple well-described projects (ConvAi, Project 11, Face and QR attendance) with technologies, problem statements, solutions, and outcomes mentioned",
+    "extra_achievements": "2.0/2 – Outstanding achievements such as the Excellence in Academia Award and first place at AI Genesis and INNOTHON 2025"
+  },
+  "grading_debug": {
+    "completeness_score": "2.7",
+    "relevance_score": "1.5",
+    "projects_score": "2.5",
+    "achievements_score": "2.0",
+    "calculated_sum": "8.7",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.7"
+    },
+    "notes": "This candidate has strong AI and machine learning skills and several significant achievements. However, they lack specific work experience relevant to the target role and should consider gaining more targeted experience in their area of interest."
+  },
+  "evaluated_file": "filled_forms\\23112064\\form_20250610_153712.json",
+  "evaluation_timestamp": "2025-06-10T15:37:24.141252"
+}

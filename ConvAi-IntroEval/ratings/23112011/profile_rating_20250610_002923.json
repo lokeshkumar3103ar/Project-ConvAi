@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.1",
+  "grading_explanation": {
+    "completeness": "2.61/3 – 19 of 35 fields filled (54% completion).",
+    "relevance": "1.5/2 – Lokesh's project and work experience show good alignment with the target role as AI, ML engineer or prompt engineer, but some specific technical skills like CNN and linear regression are missing.",
+    "projects_or_internships": "2.0/3 – Lokesh has one detailed project mention (ConvAi) which demonstrates the use of various technologies, problem statement, solution, and outcomes. However, it is not explicitly stated that Lokesh was the primary developer of this project.",
+    "extra_achievements": "2.0/2 – Lokesh has multiple significant achievements such as first place at AI Genesis and INNOTHON 2025, Excellence in Academia Award, and ranked second at Hindustan University for academic performance."
+  },
+  "grading_debug": {
+    "completeness_score": "2.61",
+    "relevance_score": "1.5",
+    "projects_score": "2.0",
+    "achievements_score": "2.0",
+    "calculated_sum": "8.1",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.1"
+    },
+    "notes": "Lokesh's profile provides a good foundation for an AI or ML role, but there are some gaps in terms of technical skills and explicit project contributions. It is recommended to ask further questions during the interview process to clarify these areas."
+  },
+  "evaluated_file": "filled_forms\\23112011\\form_20250610_002747.json",
+  "evaluation_timestamp": "2025-06-10T00:29:23.190472"
+}

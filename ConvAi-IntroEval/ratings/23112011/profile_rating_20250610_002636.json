@@ -1,0 +1,23 @@
+{
+  "profile_rating": "9.5",
+  "grading_explanation": {
+    "completeness": "3.0/3 – 3 of 35 fields filled (9% completion).",
+    "relevance": "2.0/2 – Strong alignment: Skills like Python, machine learning, deep learning, data analysis directly match the target role (AI, ML, data science, or prompt engineering roles)",
+    "projects_or_internships": "2.5/3 – Very good: 1 detailed project with technologies mentioned (Python, machine learning, deep learning) and clear problem/solution; some outcomes also provided",
+    "extra_achievements": "2.0/2 – Outstanding: Multiple significant achievements such as first place at AI Genesis and INNOTHON 2025, Excellence in Academia Award, ranked second at Hindustan University for academic performance"
+  },
+  "grading_debug": {
+    "completeness_score": "3.0",
+    "relevance_score": "2.0",
+    "projects_score": "2.5",
+    "achievements_score": "2.0",
+    "calculated_sum": "9.5",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "9.5"
+    },
+    "notes": "The candidate has a strong technical background and some notable achievements, but the profile lacks essential information such as age, specific education graduation year, and personal traits. The project descriptions could be more detailed to showcase the depth of understanding and experience."
+  },
+  "evaluated_file": "filled_forms\\23112011\\form_20250610_002620.json",
+  "evaluation_timestamp": "2025-06-10T00:26:36.137539"
+}

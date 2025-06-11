@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.2",
+  "grading_explanation": {
+    "completeness": "2.9/3 – 28 of 35 fields filled (80% completion).",
+    "relevance": "1.75/2 – Lokesh has relevant experience in machine learning, deep learning, and programming skills through his internship at COTHON Solutions. However, the lack of specific technical roles mentioned in his profile indicates a partial alignment with the target role.",
+    "projects_or_internships": "2.0/3 – Lokesh has 1 detailed project (ConvAi) and mentions several technologies used. The outcomes/accomplishments section could be more specific about the impacts of this project to increase the score further.",
+    "extra_achievements": "1.5/2 – Lokesh has several achievements, including academic excellence awards, participation in various tech events, and relevant hobbies. The lack of detailed descriptions, however, limits the overall score."
+  },
+  "grading_debug": {
+    "completeness_score": "2.9",
+    "relevance_score": "1.75",
+    "projects_score": "2.0",
+    "achievements_score": "1.5",
+    "calculated_sum": "8.2",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.2"
+    },
+    "notes": "Lokesh has a solid education background and relevant skills for the target role. However, he could improve by providing more specific details about his projects and achievements to better align with the job requirements."
+  },
+  "evaluated_file": "filled_forms\\23112011\\form_20250611_183800.json",
+  "evaluation_timestamp": "2025-06-11T18:38:12.060895"
+}

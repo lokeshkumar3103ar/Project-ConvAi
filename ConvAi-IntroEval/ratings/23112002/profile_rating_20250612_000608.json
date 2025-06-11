@@ -1,0 +1,23 @@
+{
+  "profile_rating": "10.0",
+  "grading_explanation": {
+    "completeness": "3.0/3 – 3 of 35 fields filled (100% completion).",
+    "relevance": "2.0/2 – The candidate's skills and education in data science align well with the target role as an AI, ML engineer; the projects mentioned also demonstrate relevant experience with machine learning and deep learning.",
+    "projects_or_internships": "3.0/3 – The detailed description of the ConvAi project showcases Lokesh's ability to work on complex problems using technologies such as Python and machine learning, with clear outcomes. Project 11 and Face and QR attendance demonstrate additional experience in predictive analytics, automation, and facial recognition.",
+    "extra_achievements": "2.0/2 – Lokesh has achieved multiple notable milestones, including winning first place at AI Genesis and INNOTHON 2025, receiving the Excellence in Academia Award, and ranking second at Hindustan University for academic performance."
+  },
+  "grading_debug": {
+    "completeness_score": "3.0",
+    "relevance_score": "2.0",
+    "projects_score": "3.0",
+    "achievements_score": "2.0",
+    "calculated_sum": "10.0",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "10.0"
+    },
+    "notes": "The candidate's profile showcases strong educational background and relevant skills for the target role; however, further evaluation of work experience and specific project contributions is recommended."
+  },
+  "evaluated_file": "filled_forms\\23112002\\form_20250612_000541.json",
+  "evaluation_timestamp": "2025-06-12T00:05:53.148061"
+}

@@ -29,13 +29,12 @@ from fastapi import (
     HTTPException,
     Request,
     UploadFile,
-    BackgroundTasks,
     status,
     Depends
 )
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 
 #login 
-from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from argon2 import PasswordHasher #argon2 for password hashing
 from auth import get_current_teacher, create_access_token, get_current_user
@@ -44,12 +43,11 @@ from argon2.exceptions import VerifyMismatchError
 import secrets
 from datetime import datetime, timedelta
 
-from models import User, Teacher, TeacherStudentMap, Note, SessionLocal, PasswordResetToken #database models
+from models import User, Teacher, TeacherStudentMap, SessionLocal, PasswordResetToken #database models
 
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
-from sse_starlette.sse import EventSourceResponse as StreamingResponse
 
 # Import teacher routes
 from teacher_routes import router as teacher_router
@@ -77,16 +75,13 @@ from file_organizer import (
     log_file_operation
 )
 from app.llm.form_extractor import (
-    extract_fields_from_transcript,
-    extract_fields_from_transcript_stream
+    extract_fields_from_transcript
 )
 from app.llm.profile_rater_updated import (
-    evaluate_profile_rating,
-    evaluate_profile_rating_stream
+    evaluate_profile_rating
 )
 from app.llm.intro_rater_updated import (
-    evaluate_intro_rating_sync,
-    evaluate_intro_rating_stream
+    evaluate_intro_rating_sync
 )
 from app.llm.utils import (
     get_latest_form_file,
@@ -94,13 +89,15 @@ from app.llm.utils import (
     save_rating_to_file,
     DISABLE_LLM
 )
+from app.llm.queue_manager import PhaseType, TaskStatus
 
 # ==================== CONFIGURATION ====================
 
 # Application settings
 APP_HOST = "localhost"
 APP_PORT = 8000
-DEBUG_MODE = True
+DEBUG_MODE = True  # Consistent debug mode setting
+
 
 # Directory paths
 BASE_DIR = Path(__file__).parent
@@ -108,8 +105,8 @@ VIDEOS_DIR = BASE_DIR / "videos"
 TRANSCRIPTION_DIR = BASE_DIR / "transcription"
 FILLED_FORMS_DIR = BASE_DIR / "filled_forms"
 RATINGS_DIR = BASE_DIR / "ratings"
-STATIC_DIR = BASE_DIR / "static"
 TEMPLATES_DIR = BASE_DIR / "templates"
+STATIC_DIR = BASE_DIR / "static"
 
 # Ensure directories exist
 for directory in [VIDEOS_DIR, TRANSCRIPTION_DIR, FILLED_FORMS_DIR, RATINGS_DIR]:
@@ -138,8 +135,70 @@ app.add_middleware(
 if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
+# Mount transcription and filled_forms directories for file serving
+if TRANSCRIPTION_DIR.exists():
+    app.mount("/transcription", StaticFiles(directory=str(TRANSCRIPTION_DIR)), name="transcription")
+if FILLED_FORMS_DIR.exists():
+    app.mount("/filled_forms", StaticFiles(directory=str(FILLED_FORMS_DIR)), name="filled_forms")
+
 # Include teacher routes
 app.include_router(teacher_router)
+
+# ==================== QUEUE MANAGER INITIALIZATION ====================
+
+# Import queue manager directly
+from app.llm.queue_manager import TwoPhaseQueueManager, PhaseType, TaskStatus
+
+# Global queue manager instance (will be initialized in startup event)
+queue_manager = None
+
+# Initialize queue manager only once
+_queue_manager_initialized = False
+
+@app.on_event("startup")
+async def startup_event():
+    """Initialize queue manager on startup."""
+    global _queue_manager_initialized, queue_manager
+    
+    log_info("🚀 Starting ConvAi-IntroEval with Two-Phase Queue System")
+    
+    # Initialize queue manager only if not already initialized
+    if not _queue_manager_initialized and not DISABLE_LLM:
+        queue_manager = TwoPhaseQueueManager()
+        queue_manager.start()
+        _queue_manager_initialized = True
+        log_info("✅ Two-Phase Queue Manager started successfully")
+    else:
+        log_info("ℹ️ Two-Phase Queue Manager already initialized, skipping")
+    
+    # Additional startup checks
+    log_info(f"📁 Base directory: {BASE_DIR}")
+    log_info(f"🎥 Videos directory: {VIDEOS_DIR}")
+    log_info(f"📝 Transcription directory: {TRANSCRIPTION_DIR}")
+    log_info(f"📋 Forms directory: {FILLED_FORMS_DIR}")
+    log_info(f"⭐ Ratings directory: {RATINGS_DIR}")
+    log_info(f"🧠 LLM disabled: {DISABLE_LLM}")
+    
+    # Check if Ollama is running (if LLM is enabled)
+    if not DISABLE_LLM:
+        try:
+            import requests
+            response = requests.get("http://localhost:11434/api/tags", timeout=5)
+            if response.status_code == 200:
+                log_info("✅ Ollama server is running and accessible")
+            else:
+                log_info("⚠️ Ollama server may not be running properly")
+        except Exception as e:
+            log_info(f"⚠️ Could not connect to Ollama server: {e}")
+
+@app.on_event("shutdown") 
+async def shutdown_event():
+    """Clean shutdown of queue manager."""
+    log_info("🛑 Shutting down ConvAi-IntroEval")
+    
+    # Shutdown queue manager
+    queue_manager.stop()
+    log_info("✅ Queue Manager stopped successfully")
 
 # ==================== UTILITY FUNCTIONS ====================
 
@@ -147,6 +206,11 @@ def log_info(message: str):
     """Log information with timestamp."""
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"[{timestamp}] INFO: {message}")
+
+def log_warning(message: str):
+    """Log warning with timestamp."""
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"[{timestamp}] WARNING: {message}")
 
 def log_error(message: str, error: Exception = None):
     """Log error with timestamp and optional exception details."""
@@ -175,6 +239,7 @@ def validate_file_extension(filename: str) -> bool:
 async def process_rating_background(form_filepath: str, transcript_filepath: str, rating_type: str, roll_number: str = None):
     """
     Background task to process ratings asynchronously with file organization.
+    Now uses the queue manager system directly for task processing.
     
     Args:
         form_filepath: Path to the filled form JSON file
@@ -183,35 +248,44 @@ async def process_rating_background(form_filepath: str, transcript_filepath: str
         roll_number: Student roll number for file organization (optional)
     """
     try:
-        log_info(f"Starting background {rating_type} rating processing for roll: {roll_number or 'teacher'}")
+        log_info(f"Starting {rating_type} rating processing for roll: {roll_number or 'unknown'}")
         
+        # Import rating functions directly
         if rating_type == "profile":
-            # Process profile rating - use sync function, not async
-            rating_data = evaluate_profile_rating(form_filepath)
+            from app.llm.profile_rater_updated import evaluate_profile_rating
+            
+            # Generate profile rating synchronously 
+            rating_filepath = await asyncio.to_thread(
+                evaluate_profile_rating,
+                form_filepath, 
+                transcript_filepath, 
+                roll_number
+            )
         elif rating_type == "intro":
-            # Process intro rating - use sync function, not async
-            rating_data = evaluate_intro_rating_sync(transcript_filepath)
+            from app.llm.intro_rater_updated import evaluate_intro_rating_sync
+            
+            # Generate intro rating synchronously
+            rating_filepath = await asyncio.to_thread(
+                evaluate_intro_rating_sync,
+                form_filepath, 
+                transcript_filepath, 
+                roll_number
+            )
         else:
             raise ValueError(f"Invalid rating type: {rating_type}")
         
-        # Save the rating to file with organization
-        if rating_data:
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            rating_filename = f"{rating_type}_rating_{timestamp}.json"
-              # Use file organization system to save the rating
-            rating_filepath = organize_path("ratings", rating_filename, roll_number)
-            rating_filepath.parent.mkdir(parents=True, exist_ok=True)
-            
-            with open(rating_filepath, 'w', encoding='utf-8') as f:
-                json.dump(rating_data, f, indent=2, ensure_ascii=False)
-            
-            log_info(f"✅ {rating_type.title()} rating saved with organization: {rating_filepath}")
+        if rating_filepath:
+            log_info(f"✅ {rating_type.title()} rating completed: {rating_filepath}")
             log_file_operation(f"CREATE {rating_type}_rating", rating_filepath, roll_number)
+            return rating_filepath
         else:
-            log_error(f"❌ Failed to generate {rating_type} rating - no data returned")
+            log_error(f"❌ Failed to generate {rating_type} rating - no file path returned")
+            return None
             
     except Exception as e:
-        log_error(f"❌ Background {rating_type} rating processing failed", e)
+        log_error(f"❌ {rating_type} rating processing failed", e)
+        log_error(traceback.format_exc())
+        return None
 
 # ==================== API ROUTES ====================
 
@@ -239,367 +313,185 @@ async def health_check():
     return {
         "status": "healthy",
         "timestamp": datetime.now().isoformat(),
-        "version": "2.0.0",
-        "llm_disabled": DISABLE_LLM
+        "version": "2.0.0",        "llm_disabled": DISABLE_LLM
     }
 
-@app.post("/transcribe")
-async def transcribe_endpoint(
-    background_tasks: BackgroundTasks,
-    file: UploadFile = File(...),
-    extract_fields: bool = Form(True),
-    generate_ratings: bool = Form(True),
+# ==================== FIELD EXTRACTION STATUS ====================
+
+@app.get("/extract-fields-status")
+async def extract_fields_status(
+    task_id: str = None,
     current_user: Optional[Union[User, Teacher]] = Depends(get_current_user)
 ):
     """
-    Transcribe uploaded file and optionally extract fields with file organization.
-    This endpoint is specifically designed for frontend compatibility.
-    
-    Args:
-        file: The uploaded audio/video file
-        extract_fields: Whether to extract fields from the transcript
-        generate_ratings: Whether to generate ratings in the background
-        current_user: Current authenticated user (injected by dependency)
-      Returns:
-        JSON response with transcription_file path and extracted_fields info
+    Check status of field extraction for a specific task or user.
+    Returns immediate status without streaming.
     """
     try:
-        log_info(f"📤 Frontend transcribe request: {file.filename} (user: {current_user.username if current_user else 'unknown'})")
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Authentication required")
         
-        # Validate file extension
-        if not validate_file_extension(file.filename):
-            raise HTTPException(
-                status_code=400,
-                detail=f"Unsupported file type. Supported extensions: {', '.join(SUPPORTED_EXTENSIONS)}"
-            )
-          # Extract user information for file organization
-        roll_number = current_user.roll_number if current_user and hasattr(current_user, 'roll_number') else None
-        user_info = f"roll: {roll_number}" if roll_number else f"teacher: {current_user.username if current_user else 'unknown'}"
-        log_info(f"👤 User info for file organization: {user_info}")
-          # Generate safe filename and save uploaded file with organization
-        safe_filename = get_safe_filename(file.filename)
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        final_filename = f"{timestamp}_{safe_filename}"
+        user_id = current_user.username
+        roll_number = current_user.roll_number if hasattr(current_user, 'roll_number') else None
         
-        # Use file organization system to save the uploaded file
-        success, file_path, status_message = save_file_with_organization(
-            content=file.file.read(),
-            base_dir=Path("videos"),
-            filename=final_filename,
-            roll_number=roll_number,
-            file_type="binary"
-        )
+        log_info(f"🔄 Checking field extraction status for user: {user_id} (roll: {roll_number})")
         
-        if not success:
-            raise HTTPException(status_code=500, detail=f"Failed to save uploaded file: {status_message}")
-        
-        log_info(f"💾 File saved with organization: {file_path}")
-        log_file_operation("SAVE video", file_path, roll_number)
-        
-        # Transcribe the file with roll number for organized output
-        log_info("🎤 Starting transcription...")
-        transcript, transcript_path = transcribe_file(file_path, TRANSCRIPTION_DIR, roll_number)
-        log_info(f"✅ Transcription completed: {transcript_path}")
-        log_file_operation("CREATE transcript", transcript_path, roll_number)
-        
-        response_data = {
-            "transcription_file": str(transcript_path),
-            "transcript": transcript
-        }
-          # Extract fields if requested
-        if extract_fields and not DISABLE_LLM:
-            try:
-                log_info("🧠 Starting field extraction...")
-                
-                # Read the transcript content
-                with open(transcript_path, 'r', encoding='utf-8') as f:
-                    transcript_content = f.read()
-                
-                # extract_fields_from_transcript is a sync function, not async
-                extracted_data = extract_fields_from_transcript(transcript_content, roll_number)
-                
-                if extracted_data:
-                    # Save extracted fields with file organization
-                    form_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                    form_filename = f"filled_form_{form_timestamp}.json"
-                    # Use file organization system to save the form
-                    form_filepath = organize_path("filled_forms", form_filename, roll_number)
-                    form_filepath.parent.mkdir(parents=True, exist_ok=True)
-                    
-                    with open(form_filepath, 'w', encoding='utf-8') as f:
-                        json.dump(extracted_data, f, indent=2, ensure_ascii=False)
-                    
-                    log_info(f"✅ Fields extracted and saved with organization: {form_filepath}")
-                    log_file_operation("CREATE form", form_filepath, roll_number)
-                    
-                    response_data["extracted_fields"] = {
-                        "status": "saved",
-                        "file": str(form_filepath),
-                        "data": extracted_data
-                    }
-                    
-                    # Generate ratings in background if requested
-                    if generate_ratings:
-                        log_info("🔄 Starting background rating generation...")
-                        background_tasks.add_task(
-                            process_rating_background,
-                            str(form_filepath),
-                            str(transcript_path),
-                            "profile",
-                            roll_number
-                        )
-                        background_tasks.add_task(
-                            process_rating_background,
-                            str(form_filepath),
-                            str(transcript_path),
-                            "intro",
-                            roll_number
-                        )
-                        response_data["extracted_fields"]["ratings_status"] = "generating_in_background"
-                    
-                else:
-                    log_error("❌ Field extraction failed - no data returned")
-                    response_data["extracted_fields"] = {
-                        "status": "failed",
-                        "error": "No data extracted from transcript"
-                    }
-                    
-            except Exception as e:
-                log_error("❌ Field extraction failed", e)
-                response_data["extracted_fields"] = {
-                    "status": "failed",
-                    "error": str(e)
-                }
-        elif extract_fields and DISABLE_LLM:
-            response_data["extracted_fields"] = {
+        if DISABLE_LLM:
+            return JSONResponse(content={
                 "status": "disabled",
                 "message": "LLM functionality is disabled"
-            }
+            })
         
-        return JSONResponse(content=response_data)
+        # Check if user has completed forms
+        form_files = glob_with_roll_number("filled_forms", "*.json", roll_number)
         
+        if form_files:
+            # Get the most recent form
+            latest_form = max(form_files, key=lambda x: x.stat().st_mtime)
+            
+            try:
+                with open(latest_form, 'r', encoding='utf-8') as f:
+                    form_data = json.load(f)
+                
+                return JSONResponse(content={
+                    "status": "completed",
+                    "file_path": str(latest_form),
+                    "data": form_data,
+                    "message": "Field extraction completed"
+                })
+            except Exception as e:
+                log_error(f"❌ Error loading form file: {latest_form}", e)
+                return JSONResponse(content={
+                    "status": "error",
+                    "message": f"Error loading form file: {str(e)}"
+                })
+        else:
+            return JSONResponse(content={
+                "status": "pending",
+                "message": "Field extraction not yet completed"
+            })
+            
     except HTTPException:
         raise
     except Exception as e:
-        log_error("❌ Transcription endpoint failed", e)
-        raise HTTPException(status_code=500, detail=f"Transcription failed: {str(e)}")
+        log_error("❌ Field extraction status check failed", e)
+        raise HTTPException(status_code=500, detail=f"Status check failed: {str(e)}")
 
-@app.get("/extract-fields-stream")
-async def extract_fields_stream(transcript_path: str):
+@app.get("/profile-rating-status")
+async def profile_rating_status(
+    current_user: Optional[Union[User, Teacher]] = Depends(get_current_user)
+):
     """
-    Stream field extraction from transcript file.
-    Expected by frontend for real-time field extraction.
-    NOTE: This returns already extracted data instead of re-processing to avoid duplicate LLM calls.
+    Check status of profile rating for the current user.
+    Returns immediate status without streaming.
     """
     try:
-        log_info(f"🔄 Checking for existing extracted fields for: {transcript_path}")
-          # Extract roll number from transcript path for file organization
-        roll_number = extract_roll_number_from_path(transcript_path)
-        user_info = f"roll: {roll_number}" if roll_number else "teacher/unknown"
-        log_info(f"👤 Extracted user info from path: {user_info}")
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Authentication required")
+        
+        user_id = current_user.username
+        roll_number = current_user.roll_number if hasattr(current_user, 'roll_number') else None
+        
+        log_info(f"🔄 Checking profile rating status for user: {user_id} (roll: {roll_number})")
         
         if DISABLE_LLM:
-            # Return a simple SSE response indicating LLM is disabled
-            async def generate_disabled_response():
-                yield f"data: {json.dumps({'status': 'disabled', 'message': 'LLM functionality is disabled'})}\n\n"
-            
-            return StreamingResponse(generate_disabled_response(), media_type="text/event-stream")
+            return JSONResponse(content={
+                "status": "disabled",
+                "message": "LLM functionality is disabled"
+            })
         
-        # Check if we already have extracted data for this transcript
-        try:
-            result = get_latest_form_file()
-            if isinstance(result, tuple) and len(result) == 2:
-                form_filepath, form_data = result
-            else:
-                log_info("⚠️ get_latest_form_file did not return expected tuple format")
-                form_filepath, form_data = None, None
-        except Exception as form_error:
-            log_error(f"❌ Error getting latest form file: {str(form_error)}", form_error)
-            form_filepath, form_data = None, None
+        # Check for existing profile ratings for this user
+        profile_files = glob_with_roll_number("ratings", "*profile_rating*.json", roll_number)
         
-        async def generate_field_stream():
-            try:
-                # Properly check if form_filepath is a string and the file exists
-                if isinstance(form_filepath, str) and Path(form_filepath).exists():
-                    log_info(f"📄 Found existing extracted form: {form_filepath}")
-                    
-                    # Use the already loaded form data
-                    extracted_data = form_data
-                    # Send the extracted data as a completion message
-                    yield f"data: {json.dumps({'status': 'completed', 'data': extracted_data, 'message': 'Field extraction already completed'})}\n\n"
-                    yield f"data: {json.dumps({'status': 'done'})}\n\n"
-                else:
-                    log_info("🔄 No existing form found, performing live extraction...")
-                    # Only if no extracted data exists, perform live extraction
-                    try:
-                        # Read the transcript content from the file
-                        transcript_file_path = Path(transcript_path)
-                        if not transcript_file_path.exists():
-                            yield f"data: {json.dumps({'status': 'error', 'message': f'Transcript file not found: {transcript_path}'})}\n\n"
-                            return
-                        
-                        with open(transcript_file_path, 'r', encoding='utf-8') as f:
-                            transcript_content = f.read()
-                        
-                        # Pass the transcript content and extracted roll_number to the extraction function
-                        async for chunk in extract_fields_from_transcript_stream(transcript_content, roll_number):
-                            yield chunk
-                    except Exception as extraction_error:
-                        log_error(f"❌ Live extraction failed: {str(extraction_error)}", extraction_error)
-                        yield f"data: {json.dumps({'status': 'error', 'message': f'Extraction failed: {str(extraction_error)}'})}\n\n"
-            except Exception as stream_error:
-                log_error("❌ Error in field stream generation", stream_error)
-                yield f"data: {json.dumps({'status': 'error', 'message': str(stream_error)})}\n\n"
-        
-        return StreamingResponse(generate_field_stream(), media_type="text/event-stream")
-            
-    except Exception as e:
-        log_error("❌ Streaming field extraction failed", e)
-        
-        async def generate_error_response():
-            yield f"data: {json.dumps({'status': 'error', 'message': str(e)})}\n\n"
-        
-        return StreamingResponse(generate_error_response(), media_type="text/event-stream")
-
-@app.get("/profile-rating-stream")
-async def profile_rating_stream():
-    """
-    Stream profile rating generation with file organization support.
-    Expected by frontend for real-time profile rating.
-    NOTE: This checks for existing ratings to avoid duplicate processing.
-    """
-    try:
-        log_info("🔄 Checking for existing profile rating...")
-        
-        if DISABLE_LLM:
-            async def generate_disabled_response():
-                yield f"data: {json.dumps({'status': 'disabled', 'message': 'LLM functionality is disabled'})}\n\n"
-            
-            return StreamingResponse(generate_disabled_response(), media_type="text/event-stream")
-        
-        # Check if we already have a recent profile rating using file organization
-        recent_profile_files = glob_with_roll_number("ratings", "*profile_rating*.json")
-        if recent_profile_files:
+        if profile_files:
             # Get the most recent profile rating
-            latest_rating_file = max(recent_profile_files, key=lambda x: x.stat().st_mtime)
+            latest_rating = max(profile_files, key=lambda x: x.stat().st_mtime)
             
-            async def generate_existing_rating():
-                try:
-                    log_info(f"📄 Found existing profile rating: {latest_rating_file}")
-                    
-                    # Load the existing rating data
-                    with open(latest_rating_file, 'r', encoding='utf-8') as f:
-                        rating_data = json.load(f)
-                    
-                    # Send the rating data as a completion message
-                    yield f"data: {json.dumps({'status': 'completed', 'data': rating_data, 'message': 'Profile rating already available'})}\n\n"
-                    yield f"data: {json.dumps({'status': 'done'})}\n\n"
-                except Exception as e:
-                    log_error("❌ Error loading existing rating", e)
-                    yield f"data: {json.dumps({'status': 'error', 'message': str(e)})}\n\n"
-            
-            return StreamingResponse(generate_existing_rating(), media_type="text/event-stream")
-        
-        # If no existing rating, get the form file and generate new rating using file organization
-        form_files = glob_with_roll_number("filled_forms", "*.json")
-        if not form_files:
-            async def generate_error_response():
-                yield f"data: {json.dumps({'status': 'error', 'message': 'No form file found for rating'})}\n\n"
-            
-            return StreamingResponse(generate_error_response(), media_type="text/event-stream")
-        
-        # Get the most recent form file
-        form_filepath = max(form_files, key=lambda x: x.stat().st_mtime)
-        log_info(f"📄 Using form file for rating: {form_filepath}")
-        
-        # Generate new profile rating using streaming
-        async def generate_rating_stream():
             try:
-                log_info("🔄 Generating new profile rating...")
-                # evaluate_profile_rating_stream is an async generator
-                async for chunk in evaluate_profile_rating_stream(str(form_filepath)):
-                    yield chunk
-            except Exception as stream_error:
-                yield f"data: {json.dumps({'status': 'error', 'message': str(stream_error)})}\n\n"
-        
-        return StreamingResponse(generate_rating_stream(), media_type="text/event-stream")
+                with open(latest_rating, 'r', encoding='utf-8') as f:
+                    rating_data = json.load(f)
+                
+                return JSONResponse(content={
+                    "status": "completed",
+                    "file_path": str(latest_rating),
+                    "data": rating_data,
+                    "message": "Profile rating completed"
+                })
+            except Exception as e:
+                log_error(f"❌ Error loading profile rating: {latest_rating}", e)
+                return JSONResponse(content={
+                    "status": "error",
+                    "message": f"Error loading profile rating: {str(e)}"
+                })
+        else:
+            return JSONResponse(content={
+                "status": "pending",
+                "message": "Profile rating not yet completed"
+            })
             
+    except HTTPException:
+        raise
     except Exception as e:
-        log_error("❌ Streaming profile rating failed", e)
-        
-        async def generate_error_response():
-            yield f"data: {json.dumps({'status': 'error', 'message': str(e)})}\n\n"
-        
-        return StreamingResponse(generate_error_response(), media_type="text/event-stream")
+        log_error("❌ Profile rating status check failed", e)
+        raise HTTPException(status_code=500, detail=f"Status check failed: {str(e)}")
 
-@app.get("/intro-rating-stream")
-async def intro_rating_stream():
+@app.get("/intro-rating-status")
+async def intro_rating_status(
+    current_user: Optional[Union[User, Teacher]] = Depends(get_current_user)
+):
     """
-    Stream introduction rating generation.
-    Expected by frontend for real-time intro rating.
-    NOTE: This checks for existing ratings to avoid duplicate processing.
+    Check status of intro rating for the current user.
+    Returns immediate status without streaming.
     """
     try:
-        log_info("🔄 Checking for existing intro rating...")
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Authentication required")
+        
+        user_id = current_user.username
+        roll_number = current_user.roll_number if hasattr(current_user, 'roll_number') else None
+        
+        log_info(f"🔄 Checking intro rating status for user: {user_id} (roll: {roll_number})")
         
         if DISABLE_LLM:
-            async def generate_disabled_response():
-                yield f"data: {json.dumps({'status': 'disabled', 'message': 'LLM functionality is disabled'})}\n\n"
-            
-            return StreamingResponse(generate_disabled_response(), media_type="text/event-stream")
-          # Check if we already have a recent intro rating using file organization
-        recent_intro_files = glob_with_roll_number("ratings", "*intro_rating*.json")
-        if recent_intro_files:
+            return JSONResponse(content={
+                "status": "disabled",
+                "message": "LLM functionality is disabled"
+            })
+        
+        # Check for existing intro ratings for this user
+        intro_files = glob_with_roll_number("ratings", "*intro_rating*.json", roll_number)
+        
+        if intro_files:
             # Get the most recent intro rating
-            latest_rating_file = max(recent_intro_files, key=lambda x: x.stat().st_mtime)
+            latest_rating = max(intro_files, key=lambda x: x.stat().st_mtime)
             
-            async def generate_existing_rating():
-                try:
-                    log_info(f"📄 Found existing intro rating: {latest_rating_file}")
-                    
-                    # Load the existing rating data
-                    with open(latest_rating_file, 'r', encoding='utf-8') as f:
-                        rating_data = json.load(f)
-                    
-                    # Send the rating data as a completion message
-                    yield f"data: {json.dumps({'status': 'completed', 'data': rating_data, 'message': 'Intro rating already available'})}\n\n"
-                    yield f"data: {json.dumps({'status': 'done'})}\n\n"
-                except Exception as e:
-                    log_error("❌ Error loading existing intro rating", e)
-                    yield f"data: {json.dumps({'status': 'error', 'message': str(e)})}\n\n"
-            
-            return StreamingResponse(generate_existing_rating(), media_type="text/event-stream")
-          # If no existing rating, get the transcript file and generate new rating using file organization
-        transcript_files = glob_with_roll_number("transcription", "*.txt")
-        if not transcript_files:
-            async def generate_error_response():
-                yield f"data: {json.dumps({'status': 'error', 'message': 'No transcript file found for rating'})}\n\n"
-            
-            return StreamingResponse(generate_error_response(), media_type="text/event-stream")
-        
-        # Get the most recent transcript file
-        transcript_filepath = max(transcript_files, key=lambda x: x.stat().st_mtime)
-        log_info(f"📄 Using transcript file for rating: {transcript_filepath}")
-        
-        # Generate new intro rating using streaming
-        async def generate_rating_stream():
             try:
-                log_info("🔄 Generating new intro rating...")
-                # evaluate_intro_rating_stream is an async generator
-                async for chunk in evaluate_intro_rating_stream(str(transcript_filepath)):
-                    yield chunk
-            except Exception as stream_error:
-                yield f"data: {json.dumps({'status': 'error', 'message': str(stream_error)})}\n\n"
-        
-        return StreamingResponse(generate_rating_stream(), media_type="text/event-stream")
+                with open(latest_rating, 'r', encoding='utf-8') as f:
+                    rating_data = json.load(f)
+                
+                return JSONResponse(content={
+                    "status": "completed",
+                    "file_path": str(latest_rating),
+                    "data": rating_data,
+                    "message": "Introduction rating completed"
+                })
+            except Exception as e:
+                log_error(f"❌ Error loading intro rating: {latest_rating}", e)
+                return JSONResponse(content={
+                    "status": "error",
+                    "message": f"Error loading intro rating: {str(e)}"
+                })
+        else:
+            return JSONResponse(content={
+                "status": "pending",
+                "message": "Introduction rating not yet completed"
+            })
             
+    except HTTPException:
+        raise
     except Exception as e:
-        log_error("❌ Streaming intro rating failed", e)
-        
-        async def generate_error_response():
-            yield f"data: {json.dumps({'status': 'error', 'message': str(e)})}\n\n"
-        
-        return StreamingResponse(generate_error_response(), media_type="text/event-stream")
+        log_error("❌ Intro rating status check failed", e)
+        raise HTTPException(status_code=500, detail=f"Status check failed: {str(e)}")
 
 @app.get("/rating/{filename}")
 async def get_rating_file(filename: str):
@@ -811,35 +703,356 @@ async def check_rating_status(form_id: str = None):
         log_error(f"❌ Error checking rating status for form_id {form_id}", e)
         raise HTTPException(status_code=500, detail=f"Error checking rating status: {str(e)}")
 
-# ==================== APPLICATION STARTUP ====================
+# ==================== NEW QUEUE-BASED API ENDPOINTS ====================
 
-@app.on_event("startup")
-async def startup_event():
-    """Application startup event handler."""
-    log_info("🚀 ConvAi-IntroEval application starting up...")
-    log_info(f"📁 Base directory: {BASE_DIR}")
-    log_info(f"🎥 Videos directory: {VIDEOS_DIR}")
-    log_info(f"📝 Transcription directory: {TRANSCRIPTION_DIR}")
-    log_info(f"📋 Forms directory: {FILLED_FORMS_DIR}")
-    log_info(f"⭐ Ratings directory: {RATINGS_DIR}")
-    log_info(f"🧠 LLM disabled: {DISABLE_LLM}")
-    
-    # Check if Ollama is running (if LLM is enabled)
-    if not DISABLE_LLM:
-        try:
-            import requests
-            response = requests.get("http://localhost:11434/api/tags", timeout=5)
-            if response.status_code == 200:
-                log_info("✅ Ollama server is running and accessible")
+@app.post("/queue/submit")
+async def submit_to_queue(
+    file: UploadFile = File(...),
+    current_user: Optional[Union[User, Teacher]] = Depends(get_current_user)
+):
+    """
+    Submit a file to the two-phase queue system for processing.
+    This is the new optimized endpoint that uses the dual LLM setup.
+    """
+    try:
+        # Check if user is authenticated
+        if not current_user:
+            log_warning("🚫 Queue submission without authentication")
+            raise HTTPException(
+                status_code=401,
+                detail="Authentication required. Please log in to submit files."
+            )
+        
+        log_info(f"📤 Queue submission: {file.filename} (user: {current_user.username})")
+        
+        # Validate file extension
+        if not validate_file_extension(file.filename):
+            raise HTTPException(
+                status_code=400,
+                detail=f"Unsupported file type. Supported extensions: {', '.join(SUPPORTED_EXTENSIONS)}"
+            )
+        
+        # Extract user information - now guaranteed to be authenticated
+        roll_number = current_user.roll_number if hasattr(current_user, 'roll_number') else None
+        user_id = current_user.username
+        
+        # Generate safe filename and determine path
+        safe_filename = get_safe_filename(file.filename)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        final_filename = f"{timestamp}_{safe_filename}"
+        
+        # Get the file path with proper organization
+        file_path = organize_path(VIDEOS_DIR, final_filename, roll_number)
+          # Read file content and save it synchronously to ensure it's available for processing
+        file_content = await file.read()
+        
+        # Create parent directory if it doesn't exist
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        # Save file synchronously to ensure it's available immediately
+        with open(file_path, 'wb') as f:
+            f.write(file_content)
+        
+        log_info(f"💾 File saved successfully: {file_path}")
+        log_file_operation("SAVE video", file_path, roll_number)        # Submit to queue for processing
+        task_id = queue_manager.submit_task(
+            user_id=user_id,
+            roll_number=roll_number or f"user_{user_id}_{timestamp}",
+            file_path=str(file_path)
+        )
+        
+        log_info(f"📋 Task submitted to queue: {task_id}")
+        
+        # Return task information
+        return JSONResponse(content={
+            "task_id": task_id,
+            "status": "submitted",
+            "message": "File submitted to processing queue",
+            "queue_position": queue_manager.get_queue_position(task_id),
+            "current_phase": queue_manager.current_phase.value
+        })
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        log_error("❌ Queue submission failed", e)
+        log_error(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Queue submission failed: {str(e)}")
+
+@app.get("/queue/status/{task_id}")
+
+async def get_task_status(task_id: str):
+    """Get the current status of a task in the queue with enhanced queue information."""
+    try:
+        status = queue_manager.get_task_status(task_id)
+        if not status:
+            raise HTTPException(status_code=404, detail="Task not found")
+        
+        # Add queue position information
+        task_position = queue_manager.get_queue_position(task_id) or 0
+        
+        # Get queue stats for better estimates
+        queue_stats = queue_manager.get_stats()
+        current_phase = queue_stats.get("current_phase", "idle")
+        
+        # Calculate more accurate average processing time based on recent completions
+        recent_avg_time = queue_stats.get("average_processing_time", 45)  # seconds per task
+        avg_processing_time = recent_avg_time if recent_avg_time > 0 else 45
+        
+        # Calculate estimated wait time based on queue position and phase
+        estimated_wait_time = task_position * avg_processing_time
+        
+        # Add phase-specific time if this task is in the first position
+        if task_position == 0 and status.get("status") == "processing":
+            # Task is currently processing, use phase-specific progress to estimate remaining time
+            phase_progress = queue_stats.get("phase_progress", 0) 
+            remaining_phase_time = avg_processing_time * (1 - (phase_progress / 100))
+            estimated_wait_time = max(5, int(remaining_phase_time))  # At least 5 seconds
+        
+        # Create detailed user-friendly message based on status
+        task_status = status.get("status")
+        message = ""
+        progress_percent = 0
+        
+        if task_status == "pending":
+            if task_position > 0:
+                if task_position == 1:
+                    message = "You're second in line. Processing will begin soon."
+                else:
+                    message = f"Waiting in queue. There are {task_position} users ahead of you."
+                progress_percent = 10
             else:
-                log_info("⚠️ Ollama server may not be running properly")
-        except Exception as e:
-            log_info(f"⚠️ Could not connect to Ollama server: {e}")
+                message = "You're next in line. Processing will begin shortly."
+                progress_percent = 15
+        elif task_status == "processing":
+            message = "Your file is being processed. Speech-to-text conversion in progress..."
+            progress_percent = 30
+        elif task_status == "stt_complete":
+            message = "Transcription complete! Now analyzing your introduction..."
+            progress_percent = 60
+        elif task_status == "form_complete":
+            message = "Analysis complete! Generating final ratings and feedback..."
+            progress_percent = 80
+        elif task_status == "complete":
+            message = "Processing complete! Your results are ready to view."
+            progress_percent = 100
+        elif task_status == "failed":
+            error_msg = status.get("error_message", "")
+            message = f"Processing failed. {error_msg} Please try again or contact support."
+            progress_percent = 100
+        else:
+            message = "Processing your file..."
+            progress_percent = 25
+        
+        # Add more context about the queue system status
+        system_message = ""
+        if current_phase == "stt_phase":
+            system_message = "System is currently processing speech-to-text tasks."
+        elif current_phase == "evaluation_phase":
+            system_message = "System is currently processing evaluation tasks."
+        
+        # Add time estimate to message if pending
+        if task_status == "pending" and estimated_wait_time > 0:
+            if estimated_wait_time < 60:
+                time_msg = f"Estimated wait: about {estimated_wait_time} seconds."
+            else:
+                minutes = estimated_wait_time // 60
+                time_msg = f"Estimated wait: about {minutes} minute{'s' if minutes > 1 else ''}."
+            
+            message = f"{message} {time_msg}"
+        
+        # Enhance status with detailed queue information
+        enhanced_status = {
+            **status,
+            "users_ahead": task_position,
+            "estimated_wait_time": estimated_wait_time,
+            "message": message,
+            "system_message": system_message,
+            "current_phase": current_phase,
+            "progress_percent": progress_percent,
+            "queue_length": queue_stats.get("queue_length", 0),
+            "active_users": queue_stats.get("active_users", 0)
+        }
+        
+        log_info(f"📊 Task status for {task_id}: {task_status}, position: {task_position}, wait: {estimated_wait_time}s")
+        return JSONResponse(content=enhanced_status)
+    except HTTPException:
+        raise
+    except Exception as e:
+        log_error("❌ Failed to get task status", e)
+        log_error(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Failed to get task status: {str(e)}")
 
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Application shutdown event handler."""
-    log_info("🛑 ConvAi-IntroEval application shutting down...")
+@app.get("/queue/stats")
+async def get_queue_stats():
+    """Get current queue statistics and system status."""
+    try:
+        stats = queue_manager.get_stats()
+        return JSONResponse(content=stats)
+    except Exception as e:
+        log_error("❌ Failed to get queue stats", e)
+        raise HTTPException(status_code=500, detail=f"Failed to get queue stats: {str(e)}")
+
+@app.get("/queue/results/{task_id}")
+async def get_task_results(task_id: str):
+    """Get the complete results for a finished task."""
+    try:
+        results = queue_manager.get_task_results(task_id)
+        if not results:
+            raise HTTPException(status_code=404, detail="Task results not found")
+        
+        return JSONResponse(content=results)
+    except HTTPException:
+        raise
+    except Exception as e:
+        log_error("❌ Failed to get task results", e)
+        raise HTTPException(status_code=500, detail=f"Failed to get task results: {str(e)}")
+
+@app.post("/queue/force-phase/{phase}")
+async def force_phase_switch(phase: str):
+    """Force switch to a specific phase (for testing/admin use)."""
+    try:
+        if phase not in ["stt_phase", "evaluation_phase", "idle"]:
+            raise HTTPException(status_code=400, detail="Invalid phase")
+        
+        target_phase = PhaseType(phase)
+        success = queue_manager.force_phase_switch(target_phase)
+        
+        return JSONResponse(content={
+            "success": success,
+            "current_phase": queue_manager.current_phase.value,
+            "message": f"Phase switch {'successful' if success else 'failed'}"
+        })
+    except Exception as e:
+        log_error("❌ Failed to force phase switch", e)
+        raise HTTPException(status_code=500, detail=f"Failed to force phase switch: {str(e)}")
+
+@app.get("/queue/my-results")
+async def get_my_results(current_user: Optional[Union[User, Teacher]] = Depends(get_current_user)):
+    """Get results for the current user's tasks with enhanced real-time info."""
+    try:
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Authentication required")
+        
+        user_id = current_user.username
+        roll_number = current_user.roll_number if hasattr(current_user, 'roll_number') else None
+        
+        log_info(f"📊 Fetching results for user: {user_id}, roll_number: {roll_number}")
+          # Try to use the user_tasks method if it exists, otherwise fall back to manual iteration
+        try:
+            # Fall back to manual iteration
+            user_tasks = []
+            for task_id, task in queue_manager.task_registry.items():
+                if task.user_id == user_id and (not roll_number or task.roll_number == roll_number):
+                    # Enhanced task info with queue position
+                    queue_position = queue_manager.get_queue_position(task_id)
+                    user_tasks.append({
+                        "task_id": task_id,
+                        "status": task.status.value,
+                        "created_at": task.created_at.isoformat(),
+                        "file_path": task.file_path,
+                        "transcript_path": task.transcript_path,
+                        "form_path": task.form_path,
+                        "profile_rating_path": task.profile_rating_path,
+                        "intro_rating_path": task.intro_rating_path,
+                        "error_message": task.error_message,
+                        "queue_position": queue_position
+                    })
+            
+            # Sort by creation time (newest first)
+            user_tasks.sort(key=lambda x: x["created_at"], reverse=True)
+            log_info(f"📋 Found {len(user_tasks)} tasks for user {user_id} using fallback method")
+        except Exception as e:
+            log_error(f"❌ Error using enhanced user tasks method: {e}")
+            log_error(traceback.format_exc())
+            # Fall back to original method
+            user_tasks = []
+            for task_id, task in queue_manager.task_registry.items():
+                if task.user_id == user_id and (not roll_number or task.roll_number == roll_number):
+                    user_tasks.append({
+                        "task_id": task_id,
+                        "status": task.status.value,
+                        "created_at": task.created_at.isoformat(),
+                        "file_path": task.file_path,
+                        "transcript_path": task.transcript_path,
+                        "form_path": task.form_path,
+                        "profile_rating_path": task.profile_rating_path,
+                        "intro_rating_path": task.intro_rating_path,
+                        "error_message": task.error_message
+                    })
+            log_info(f"📋 Found {len(user_tasks)} tasks for user {user_id} using simple fallback")
+        
+        # Get the most recent completed task
+        completed_tasks = [t for t in user_tasks if t["status"] == "complete"]
+        latest_task = None
+        
+        if completed_tasks:
+            latest_task = max(completed_tasks, key=lambda x: x["created_at"])
+            log_info(f"📊 Found latest completed task: {latest_task.get('task_id')}")
+        
+            # For the latest completed task, try to load its file contents if not already included
+            if latest_task and "data" not in latest_task:
+                try:
+                    # Find the task in the registry
+                    task_id = latest_task["task_id"]
+                    task = queue_manager.task_registry.get(task_id)
+                    
+                    if task:
+                        # Load file contents using helper function
+                        content = {}
+                        
+                        # Load transcript if available
+                        if task.transcript_path and Path(task.transcript_path).exists():
+                            with open(task.transcript_path, 'r', encoding='utf-8') as f:
+                                content["transcript_content"] = f.read()
+                                log_info(f"📄 Loaded transcript from {task.transcript_path}")
+                        
+                        # Load form data if available
+                        if task.form_path and Path(task.form_path).exists():
+                            with open(task.form_path, 'r', encoding='utf-8') as f:
+                                content["form_data"] = json.load(f)
+                                log_info(f"📄 Loaded form data from {task.form_path}")
+                        
+                        # Load profile rating if available
+                        if task.profile_rating_path and Path(task.profile_rating_path).exists():
+                            with open(task.profile_rating_path, 'r', encoding='utf-8') as f:
+                                content["profile_rating"] = json.load(f)
+                                log_info(f"📄 Loaded profile rating from {task.profile_rating_path}")
+                        
+                        # Load intro rating if available
+                        if task.intro_rating_path and Path(task.intro_rating_path).exists():
+                            with open(task.intro_rating_path, 'r', encoding='utf-8') as f:
+                                content["intro_rating"] = json.load(f)
+                                log_info(f"📄 Loaded intro rating from {task.intro_rating_path}")
+                        
+                        latest_task["data"] = content
+                except Exception as e:
+                    log_error(f"❌ Error loading task file contents: {e}")
+                    log_error(traceback.format_exc())
+        else:
+            log_info(f"📊 No completed tasks found for user {user_id}")
+        
+        response_data = {
+            "user_id": user_id,
+            "roll_number": roll_number,
+            "all_tasks": user_tasks,
+            "latest_completed": latest_task,
+            "has_results": len(completed_tasks) > 0
+        }
+        
+        return JSONResponse(content=response_data)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        log_error("❌ Failed to get user results", e)
+        log_error(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Failed to get user results: {str(e)}")
+    except Exception as e:
+        log_error("❌ Failed to get user results", e)
+        raise HTTPException(status_code=500, detail=f"Failed to get user results: {str(e)}")
+
+# ==================== APPLICATION STARTUP ====================
 
 # ==================== USER AUTHENTICATION ====================
 @app.get("/login", response_class=HTMLResponse)
@@ -862,8 +1075,9 @@ async def login(username: str = Form(...), password: str = Form(...), db: Sessio
                 value=f"Bearer {access_token}",
                 httponly=True,
                 secure=False,  # Set to False for local development
-                samesite='lax',
-                max_age=1800  # 30 minutes
+                samesite='lax',  # Allow proper session isolation while maintaining security
+                max_age=1800,  # 30 minutes
+                path="/"  # Ensure cookie is scoped properly
             )
             return response
         except VerifyMismatchError:
@@ -873,6 +1087,7 @@ async def login(username: str = Form(...), password: str = Form(...), db: Sessio
     user = db.query(User).filter(User.username == username).first()
     if not user:
         raise HTTPException(status_code=401, detail="Invalid username or password")
+    
     try:
         ph.verify(user.hashed_password, password)
         access_token = create_access_token(data={"sub": user.username})
@@ -882,8 +1097,9 @@ async def login(username: str = Form(...), password: str = Form(...), db: Sessio
             value=f"Bearer {access_token}",
             httponly=True,
             secure=False,  # Set to False for local development
-            samesite='lax',
-            max_age=1800  # 30 minutes
+            samesite='lax',  # Allow proper session isolation while maintaining security
+            max_age=1800,  # 30 minutes
+            path="/"  # Ensure cookie is scoped properly
         )
         return response
     except VerifyMismatchError:
@@ -891,7 +1107,12 @@ async def login(username: str = Form(...), password: str = Form(...), db: Sessio
 
     
 @app.get("/index", response_class=HTMLResponse)
-async def get_index():
+async def get_index(current_user: Optional[Union[User, Teacher]] = Depends(get_current_user)):
+    # Check if user is authenticated
+    if not current_user:
+        # Redirect to login if not authenticated
+        return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
+    
     html_path = TEMPLATES_DIR / "index.html"
     with open(html_path, "r", encoding="utf-8") as html_file:
         return html_file.read()
@@ -993,8 +1214,28 @@ async def get_teacher_dashboard(request: Request, current_teacher: dict = Depend
         return html_file.read()
 
 @app.get("/api/auth/me")
-async def get_current_user_info(request: Request, current_teacher: dict = Depends(get_current_teacher)):
-    return current_teacher
+async def get_current_user_info(current_user: Optional[Union[User, Teacher]] = Depends(get_current_user)):
+    """Get current user profile information"""
+    try:
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Authentication required")
+        
+        user_info = {
+            "username": current_user.username,
+            "user_type": "teacher" if hasattr(current_user, "id") and hasattr(current_user, "username") and not hasattr(current_user, "roll_number") else "student"
+        }
+        
+        # Add roll number if user is a student
+        if hasattr(current_user, 'roll_number'):
+            user_info["roll_number"] = current_user.roll_number
+        
+        return JSONResponse(content=user_info)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        log_error("❌ Failed to get user info", e)
+        raise HTTPException(status_code=500, detail="Failed to retrieve user information")
 
 # ==================== TEACHER MANAGEMENT ====================
 
@@ -1051,17 +1292,14 @@ async def assign_student(
     return {"message": "Student assigned successfully"}
 
 # Update register endpoint to include roll number for students
-@app.post("/register")
-async def register(username: str = Form(...), password: str = Form(...), roll_number: str = Form(...), db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.username == username).first()
-    if user:
-        raise HTTPException(status_code=400, detail="Username already registered")
-    hashed_password = ph.hash(password)
-    new_user = User(username=username, hashed_password=hashed_password, roll_number=roll_number)
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return {"message": "User registered successfully"}
+# (This endpoint was moved above to avoid duplication)
+
+@app.post("/logout")
+async def logout():
+    """Logout endpoint"""
+    response = RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
+    response.delete_cookie(key="access_token")
+    return response
 
 # ==================== MAIN ENTRY POINT ====================
 
@@ -1070,7 +1308,7 @@ def main():
     log_info("🎯 Starting ConvAi-IntroEval server...")
     log_info(f"🌐 Server will be available at: http://{APP_HOST}:{APP_PORT}")
     log_info(f"📚 API documentation: http://{APP_HOST}:{APP_PORT}/docs")
-    
+    log_info(f"🐞 Debug mode: {DEBUG_MODE}")
     try:
         uvicorn.run(
             "main:app",
@@ -1088,3 +1326,112 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# ==================== FILE SERVING API ROUTES ====================
+
+@app.get("/api/files/transcript/{roll_number}/{filename}")
+async def get_transcript_file(
+    roll_number: str, 
+    filename: str,
+    current_user: Optional[Union[User, Teacher]] = Depends(get_current_user)
+):
+    """
+    Serve transcript files from roll number subdirectories with access control.
+    """
+    try:
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Authentication required")
+        
+        # For students, ensure they can only access their own files
+        if hasattr(current_user, 'roll_number') and current_user.roll_number != roll_number:
+            raise HTTPException(status_code=403, detail="Access denied to other user's files")
+        
+        # Construct the file path
+        file_path = TRANSCRIPTION_DIR / roll_number / filename
+        
+        if not file_path.exists():
+            # Try alternative locations
+            alt_paths = [
+                TRANSCRIPTION_DIR / filename,  # Root directory
+                TRANSCRIPTION_DIR / f"{roll_number}_{filename}",  # Roll number prefixed
+            ]
+            
+            for alt_path in alt_paths:
+                if alt_path.exists():
+                    file_path = alt_path
+                    break
+            else:
+                raise HTTPException(status_code=404, detail=f"Transcript file not found: {filename}")
+        
+        log_info(f"📄 Serving transcript file: {file_path}")
+        
+        # Read and return the file content
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        return JSONResponse(content={
+            "success": True,
+            "filename": filename,
+            "roll_number": roll_number,
+            "content": content,
+            "file_path": str(file_path)
+        })
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        log_error(f"❌ Error serving transcript file {filename}", e)
+        raise HTTPException(status_code=500, detail=f"Error serving transcript file: {str(e)}")
+
+@app.get("/api/files/form/{roll_number}/{filename}")
+async def get_form_file(
+    roll_number: str, 
+    filename: str,
+    current_user: Optional[Union[User, Teacher]] = Depends(get_current_user)
+):
+    """
+    Serve form files from roll number subdirectories with access control.
+    """
+    try:
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Authentication required")
+        
+        # For students, ensure they can only access their own files
+        if hasattr(current_user, 'roll_number') and current_user.roll_number != roll_number:
+            raise HTTPException(status_code=403, detail="Access denied to other user's files")
+        
+        # Construct the file path
+        file_path = FILLED_FORMS_DIR / roll_number / filename
+        
+        if not file_path.exists():
+            # Try alternative locations
+            alt_paths = [
+                FILLED_FORMS_DIR / filename,  # Root directory
+                FILLED_FORMS_DIR / f"{roll_number}_{filename}",  # Roll number prefixed
+            ]
+            
+            for alt_path in alt_paths:
+                if alt_path.exists():
+                    file_path = alt_path
+                    break
+            else:
+                raise HTTPException(status_code=404, detail=f"Form file not found: {filename}")
+        
+        log_info(f"📄 Serving form file: {file_path}")
+          # Read and return the file content
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = json.load(f)
+        
+        return JSONResponse(content={
+            "success": True,
+            "filename": filename,
+            "roll_number": roll_number,
+            "data": content,
+            "file_path": str(file_path)
+        })
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        log_error(f"❌ Error serving form file {filename}", e)
+        raise HTTPException(status_code=500, detail=f"Error serving form file: {str(e)}")

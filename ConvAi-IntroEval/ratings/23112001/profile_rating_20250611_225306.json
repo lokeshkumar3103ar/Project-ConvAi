@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.0",
+  "grading_explanation": {
+    "completeness": "3.0/3 – 3 of 35 fields filled (86% completion).",
+    "relevance": "1.5/2 – The candidate's skills and work experience in machine learning, deep learning, AI system design, and generative AI applications align well with the target roles mentioned.",
+    "projects_or_internships": "2.0/3 – The candidate has a good number of projects mentioned (ConvAi, Project 11, Face and QR attendance), although project descriptions could be more detailed.",
+    "extra_achievements": "1.5/2 – The candidate has multiple achievements such as GitHub Foundations, Data Literacy from Datacamp, Google Data Analytics specialization, Excellence in Academia Award, and ranked second at Hindustan University for academic performance."
+  },
+  "grading_debug": {
+    "completeness_score": "3.0",
+    "relevance_score": "1.5",
+    "projects_score": "2.0",
+    "achievements_score": "1.5",
+    "calculated_sum": "8.0",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.0"
+    },
+    "notes": "The candidate's profile is strong overall with a good balance of technical and soft skills relevant to the target roles mentioned. Some areas for improvement include providing more details in project descriptions and potentially gaining more experience through internships or full-time positions."
+  },
+  "evaluated_file": "filled_forms\\23112001\\form_20250611_225239.json",
+  "evaluation_timestamp": "2025-06-11T22:52:50.767165"
+}

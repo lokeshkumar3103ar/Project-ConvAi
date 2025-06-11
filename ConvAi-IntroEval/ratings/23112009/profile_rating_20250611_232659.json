@@ -1,0 +1,23 @@
+{
+  "profile_rating": "9.5",
+  "grading_explanation": {
+    "completeness": "3.0/3 – 3 of 35 fields filled (100% completion).",
+    "relevance": "2.0/2 – Strong alignment: The candidate has a degree in Data Science, showcasing relevant skills such as machine learning and deep learning. Also, the candidate's projects (e.g., ConvAi, Project 11) and work experience at COTHON Solutions involve AI systems design, generative AI applications, automation frameworks, which align well with the target role of AI/ML engineer.",
+    "projects_or_internships": "2.5/3 – Very good: The projects mentioned (ConvAi, Project 11) are well-detailed and demonstrate use of technologies like Python, machine learning, deep learning, prompt engineering. Moreover, the problem statements and solutions provided are clear.",
+    "extra_achievements": "2.0/2 – Outstanding: The candidate has multiple significant achievements (First place at AI Genesis and INNOTHON 2025, Excellence in Academia Award, ranked second at Hindustan University for academic performance). These achievements are directly relevant to the professional growth as an AI engineer."
+  },
+  "grading_debug": {
+    "completeness_score": "3.0",
+    "relevance_score": "2.0",
+    "projects_score": "2.5",
+    "achievements_score": "2.0",
+    "calculated_sum": "9.5",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "9.5"
+    },
+    "notes": "The candidate has a strong background in AI and machine learning, with multiple achievements relevant to the field. Projects demonstrate technical skills and their success demonstrates problem-solving abilities."
+  },
+  "evaluated_file": "filled_forms\\23112009\\form_20250611_232632.json",
+  "evaluation_timestamp": "2025-06-11T23:26:45.367338"
+}

@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.7",
+  "grading_explanation": {
+    "completeness": "2.67/3 – 26 of 35 fields filled (74% completion).",
+    "relevance": "1.5/2 – Lokesh's education background is in Data Science, and the projects he worked on involve machine learning and AI applications which have relevance to an AI engineer role. However, work experience is not explicitly stated for the target job role.",
+    "projects_or_internships": "2.5/3 – Lokesh has mentioned multiple projects (ConvAi, Project 11, Face and QR attendance) with decent detail (technologies + problem/solution mentioned).",
+    "extra_achievements": "2.0/2 – Lokesh has several achievements (Excellence in Academia Award, ranked second at Hindustan University for academic performance, GitHub Foundations, Data Literacy from Datacamp, Chad GPT, Google Data Analytics specialization) which are relevant to his professional growth."
+  },
+  "grading_debug": {
+    "completeness_score": "2.67",
+    "relevance_score": "1.5",
+    "projects_score": "2.5",
+    "achievements_score": "2.0",
+    "calculated_sum": "8.7",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.7"
+    },
+    "notes": "Lokesh's work experience is not explicitly mentioned for the target job role. It would be beneficial to have more specific details about his roles and responsibilities in previous projects or internships."
+  },
+  "evaluated_file": "filled_forms\\23112071\\form_20250611_175023.json",
+  "evaluation_timestamp": "2025-06-11T17:50:34.523327"
+}

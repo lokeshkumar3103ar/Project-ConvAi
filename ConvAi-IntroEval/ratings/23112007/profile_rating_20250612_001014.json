@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.4",
+  "grading_explanation": {
+    "completeness": "2.89/3 – 26 of 35 fields filled (74% completion).",
+    "relevance": "1.5/2 – Most key skills present but missing some important elements such as database management and web development which are crucial for an AI role.",
+    "projects_or_internships": "2.5/3 – The project descriptions are well-detailed with technologies, problem statements, solutions, and outcomes mentioned, although the specific role is not explicitly stated in the text.",
+    "extra_achievements": "1.5/2 – Several achievements mentioned, like academic awards and first place at tech competitions, that demonstrate professional growth."
+  },
+  "grading_debug": {
+    "completeness_score": "2.89",
+    "relevance_score": "1.5",
+    "projects_score": "2.5",
+    "achievements_score": "1.5",
+    "calculated_sum": "8.4",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.4"
+    },
+    "notes": "Although the candidate has relevant technical skills and achievements, there are missing elements in terms of education background (specific year of graduation) and work experience (explicit role and time period). Additionally, there is a need to clarify the specific role targeted for job applications."
+  },
+  "evaluated_file": "filled_forms\\23112007\\form_20250612_000948.json",
+  "evaluation_timestamp": "2025-06-12T00:09:58.944686"
+}

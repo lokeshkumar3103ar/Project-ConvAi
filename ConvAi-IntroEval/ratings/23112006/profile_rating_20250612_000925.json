@@ -1,0 +1,23 @@
+{
+  "profile_rating": "9.5",
+  "grading_explanation": {
+    "completeness": "3.0/3 – 3 of 35 fields filled (100% completion).",
+    "relevance": "2.0/2 – Lokesh's education and projects have a strong alignment with the target role in AI, ML, data science or prompt engineering.",
+    "projects_or_internships": "2.5/3 – Lokesh has one detailed project (ConvAi) showcasing skills such as machine learning, deep learning, and predictive analytics.",
+    "extra_achievements": "2.0/2 – Lokesh has multiple significant achievements like the Excellence in Academia Award, ranked second at Hindustan University for academic performance, first place at AI Genesis and INNOTHON 2025."
+  },
+  "grading_debug": {
+    "completeness_score": "3.0",
+    "relevance_score": "2.0",
+    "projects_score": "2.5",
+    "achievements_score": "2.0",
+    "calculated_sum": "9.5",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "9.5"
+    },
+    "notes": "Lokesh's profile demonstrates a strong foundation in the target role with a good mix of education, projects, and achievements."
+  },
+  "evaluated_file": "filled_forms\\23112006\\form_20250612_000900.json",
+  "evaluation_timestamp": "2025-06-12T00:09:10.383730"
+}

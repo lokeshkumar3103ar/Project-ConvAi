@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.2",
+  "grading_explanation": {
+    "completeness": "2.7/3 – 27 of 35 fields filled (77% completion).",
+    "relevance": "1.5/2 – Lokesh's project experience and skills in AI, ML, prompt engineering align closely with the target role, but there are no specific mentions of deep learning algorithms such as CNN, linear regression, or MTCNN mentioned for this role.",
+    "projects_or_internships": "2.5/3 – Lokesh has 3 projects detailed with technologies, problem statements, solutions, and some outcomes mentioned. The projects demonstrate a good level of detail but could benefit from more specifics about the technologies used.",
+    "extra_achievements": "1.5/2 – Lokesh has several achievements such as first place at AI Genesis and INNOTHON 2025, Excellence in Academia Award, Ranked second at Hindustan University for academic performance. These achievements show strong professional growth but could benefit from more specifics about each achievement."
+  },
+  "grading_debug": {
+    "completeness_score": "2.7",
+    "relevance_score": "1.5",
+    "projects_score": "2.5",
+    "achievements_score": "1.5",
+    "calculated_sum": "8.2",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.2"
+    },
+    "notes": "Lokesh has a strong background in AI and ML with several notable achievements. However, there are opportunities to provide more specifics about the skills and projects for a stronger application. Additionally, it would be beneficial to include explicit mentions of technical skills like CNN, linear regression, or MTCNN for better alignment with the target role."
+  },
+  "evaluated_file": "filled_forms\\23112009\\form_20250612_001126.json",
+  "evaluation_timestamp": "2025-06-12T00:11:38.608594"
+}

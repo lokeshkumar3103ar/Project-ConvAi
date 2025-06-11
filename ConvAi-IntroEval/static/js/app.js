@@ -9,6 +9,7 @@
 // Initialize global app state and handlers
 window.appState = {
     file: null,
+    taskId: null,
     transcriptPath: null,
     transcriptText: null,
     extractedFields: null,
@@ -68,6 +69,105 @@ window.handleFileSelect = function(file) {
 };
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Profile elements
+    const profileUsername = document.getElementById('profile-username');
+    const profileRollNumber = document.getElementById('profile-roll-number');
+    const profileUserType = document.getElementById('profile-user-type');
+    const logoutBtn = document.getElementById('logout-btn');
+    
+    // Load user profile information
+    async function loadUserProfile() {
+        try {
+            console.log('Starting user profile load...');
+            console.log('Document cookies:', document.cookie);
+            
+            const response = await fetch('/api/auth/me', {
+                credentials: 'include' // Include cookies for authentication
+            });
+            
+            console.log('Profile response status:', response.status);
+            console.log('Profile response headers:', [...response.headers.entries()]);
+            
+            if (response.ok) {
+                const userInfo = await response.json();
+                console.log('User profile loaded successfully:', userInfo);
+                
+                // Update profile elements
+                if (profileUsername) {
+                    profileUsername.textContent = userInfo.username || 'Unknown';
+                }
+                  if (profileRollNumber) {
+                    profileRollNumber.textContent = userInfo.roll_number || 'N/A';
+                }
+                
+                if (profileUserType) {
+                    const userType = userInfo.user_type || 'student';
+                    profileUserType.textContent = userType.charAt(0).toUpperCase() + userType.slice(1);
+                    profileUserType.className = `badge ${userType === 'teacher' ? 'bg-primary' : 'bg-success'}`;
+                }
+            } 
+            else if (response.status === 401) {
+                console.log('User not authenticated, redirecting to login');
+                // User is not authenticated, redirect to login
+                window.location.href = '/login';
+            } else {
+                console.error('Failed to load user profile:', response.status);
+                // Set default values on error
+                if (profileUsername) profileUsername.textContent = 'Not logged in';
+                if (profileRollNumber) profileRollNumber.textContent = 'N/A';
+                if (profileUserType) {
+                    profileUserType.textContent = 'Unknown';
+                    profileUserType.className = 'badge bg-secondary';
+                }
+            }
+        } catch (error) {
+            console.error('Error loading user profile:', error);
+            // Set error values and redirect to login
+            if (profileUsername) profileUsername.textContent = 'Error';
+            if (profileRollNumber) profileRollNumber.textContent = 'Error';
+            if (profileUserType) {
+                profileUserType.textContent = 'Error';
+                profileUserType.className = 'badge bg-danger';
+            }
+            // On network error, also redirect to login after a delay
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 2000);
+        }
+    }
+    
+    // Logout functionality
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', async function(e) {
+            e.preventDefault(); // Prevent default link behavior
+            
+            try {
+                const response = await fetch('/logout', {
+                    method: 'POST',
+                    credentials: 'include', // Include cookies
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                });
+                
+                // Clear any stored data
+                localStorage.removeItem('showFluidTransition');
+                
+                // Always redirect to login page regardless of response
+                window.location.href = '/login';
+                
+            } catch (error) {
+                console.error('Error during logout:', error);
+                // Force redirect anyway
+                window.location.href = '/login';
+            }
+        });
+    }
+      // Load user profile on page load with a small delay to ensure cookies are available
+    setTimeout(() => {
+        loadUserProfile();
+    }, 500); // 500ms delay
+
     // DOM Elements
     const uploadForm = document.getElementById('upload-form');
     const fileInput = document.getElementById('file-input');
@@ -89,8 +189,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const processingMessage = document.getElementById('processing-message');
     const processingMessageText = document.getElementById('processing-message-text');
-    
-    const transcriptContent = document.getElementById('transcript-content');
+      const transcriptContent = document.getElementById('transcript-content');
+    // Note: Extracted fields tab is hidden in the UI for production but still functional in the backend
     const extractedFieldsContent = document.getElementById('extracted-fields-content');
     const profileRatingContent = document.getElementById('profile-rating-content');
     const introRatingContent = document.getElementById('intro-rating-content');
@@ -117,8 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const stepRate = document.getElementById('step-rate');
       // Use the global app state
     const appState = window.appState;
-    
-    // Reset the application
+      // Reset the application
     function resetApp() {
         // Close any open event sources
         appState.eventSources.forEach(es => {
@@ -126,9 +225,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         appState.eventSources = [];
         
+        // Stop task status polling
+        stopTaskPolling();
+        
         // Reset file input and state
         fileInput.value = '';
         appState.file = null;
+        appState.taskId = null;
         fileInfo.classList.add('d-none');
         
         // Reset sections visibility
@@ -639,7 +742,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             deliveryScoreForDisplay = numericDeliveryScore.toFixed(1);
                         } else {
                             deliveryScoreForStars = numericDeliveryScore;
-                            deliveryScoreForDisplay = numericDeliveryScore.toFixed(1);
+                            deliveryScoreForDisplay = deliveryScoreForDisplay.toFixed(1);
                         }
                     }
                     
@@ -823,99 +926,55 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData();
             formData.append('file', fileToProcess);
             formData.append('extract_fields', extractFieldsCheckbox.checked);
-            formData.append('generate_ratings', generateRatingsCheckbox.checked);
-            
-            // Upload file and get transcription
-            const response = await fetch('/transcribe', {
+            formData.append('generate_ratings', generateRatingsCheckbox.checked);            // Submit file to queue system
+            const response = await fetch('/queue/submit', {
                 method: 'POST',
                 body: formData
             });
             
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.detail || 'Failed to transcribe file');
+                throw new Error(errorData.detail || 'Failed to submit file to queue');
             }
             
             const data = await response.json();
             
-            // Update transcription status
+            // Store the task ID for polling
+            appState.taskId = data.task_id;
+            
+            // Show queue status
             updateStatusElement(
                 transcriptionStatus, 
-                'completed', 
-                'Transcription Completed', 
-                'Successfully converted audio to text', 
-                100
+                'pending', 
+                'In Queue', 
+                `Your task is queued. Position: ${data.queue_position || 'Unknown'}`, 
+                25
             );
-            
-            // Save transcript data
-            appState.transcriptPath = data.transcription_file;
-            appState.transcriptText = data.transcript;
-            transcriptContent.textContent = data.transcript || 'No transcript available.';
-            
-            // Check if fields were extracted directly in the transcribe endpoint
-            if (data.extracted_fields && data.extracted_fields.status === 'saved' && data.extracted_fields.data) {
-                // Handle directly returned field data
-                appState.extractedFields = data.extracted_fields.data;
-                stepTranscribe.classList.remove('active');
-                stepTranscribe.classList.add('completed');
-                stepExtract.classList.add('completed');
+              // Show queue monitor if it exists
+            const queueMonitor = document.getElementById('queue-status-monitor');
+            if (queueMonitor) {
+                queueMonitor.style.display = 'block';
                 
-                updateStatusElement(
-                    extractionStatus, 
-                    'completed', 
-                    'Information Extraction Complete', 
-                    'Successfully extracted information from transcript', 
-                    100
-                );
-                
-                displayExtractedFields(appState.extractedFields);
-                
-                if (data.ratings && data.ratings.status === 'saved' && data.ratings.data) {
-                    // Handle directly returned ratings
-                    appState.profileRating = data.ratings.data.profile_rating;
-                    appState.introRating = data.ratings.data.intro_rating;
-                    
-                    stepRate.classList.add('completed');
-                    
-                    updateStatusElement(
-                        ratingStatus, 
-                        'completed', 
-                        'Rating Generation Complete', 
-                        'Generated profile and introduction ratings', 
-                        100
-                    );
-                      displayRating(appState.profileRating, profileRatingContent);
-                    displayRating(appState.introRating, introRatingContent);
-                    
-                    // Show results
-                    showResults();                } else if (generateRatingsCheckbox.checked) {
-                    // Start rating generation using polling method
-                    await pollRatingStatus();
-                    // Show results
-                    showResults();
-                } else {
-                    // Show results without ratings
-                    showResults();
+                // Start queue stats polling if available
+                if (typeof startQueueStatsPolling === 'function') {
+                    startQueueStatsPolling();
+                    console.log('🚀 Queue stats polling started');
                 }
-            } else if (extractFieldsCheckbox.checked) {
-                // Start field extraction streaming
-                await streamFieldExtraction();
-            } else {
-                // Skip field extraction
-                stepTranscribe.classList.remove('active');
-                stepTranscribe.classList.add('completed');
-                
-                updateStatusElement(
-                    extractionStatus, 
-                    'completed', 
-                    'Information Extraction Skipped', 
-                    'Field extraction was not requested', 
-                    100
-                );
-                
-                // Show results section
-                showResults();
             }
+            
+            // Show task status if it exists
+            const taskStatus = document.getElementById('task-status');
+            if (taskStatus) {
+                taskStatus.style.display = 'block';
+                const statusElement = document.getElementById('your-task-status');
+                const positionElement = document.getElementById('your-queue-position');
+                
+                if (statusElement) statusElement.textContent = 'Queued';
+                if (positionElement) positionElement.textContent = data.queue_position || 'N/A';
+            }
+            
+            // Start polling for task status
+            startTaskStatusPolling(data.task_id);
             
         } catch (error) {
             console.error('Upload and process error:', error);
@@ -1078,76 +1137,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Field extraction setup error:', error);
                 reject(error);
             }
-        });    }    // Poll for rating status
+        });    }    // Poll for rating status    // Legacy function - now handled by task status polling
     async function pollRatingStatus() {
-        try {
-            console.log("Starting rating status polling...");
-            
-            // Check if ratings already exist - direct approach
-            await loadExistingRatings();
-            
-            // Start polling for new ratings
-            const pollInterval = setInterval(async () => {
-                try {
-                    const response = await fetch('/ratings/check_status');
-                    if (!response.ok) {
-                        throw new Error('Failed to check rating status');
-                    }
-                    
-                    const data = await response.json();
-                    console.log('Rating status poll response:', data);
-                    
-                    if (data.profile_ready || data.intro_ready) {
-                        // Load the ratings
-                        await loadExistingRatings();
-                        
-                        // Update rating status
-                        updateStatusElement(
-                            ratingStatus, 
-                            'completed', 
-                            'Ratings Complete', 
-                            'Successfully evaluated your introduction', 
-                            100
-                        );
-                        
-                        // Update step status
-                        stepRate.classList.add('completed');
-                        
-                        // Show results if not already visible
-                        if (processingSection.classList.contains('d-none') === false) {
-                            showResults();
-                        }
-                        
-                        // Clear the polling interval
-                        clearInterval(pollInterval);
-                    }
-                } catch (error) {
-                    console.error('Rating poll error:', error);
-                }
-            }, 3000); // Poll every 3 seconds
-            
-            // Stop polling after 2 minutes
-            setTimeout(() => {
-                clearInterval(pollInterval);
-                
-                // If ratings not loaded, update status
-                if (!appState.profileRating && !appState.introRating) {
-                    updateStatusElement(
-                        ratingStatus, 
-                        'error', 
-                        'Rating Timeout', 
-                        'Rating generation took too long', 
-                        100
-                    );
-                }
-                
-                // Show results anyway
-                showResults();
-            }, 120000);
-            
-        } catch (error) {
-            console.error('Rating poll setup error:', error);
-        }
+        console.log("pollRatingStatus called - now handled by task status polling");
+        // This function is deprecated in favor of the new queue-based task status polling
+        // The new system handles all phases (STT, extraction, ratings) through a single polling mechanism
     }
     
     // Load existing ratings directly from server
@@ -1391,6 +1385,451 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 300); // Increased initial delay
     }
     
+    // Task status polling for queue-based processing
+    let taskStatusInterval = null;
+    
+    function startTaskStatusPolling(taskId) {
+        console.log(`Starting task status polling for task: ${taskId}`);
+        
+        if (taskStatusInterval) {
+            clearInterval(taskStatusInterval);
+        }
+        
+        taskStatusInterval = setInterval(async () => {
+            try {
+                const response = await fetch(`/queue/status/${taskId}`);
+                if (!response.ok) return;
+                
+                const status = await response.json();
+                handleTaskStatusUpdate(status);
+                
+            } catch (error) {
+                console.error('Status polling error:', error);
+            }
+        }, 2000); // Poll every 2 seconds
+        
+        // Stop polling after 5 minutes to prevent infinite polling
+        setTimeout(() => {
+            if (taskStatusInterval) {
+                clearInterval(taskStatusInterval);
+                taskStatusInterval = null;
+                console.log('Task status polling stopped after timeout');
+            }
+        }, 300000); // 5 minutes
+    }
+      function handleTaskStatusUpdate(status) {
+        const taskStatus = status.status;
+        const queuePosition = status.queue_position || status.users_ahead;
+        
+        console.log(`Task status update: ${taskStatus}, position: ${queuePosition}`);
+        
+        // Update queue position display
+        const positionElement = document.getElementById('your-queue-position');
+        if (positionElement) {
+            positionElement.textContent = queuePosition || 'N/A';
+        }
+        
+        const statusElement = document.getElementById('your-task-status');
+        if (statusElement) {
+            statusElement.textContent = taskStatus;
+        }
+        
+        // Add safeguard for completed tasks
+        if (taskStatus === 'complete') {
+            console.log('👉 Task is complete, ensuring UI updates...');
+            
+            // Store the completed status in local storage as a backup
+            try {
+                localStorage.setItem('lastCompletedTask', JSON.stringify(status));
+            } catch (e) {
+                console.warn('Could not save completed task to localStorage:', e);
+            }
+        }
+        
+        switch (taskStatus) {
+            case 'pending':
+                updateStatusElement(
+                    transcriptionStatus, 
+                    'pending', 
+                    'In Queue',
+                    status.message || `Waiting in queue. Position: ${queuePosition || 'Unknown'}`, 
+                    25
+                );
+                break;
+                
+            case 'processing':
+                updateStatusElement(
+                    transcriptionStatus, 
+                    'processing', 
+                    'Processing', 
+                    status.message || 'Your file is being processed...', 
+                    50
+                );
+                
+                // Update step indicators
+                stepTranscribe.classList.add('active');
+                stepUpload.classList.remove('active');
+                stepUpload.classList.add('completed');
+                break;
+                
+            case 'stt_complete':
+                updateStatusElement(
+                    transcriptionStatus, 
+                    'completed', 
+                    'Transcription Complete', 
+                    'Audio converted to text successfully', 
+                    100
+                );
+                
+                // Load transcript data
+                loadTaskResults(status);
+                
+                // Move to extraction phase
+                stepTranscribe.classList.remove('active');
+                stepTranscribe.classList.add('completed');
+                stepExtract.classList.add('active');
+                
+                updateStatusElement(
+                    extractionStatus, 
+                    'processing', 
+                    'Extracting Information', 
+                    'Analyzing transcript to extract information...', 
+                    50
+                );
+                break;
+                
+            case 'form_complete':
+                updateStatusElement(
+                    extractionStatus, 
+                    'completed', 
+                    'Information Extracted', 
+                    'Information extracted from transcript', 
+                    100
+                );
+                  // Load form data
+                loadTaskResults(status);
+                
+                // Move to rating phase if enabled
+                if (generateRatingsCheckbox.checked) {
+                    stepExtract.classList.remove('active');
+                    stepExtract.classList.add('completed');
+                    stepRate.classList.add('active');
+                    
+                    updateStatusElement(
+                        ratingStatus, 
+                        'processing', 
+                        'Generating Ratings', 
+                        'Evaluating your introduction...', 
+                        50
+                    );
+                } else {
+                    // Skip ratings and show results
+                    stepExtract.classList.remove('active');
+                    stepExtract.classList.add('completed');
+                    showResults();
+                    stopTaskPolling();
+                }
+                break;
+                
+            case 'complete':
+                // Stop polling
+                stopTaskPolling();
+                
+                // Mark all steps as complete
+                updateStatusElement(
+                    transcriptionStatus, 
+                    'completed', 
+                    'Transcription Complete', 
+                    'Audio converted to text successfully', 
+                    100
+                );
+                
+                updateStatusElement(
+                    extractionStatus, 
+                    'completed', 
+                    'Information Extracted', 
+                    'Information extracted from transcript', 
+                    100
+                );
+                
+                updateStatusElement(
+                    ratingStatus, 
+                    'completed', 
+                    'Ratings Complete', 
+                    'Evaluation completed successfully', 
+                    100
+                );
+                  // Update step indicators
+                stepTranscribe.classList.remove('active');
+                stepTranscribe.classList.add('completed');
+                stepExtract.classList.remove('active');
+                stepExtract.classList.add('completed');
+                stepRate.classList.remove('active');
+                stepRate.classList.add('completed');
+                
+                // Load all results using the existing ratings mechanism
+                setTimeout(async () => {
+                    try {
+                        // First load basic task results (transcript, form)
+                        await loadTaskResults(status);
+                        
+                        // Then load ratings using the proper mechanism
+                        const ratingsLoaded = await loadExistingRatings();
+                        
+                        if (ratingsLoaded) {
+                            console.log('Successfully loaded ratings from existing files');
+                        } else {
+                            console.log('No existing ratings found, that\'s okay');
+                        }
+                        
+                        // Show results
+                        showResults();
+                    } catch (error) {
+                        console.error('Error loading complete task results:', error);
+                        // Still show results even if there's an error
+                        showResults();
+                    }
+                }, 1000); // Give a moment for file operations to complete
+                
+                break;
+                
+            case 'failed':
+                // Stop polling
+                stopTaskPolling();
+                
+                updateStatusElement(
+                    transcriptionStatus, 
+                    'error', 
+                    'Processing Failed', 
+                    status.error_message || 'Processing failed', 
+                    100
+                );
+                
+                // Show error
+                showError(status.error_message || 'Processing failed. Please try again.');
+                break;
+                
+            default:
+                console.log(`Unknown task status: ${taskStatus}`);
+                break;
+        }
+    }
+      function stopTaskPolling() {
+        if (taskStatusInterval) {
+            clearInterval(taskStatusInterval);
+            taskStatusInterval = null;
+            console.log('Task status polling stopped');
+        }
+        
+        // Also stop queue stats polling if available
+        if (typeof stopQueueStatsPolling === 'function') {
+            stopQueueStatsPolling();
+            console.log('Queue stats polling stopped');
+        }
+    }    
+    // Add robust error handling in loadTaskResults to handle cases where data might be unavailable
+    async function loadTaskResults(status) {
+        try {
+            console.log('Loading task results from status:', status);
+            
+            // Store the task ID in localStorage as a fallback reference
+            if (status && status.task_id) {
+                try {
+                    localStorage.setItem('lastTaskId', status.task_id);
+                } catch (e) {
+                    console.warn('Could not save task ID to localStorage:', e);
+                }
+            }
+            
+            // If we have data directly from the task status, use it
+            if (status.data) {
+                console.log('Loading results from task data:', status.data);
+                
+                // Load transcript content
+                if (status.data.transcript_content) {
+                    appState.transcriptText = status.data.transcript_content;
+                    transcriptContent.textContent = status.data.transcript_content;
+                    console.log('Loaded transcript from task data');
+                }
+                
+                // Load form data
+                if (status.data.form_data) {
+                    appState.extractedFields = status.data.form_data;
+                    displayExtractedFields(status.data.form_data);
+                    console.log('Loaded form data from task data');
+                }
+                
+                // Load ratings
+                if (status.data.profile_rating) {
+                    appState.profileRating = status.data.profile_rating;
+                    displayRating(status.data.profile_rating, profileRatingContent);
+                    console.log('Loaded profile rating from task data');
+                }
+                
+                if (status.data.intro_rating) {
+                    appState.introRating = status.data.intro_rating;
+                    displayRating(status.data.intro_rating, introRatingContent);
+                    console.log('Loaded intro rating from task data');
+                }
+                
+                // Check if we should automatically show results
+                const isProcessingSectionActive = document.getElementById('processing-section').style.display === 'block';
+                if (isProcessingSectionActive && status.status === 'complete') {
+                    console.log('Task complete but still in processing view, showing results...');
+                    setTimeout(showResults, 500);
+                }
+                
+                return; // Exit early since we loaded everything from task data
+            }
+            
+            // Fallback to file-based loading (legacy support)
+            console.log('Falling back to file-based loading...');
+            
+            // Get current user's roll number for proper path construction
+            let userRollNumber = null;
+            try {
+                const userResponse = await fetch('/api/auth/me', { credentials: 'include' });
+                if (userResponse.ok) {
+                    const userInfo = await userResponse.json();
+                    userRollNumber = userInfo.roll_number;
+                    console.log('Current user roll number:', userRollNumber);
+                }
+            } catch (error) {
+                console.warn('Could not get user roll number:', error);
+            }
+            
+            // Load transcript if available
+            if (status.transcript_path) {
+                try {
+                    // Try to extract roll number and construct proper path
+                    const pathParts = status.transcript_path.split(/[/\\]/);
+                    const filename = pathParts[pathParts.length - 1];
+                    
+                    // Build possible paths including roll number subdirectory
+                    const possiblePaths = [
+                        `/transcription/${filename}`,
+                        `/api/files/transcript/${filename}`,
+                        status.transcript_path
+                    ];
+                    
+                    // If we have a roll number, add paths with roll number subdirectories
+                    if (userRollNumber) {
+                        possiblePaths.unshift(
+                            `/transcription/${userRollNumber}/${filename}`,
+                            `/api/files/transcript/${userRollNumber}/${filename}`
+                        );
+                    }
+                    
+                    console.log('Trying transcript paths:', possiblePaths);
+                    
+                    for (const path of possiblePaths) {
+                        try {
+                            const transcriptResponse = await fetch(path);
+                            if (transcriptResponse.ok) {
+                                const transcript = await transcriptResponse.text();
+                                appState.transcriptText = transcript;
+                                transcriptContent.textContent = transcript;
+                                console.log(`Loaded transcript successfully from: ${path}`);
+                                break;
+                            }
+                        } catch (err) {
+                            console.warn(`Failed to load transcript from ${path}:`, err);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading transcript:', error);
+                }
+            }
+            
+            // Load form data if available
+            if (status.form_path) {
+                try {
+                    const pathParts = status.form_path.split(/[/\\]/);
+                    const filename = pathParts[pathParts.length - 1];
+                    
+                    // Build possible paths including roll number subdirectory
+                    const possiblePaths = [
+                        `/filled_forms/${filename}`,
+                        `/api/files/form/${filename}`,
+                        status.form_path
+                    ];
+                    
+                    // If we have a roll number, add paths with roll number subdirectories
+                    if (userRollNumber) {
+                        possiblePaths.unshift(
+                            `/filled_forms/${userRollNumber}/${filename}`,
+                            `/api/files/form/${userRollNumber}/${filename}`
+                        );
+                    }
+                    
+                    console.log('Trying form paths:', possiblePaths);
+                    
+                    for (const path of possiblePaths) {
+                        try {
+                            const formResponse = await fetch(path);
+                            if (formResponse.ok) {
+                                const formData = await formResponse.json();
+                                appState.extractedFields = formData;
+                                displayExtractedFields(formData);
+                                console.log(`Loaded form data successfully from: ${path}`);
+                                break;
+                            }
+                        } catch (err) {
+                            console.warn(`Failed to load form data from ${path}:`, err);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading form data:', error);
+                }
+            }
+            
+            // Load ratings using the existing rating status endpoints
+            if (status.profile_rating_path || status.intro_rating_path) {
+                try {
+                    const [profileResponse, introResponse] = await Promise.all([
+                        fetch('/profile-rating-status'),
+                        fetch('/intro-rating-status')
+                    ]);
+                    
+                    if (profileResponse.ok) {
+                        const profileStatus = await profileResponse.json();
+                        if (profileStatus.status === 'completed' && profileStatus.data) {
+                            appState.profileRating = profileStatus.data;
+                            displayRating(profileStatus.data, profileRatingContent);
+                            console.log('Loaded profile rating successfully');
+                        }
+                    }
+                    
+                    if (introResponse.ok) {
+                        const introStatus = await introResponse.json();
+                        if (introStatus.status === 'completed' && introStatus.data) {
+                            appState.introRating = introStatus.data;
+                            displayRating(introStatus.data, introRatingContent);
+                            console.log('Loaded intro rating successfully');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading ratings:', error);
+                }
+            }
+            
+        } catch (error) {
+            console.error('Error loading task results:', error);
+        }
+    }
+
+    // Check for completed tasks function
+    function checkForCompletedTasks() {
+        console.log('Checking for completed tasks...');
+        // This function is implemented in auto-recovery.js
+        if (typeof window.checkForMissingResults === 'function') {
+            window.checkForMissingResults();
+        }
+    }
+    
+    // Make this function available globally
+    window.checkForCompletedTasks = checkForCompletedTasks;
+
     // Event listeners
     
     // File input change
@@ -1427,19 +1866,33 @@ document.addEventListener('DOMContentLoaded', function() {
     
     dropZone.addEventListener('click', function() {
         fileInput.click();
-    });
-    
-    // Clear file button
+    });    // Clear file button
     clearFileBtn.addEventListener('click', function() {
         fileInput.value = '';
         appState.file = null;
         fileInfo.classList.add('d-none');
-    });    // Form submission
-    uploadForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        uploadAndProcess();
     });
-      // Start new button
+
+    // Upload form submit handler - prevent page reload and use queue system
+    if (uploadForm) {
+        uploadForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+            console.log('Form submit prevented, calling uploadAndProcess()');
+            
+            // Prevent multiple submissions
+            if (window.isSubmitting) {
+                console.log('Upload already in progress, ignoring duplicate submit');
+                return;
+            }
+            
+            window.isSubmitting = true;
+            uploadAndProcess().finally(() => {
+                window.isSubmitting = false;
+            });
+        });
+    }
+
+    // Start new button
     startNewButton.addEventListener('click', function() {
         resetApp();
     });
@@ -1525,6 +1978,422 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    // Theme Toggle Functionality
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const html = document.documentElement;
+
+    if (themeToggle && themeIcon) {
+        // Check for saved theme preference or default to dark
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+
+        themeToggle.addEventListener('click', function () {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.className = 'fas fa-sun'; // Show sun icon in dark mode
+            } else {
+                themeIcon.className = 'fas fa-moon'; // Show moon icon in light mode
+            }
+        }
+    }
+
+    // Voice Input Modal Functionality
+    const voiceInputToggle = document.getElementById('voice-input-toggle');
+    const voiceModal = document.getElementById('voice-input-modal');
+    const voiceStartBtn = document.getElementById('voice-start-btn');
+    const voiceStopBtn = document.getElementById('voice-stop-btn');
+    const voiceCloseBtn = document.getElementById('voice-close-btn');
+    const voiceStatusMessage = document.getElementById('voice-status-message');
+    const voiceTranscript = document.getElementById('voice-transcript');
+    const voicePulseRing = document.querySelector('.voice-pulse-ring');
+    const voiceMicIcon = document.querySelector('.voice-microphone-icon');
+
+    let isVoiceRecording = false;
+    let speechRecognition = null;
+
+    // Initialize speech recognition if available
+    if (voiceInputToggle && voiceModal) {
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            speechRecognition = new SpeechRecognition();
+            speechRecognition.continuous = true;
+            speechRecognition.interimResults = true;
+            speechRecognition.lang = 'en-US';
+
+            speechRecognition.onstart = function () {
+                if (voiceStatusMessage) voiceStatusMessage.textContent = "Listening... Speak now!";
+                if (voiceTranscript) voiceTranscript.classList.remove('empty');
+                if (voicePulseRing) voicePulseRing.classList.add('listening');
+                if (voiceMicIcon) voiceMicIcon.classList.add('listening');
+            };
+
+            speechRecognition.onresult = function (event) {
+                let finalTranscript = '';
+                let interimTranscript = '';
+
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalTranscript += transcript + ' ';
+                    } else {
+                        interimTranscript += transcript;
+                    }
+                }
+
+                if (voiceTranscript) {
+                    voiceTranscript.innerHTML = finalTranscript + '<span style="color: #888;">' + interimTranscript + '</span>';
+                }
+            };
+
+            speechRecognition.onerror = function (event) {
+                if (voiceStatusMessage) voiceStatusMessage.textContent = "Error occurred in recognition: " + event.error;
+                stopVoiceRecording();
+            };
+
+            speechRecognition.onend = function () {
+                if (isVoiceRecording && voiceStatusMessage) {
+                    voiceStatusMessage.textContent = "Recording stopped. Click Start to record again.";
+                }
+                stopVoiceRecording();
+            };
+        }
+
+        // Open voice modal
+        voiceInputToggle.addEventListener('click', function () {
+            voiceModal.classList.add('active');
+            if (voiceStatusMessage) voiceStatusMessage.textContent = "Tell me who you are...";
+            if (voiceTranscript) {
+                voiceTranscript.textContent = "";
+                voiceTranscript.classList.add('empty');
+            }
+            resetVoiceModalState();
+        });
+
+        // Close voice modal
+        if (voiceCloseBtn) {
+            voiceCloseBtn.addEventListener('click', function () {
+                voiceModal.classList.remove('active');
+                if (isVoiceRecording) {
+                    stopVoiceRecording();
+                }
+            });
+        }
+
+        // Start recording
+        if (voiceStartBtn) {
+            voiceStartBtn.addEventListener('click', function () {
+                if (speechRecognition) {
+                    startVoiceRecording();
+                } else if (voiceStatusMessage) {
+                    voiceStatusMessage.textContent = "Speech recognition not supported in this browser.";
+                }
+            });
+        }
+
+        // Stop recording
+        if (voiceStopBtn) {
+            voiceStopBtn.addEventListener('click', function () {
+                stopVoiceRecording();
+            });
+        }
+
+        // Close modal when clicking outside
+        voiceModal.addEventListener('click', function (e) {
+            if (e.target === voiceModal) {
+                voiceModal.classList.remove('active');
+                if (isVoiceRecording) {
+                    stopVoiceRecording();
+                }
+            }
+        });
+
+        function startVoiceRecording() {
+            if (!isVoiceRecording && speechRecognition) {
+                isVoiceRecording = true;
+                voiceInputToggle.classList.add('recording');
+                if (voiceStartBtn) voiceStartBtn.style.display = 'none';
+                if (voiceStopBtn) voiceStopBtn.style.display = 'flex';
+                if (voiceStatusMessage) voiceStatusMessage.textContent = "Starting recording...";
+
+                try {
+                    speechRecognition.start();
+                } catch (error) {
+                    console.error('Error starting recognition:', error);
+                    if (voiceStatusMessage) voiceStatusMessage.textContent = "Error starting recording. Please try again.";
+                    stopVoiceRecording();
+                }
+            }
+        }
+
+        function stopVoiceRecording() {
+            if (isVoiceRecording && speechRecognition) {
+                isVoiceRecording = false;
+                speechRecognition.stop();
+            }
+
+            voiceInputToggle.classList.remove('recording');
+            if (voiceStartBtn) voiceStartBtn.style.display = 'flex';
+            if (voiceStopBtn) voiceStopBtn.style.display = 'none';
+            if (voicePulseRing) voicePulseRing.classList.remove('listening');
+            if (voiceMicIcon) voiceMicIcon.classList.remove('listening');
+
+            if (voiceTranscript && voiceStatusMessage) {
+                if (voiceTranscript.textContent.trim()) {
+                    voiceStatusMessage.textContent = "Recording complete! You can start a new recording or close.";
+                } else {
+                    voiceStatusMessage.textContent = "No speech detected. Try again.";
+                }
+            }
+        }
+
+        function resetVoiceModalState() {
+            isVoiceRecording = false;
+            if (voiceStartBtn) voiceStartBtn.style.display = 'flex';
+            if (voiceStopBtn) voiceStopBtn.style.display = 'none';
+            if (voicePulseRing) voicePulseRing.classList.remove('listening');
+            if (voiceMicIcon) voiceMicIcon.classList.remove('listening');
+            voiceInputToggle.classList.remove('recording');
+        }
+    }
+
+    // Record and Upload Modal Functionality
+    const recordUploadButton = document.getElementById('record-upload-button');
+    const recordModal = document.getElementById('record-upload-modal');
+    const recordStartBtn = document.getElementById('record-start-btn');
+    const recordStopBtn = document.getElementById('record-stop-btn');
+    const recordUploadFileBtn = document.getElementById('record-upload-file-btn');
+    const recordCloseBtn = document.getElementById('record-close-btn');
+    const recordStatusMessage = document.getElementById('record-status-message');
+    const recordTimer = document.getElementById('record-timer');
+    const recordWaveform = document.getElementById('record-waveform');
+    const recordPulseRing = document.querySelector('.record-pulse-ring');
+    const recordPulseRingSecondary = document.querySelector('.record-pulse-ring-secondary');
+    const recordMicIcon = document.querySelector('.record-microphone-icon');
+
+    let isRecordingAudio = false;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let startTime = null;
+    let timerInterval = null;
+    let recordedBlob = null;
+
+    if (recordUploadButton && recordModal) {
+        // Check for MediaRecorder support
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            recordUploadButton.disabled = true;
+            recordUploadButton.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Recording Not Supported';
+        }
+
+        // Open record modal
+        recordUploadButton.addEventListener('click', function () {
+            recordModal.classList.add('active');
+            if (recordStatusMessage) recordStatusMessage.textContent = "Ready to record your introduction...";
+            resetRecordingState();
+        });
+
+        // Close record modal
+        if (recordCloseBtn) {
+            recordCloseBtn.addEventListener('click', function () {
+                recordModal.classList.remove('active');
+                if (isRecordingAudio) {
+                    stopAudioRecording();
+                }
+            });
+        }
+
+        // Close modal when clicking outside
+        recordModal.addEventListener('click', function (e) {
+            if (e.target === recordModal) {
+                recordModal.classList.remove('active');
+                if (isRecordingAudio) {
+                    stopAudioRecording();
+                }
+            }
+        });
+
+        // Start recording
+        if (recordStartBtn) {
+            recordStartBtn.addEventListener('click', async function () {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        audio: {
+                            echoCancellation: true,
+                            noiseSuppression: true,
+                            sampleRate: 44100
+                        }
+                    });
+
+                    recordedChunks = [];
+                    mediaRecorder = new MediaRecorder(stream, {
+                        mimeType: 'audio/webm;codecs=opus'
+                    });
+
+                    mediaRecorder.ondataavailable = function (event) {
+                        if (event.data.size > 0) {
+                            recordedChunks.push(event.data);
+                        }
+                    };
+
+                    mediaRecorder.onstop = function () {
+                        recordedBlob = new Blob(recordedChunks, { type: 'audio/webm' });
+                        stream.getTracks().forEach(track => track.stop());
+
+                        if (recordStatusMessage) recordStatusMessage.textContent = "Recording completed! Click upload to process.";
+                        if (recordUploadFileBtn) recordUploadFileBtn.style.display = 'flex';
+                    };
+
+                    mediaRecorder.start();
+                    startRecordingUI();
+
+                } catch (error) {
+                    console.error('Error accessing microphone:', error);
+                    if (recordStatusMessage) recordStatusMessage.textContent = "Error accessing microphone. Please check permissions.";
+                }
+            });
+        }
+
+        // Stop recording
+        if ( recordStopBtn) {
+            recordStopBtn.addEventListener('click', function () {
+                stopAudioRecording();
+            });
+        }
+
+        // Upload recorded file
+        if (recordUploadFileBtn) {
+            recordUploadFileBtn.addEventListener('click', async function () {
+                if (recordedBlob) {
+                    try {
+                        // Convert blob to file
+                        const recordedFile = new File([recordedBlob], `recording_${Date.now()}.webm`, {
+                            type: 'audio/webm'
+                        });
+
+                        console.log('Created recorded file:', recordedFile);
+
+                        // Use the global file handler
+                        const fileHandled = window.handleFileSelect(recordedFile);
+                        if (!fileHandled) {
+                            throw new Error('Failed to process the recorded file.');
+                        }
+
+                        // Close the modal
+                        recordModal.classList.remove('active');
+
+                        // Submit the form to trigger normal file upload processing
+                        const uploadForm = document.getElementById('upload-form');
+                        if (uploadForm && !window.isSubmitting) {
+                            console.log('Submitting form with recorded file');
+                            window.isSubmitting = true;
+                            uploadForm.dispatchEvent(new Event('submit', {
+                                bubbles: true,
+                                cancelable: true
+                            }));
+                        } else if (window.isSubmitting) {
+                            console.log('Preventing duplicate submission from recording');
+                        } else {
+                            throw new Error('Upload form not found');
+                        }
+                    } catch (error) {
+                        console.error('Error processing recording:', error);
+                        if (recordStatusMessage) recordStatusMessage.textContent = error.message || "Error processing recording. Please try again.";
+                    }
+                }
+            });
+        }
+
+        function startRecordingUI() {
+            isRecordingAudio = true;
+            startTime = Date.now();
+
+            // Update UI
+            if (recordStartBtn) recordStartBtn.style.display = 'none';
+            if (recordStopBtn) recordStopBtn.style.display = 'flex';
+            if (recordUploadFileBtn) recordUploadFileBtn.style.display = 'none';
+
+            // Add recording classes
+            if (recordPulseRing) recordPulseRing.classList.add('recording');
+            if (recordPulseRingSecondary) recordPulseRingSecondary.classList.add('recording');
+            if (recordMicIcon) recordMicIcon.classList.add('recording');
+            if (recordTimer) recordTimer.classList.add('recording');
+            if (recordWaveform) recordWaveform.classList.add('active');
+
+            // Start timer
+            timerInterval = setInterval(updateTimer, 100);
+
+            if (recordStatusMessage) recordStatusMessage.textContent = "Recording in progress... Speak clearly!";
+        }
+
+        function stopAudioRecording() {
+            if (isRecordingAudio && mediaRecorder) {
+                isRecordingAudio = false;
+                mediaRecorder.stop();
+            }
+
+            // Update UI
+            if (recordStartBtn) recordStartBtn.style.display = 'flex';
+            if (recordStopBtn) recordStopBtn.style.display = 'none';
+
+            // Remove recording classes
+            if (recordPulseRing) recordPulseRing.classList.remove('recording');
+            if (recordPulseRingSecondary) recordPulseRingSecondary.classList.remove('recording');
+            if (recordMicIcon) recordMicIcon.classList.remove('recording');
+            if (recordTimer) recordTimer.classList.remove('recording');
+            if (recordWaveform) recordWaveform.classList.remove('active');
+
+            // Stop timer
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        function updateTimer() {
+            if (startTime && recordTimer) {
+                const elapsed = Date.now() - startTime;
+                const minutes = Math.floor(elapsed / 60000);
+                const seconds = Math.floor((elapsed % 60000) / 1000);
+                recordTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+
+        function resetRecordingState() {
+            isRecordingAudio = false;
+            recordedChunks = [];
+            recordedBlob = null;
+            startTime = null;
+
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+
+            // Reset UI
+            if (recordStartBtn) recordStartBtn.style.display = 'flex';
+            if (recordStopBtn) recordStopBtn.style.display = 'none';
+            if (recordUploadFileBtn) recordUploadFileBtn.style.display = 'none';
+
+            if (recordPulseRing) recordPulseRing.classList.remove('recording');
+            if (recordPulseRingSecondary) recordPulseRingSecondary.classList.remove('recording');
+            if (recordMicIcon) recordMicIcon.classList.remove('recording');
+            if (recordTimer) {
+                recordTimer.classList.remove('recording');
+                recordTimer.textContent = '00:00';
+            }
+            if (recordWaveform) recordWaveform.classList.remove('active');
+        }
+    }
+
     // Health check on load
     fetch('/health')
         .then(response => response.json())
@@ -1539,4 +2408,16 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.error('Health check error:', error);
         });
+    
+    // Initialize queue enhancer if available
+    if (typeof enhanceQueuePolling === 'function') {
+        enhanceQueuePolling();
+        console.log('Queue enhancer initialized');
+    }
+    
+    // Initialize result display fix if available
+    if (typeof fixResultDisplay === 'function') {
+        fixResultDisplay();
+        console.log('Result display fix initialized');
+    }
 });

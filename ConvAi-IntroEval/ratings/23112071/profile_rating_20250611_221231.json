@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.9",
+  "grading_explanation": {
+    "completeness": "2.9/3 – 30 of 35 fields filled (85.71% completion).",
+    "relevance": "2.0/2 – Relevant skills include Python, machine learning, deep learning, and data analysis. Strong education background in Data Science. Work experience is limited to an internship at COTHON Solutions with exposure to real-world AI projects.",
+    "projects_or_internships": "2.5/3 – The project 'ConvAi' demonstrates a good level of detail, including technologies used, problem statement, solution implemented, and outcomes/accomplishments. However, the specific role in the project is not explicitly stated.",
+    "extra_achievements": "1.5/2 – The candidate has several notable achievements (GitHub Foundations, Data Literacy from Datacamp, Chad GPT Intermediate, Google Data Analytics specialization, Excellence in Academia Award, ranked second at Hindustan University for academic performance) and participation in tech fests, hackathons, and social initiatives."
+  },
+  "grading_debug": {
+    "completeness_score": "2.9",
+    "relevance_score": "2.0",
+    "projects_score": "2.5",
+    "achievements_score": "1.5",
+    "calculated_sum": "8.9",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.9"
+    },
+    "notes": "Strengths: Strong technical skills, multiple achievements, and adaptability. Weaknesses: Limited work experience, some missing details in the projects section, and no specific role mentioned in one of the projects."
+  },
+  "evaluated_file": "filled_forms\\23112071\\form_20250611_221204.json",
+  "evaluation_timestamp": "2025-06-11T22:12:15.734677"
+}

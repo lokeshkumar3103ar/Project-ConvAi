@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.1",
+  "grading_explanation": {
+    "completeness": "2.6/3 – 26 of 35 fields filled (74% completion).",
+    "relevance": "1.5/2 – His education in Data Science and the projects he has worked on show a good alignment with AI, ML, and data science roles.",
+    "projects_or_internships": "2.0/3 – He has worked on several projects such as ConvAi, Project 11, and Face and QR attendance. These projects demonstrate technologies like Python, machine learning, deep learning, and show clear problem statements, solutions, and outcomes.",
+    "extra_achievements": "2.0/2 – He has multiple significant achievements like winning the Excellence in Academia Award, ranked second at Hindustan University for academic performance, and winning first place at AI Genesis and INNOTHON 2025."
+  },
+  "grading_debug": {
+    "completeness_score": "2.6",
+    "relevance_score": "1.5",
+    "projects_score": "2.0",
+    "achievements_score": "2.0",
+    "calculated_sum": "8.1",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.1"
+    },
+    "notes": "Lokesh has a strong educational background and impressive achievements. However, he might want to improve his completeness score by filling out missing personal details like age and professional status."
+  },
+  "evaluated_file": "filled_forms\\23112064\\form_20250611_221116.json",
+  "evaluation_timestamp": "2025-06-11T22:11:27.687763"
+}

@@ -106,44 +106,28 @@ def extract_fields_from_transcript(transcript_text: str, roll_number: str = None
         }
 
     try:
-        # Use streaming mode for console output but still return complete result
-        print("📤 [CONSOLE] Sending extraction request to LLM API...")
+        # Use non-streaming mode for cleaner queue operation
+        print("📤 [QUEUE] Sending extraction request to LLM API...")
         response = requests.post(
             "http://localhost:11434/api/generate",
             json={
                 "model": "mistral",
                 "prompt": prompt,
-                "stream": True,  # Enable streaming
+                "stream": False,  # Disable streaming for queue mode
                 "temperature": 0.0,  # Remove randomness for consistent output
                 "top_p": 1.0,        # Set top_p to 1.0 for deterministic sampling
                 "top_k": 40,         # Limit token selection to top 40 tokens
                 "seed": 42,          # Fixed seed for reproducible results                
                 "stop": ["\n\n"]     # Stop token for clean output termination
-            },
-            stream=True  # Stream the HTTP response
+            }
         )
         
         if response.status_code == 200:
-            # Process the streaming response line by line
-            print(f"📥 [CONSOLE] Receiving streaming extraction response from LLM API")
+            # Process the complete response
+            print(f"📥 [QUEUE] Received extraction response from LLM API")
             
-            extracted_text = ""
-            
-            for line in response.iter_lines():
-                if line:
-                    # Parse the streaming line
-                    json_line = json.loads(line.decode('utf-8'))
-                    
-                    if 'response' in json_line:
-                        chunk = json_line['response']
-                        extracted_text += chunk
-                        # Print the chunk to the console immediately
-                        print(chunk, end='', flush=True)
-                    
-                    # Check if the stream is done
-                    if json_line.get('done', False):
-                        print()  # New line after completion
-                        break
+            response_json = response.json()
+            extracted_text = response_json.get('response', '')
             
             # After streaming is complete, save the extracted data
             if not extracted_text.strip():
@@ -189,118 +173,5 @@ def extract_fields_from_transcript(transcript_text: str, roll_number: str = None
         print(f"Exception calling LLM: {str(e)}")
         return {"status": "error", "message": f"Exception: {str(e)}"}
 
-async def extract_fields_from_transcript_stream(transcript_text: str, roll_number: str = None):
-    """Streaming version of field extraction from transcript
-
-    Args:
-        transcript_text (str): The transcript text to process
-        roll_number (str, optional): Student roll number for file organization
-
-    Yields:
-        str: Server-sent events data with extraction progress
-    """
-    try:
-        yield f"data: {json.dumps({'status': 'progress', 'message': 'Generating extraction prompt...'})}\n\n"
-        await asyncio.sleep(0.1)
-        
-        prompt = get_extraction_prompt(transcript_text)
-        
-        if DISABLE_LLM:
-            print("[⚠️ LLM DISABLED] Skipping extract_fields_from_transcript_stream LLM call.")
-            yield f"data: {json.dumps({'status': 'disabled', 'message': 'LLM call skipped (safe edit mode)'})}\n\n"
-            return
-
-        yield f"data: {json.dumps({'status': 'progress', 'message': 'Calling LLM for field extraction...'})}\n\n"
-        await asyncio.sleep(0.1)
-        
-        # Call the LLM in streaming mode
-        print(f"📤 [CONSOLE] Sending extraction request to LLM API...")
-        response = requests.post(
-            "http://localhost:11434/api/generate",
-            json={
-                "model": "mistral",
-                "prompt": prompt,
-                "stream": True,  # Enable streaming
-                "temperature": 0.0,
-                "top_p": 1.0,
-                "top_k": 40,
-                "seed": 42,
-                "stop": ["\n\n"]
-            },
-            stream=True  # Stream the HTTP response
-        )
-        
-        extracted_text = ""
-        
-        if response.status_code == 200:
-            # Process the streaming response line by line
-            print(f"📥 [CONSOLE] Receiving streaming extraction response from LLM API")
-            
-            for line in response.iter_lines():
-                if line:
-                    # Parse the streaming line
-                    json_line = json.loads(line.decode('utf-8'))
-                    
-                    if 'response' in json_line:
-                        chunk = json_line['response']
-                        extracted_text += chunk
-                        
-                        # Print to console immediately
-                        print(chunk, end='', flush=True)
-                        
-                        # Send individual token to the client
-                        # NOTE: We're not streaming this to the web UI per the requirements
-                        # "Note: the form extraction should not streamed to web"
-                        # So we just send progress updates
-                        if len(chunk) > 0 and (len(extracted_text) % 100 < len(chunk)):
-                            yield f"data: {json.dumps({'status': 'extracting', 'message': 'Receiving data...', 'text_length': len(extracted_text)})}\n\n"
-                    
-                    # Check if the stream is done                    if json_line.get('done', False):
-                        print()  # New line after completion
-                        break
-                
-                # Use file organization system for saving extracted forms
-                timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-                filename = f"form_{timestamp}.json"
-                
-                # Use organize_path to get the proper file path with roll number organization
-                file_path = organize_path("filled_forms", filename, roll_number)
-                file_path.parent.mkdir(parents=True, exist_ok=True)
-                
-                try:
-                    # Tell the client we're saving the data
-                    yield f"data: {json.dumps({'status': 'progress', 'message': 'Saving extracted fields...'})}\n\n"
-                    await asyncio.sleep(0.1)
-                      # Save the extracted data to a JSON file
-                    json_data = {
-                        "timestamp": datetime.datetime.now().isoformat(),
-                        "extracted_fields": extracted_text
-                    }
-                    with open(file_path, "w", encoding="utf-8") as f:
-                        json.dump(json_data, f, indent=2, ensure_ascii=False)
-                    
-                    print(f"✅ [CONSOLE] Saved extracted data to: {file_path}")
-                    log_file_operation("CREATE form", file_path, roll_number)
-                    
-                    # Send completion message
-                    completion_data = {
-                        "status": "complete",
-                        "file": str(file_path),
-                        "message": "Extraction completed successfully"
-                    }
-                    yield f"data: {json.dumps(completion_data)}\n\n"
-                
-                except Exception as save_error:
-                    error_msg = f"Error saving JSON file: {str(save_error)}"
-                    print(f"❌ [CONSOLE] {error_msg}")
-                    yield f"data: {json.dumps({'status': 'error', 'message': error_msg})}\n\n"
-        else:
-            error_msg = f"LLM API error for extraction: {response.status_code}"
-            print(f"❌ [CONSOLE] {error_msg}")
-            yield f"data: {json.dumps({'status': 'error', 'message': error_msg})}\n\n"
-    
-    except Exception as e:
-        error_msg = f"Exception in extraction stream: {str(e)}"
-        print(f"❌ [CONSOLE] {error_msg}")
-        yield f"data: {json.dumps({'status': 'error', 'message': error_msg})}\n\n"
+# Streaming function removed as requested
 

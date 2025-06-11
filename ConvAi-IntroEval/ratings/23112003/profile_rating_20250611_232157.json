@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.0",
+  "grading_explanation": {
+    "completeness": "3.0/3 – 3 of 35 fields filled (86% completion).",
+    "relevance": "1.5/2 – Relevant skills include machine learning, deep learning, and AI system design. However, the missing key element is experience with prompt engineering, which is a crucial skill for the target role.",
+    "projects_or_internships": "2.0/3 – The project description provides clear details of technologies used, problem statement, solution implemented, outcomes/accomplishments, and your role in the project, earning a 'good' score.",
+    "extra_achievements": "1.5/2 – The candidate has several achievements such as first place at AI Genesis and INNOTHON 2025, Excellence in Academia Award, ranked second at Hindustan University. These achievements demonstrate strong professional growth."
+  },
+  "grading_debug": {
+    "completeness_score": "3.0",
+    "relevance_score": "1.5",
+    "projects_score": "2.0",
+    "achievements_score": "1.5",
+    "calculated_sum": "8.0",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.0"
+    },
+    "notes": "The candidate has a strong educational background with notable achievements, relevant skills, and hands-on project experience. However, the missing key element in work experience regarding the target role might require further investigation."
+  },
+  "evaluated_file": "filled_forms\\23112003\\form_20250611_232132.json",
+  "evaluation_timestamp": "2025-06-11T23:21:43.313409"
+}

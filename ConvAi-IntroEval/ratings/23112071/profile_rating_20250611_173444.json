@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.7",
+  "grading_explanation": {
+    "completeness": "2.71/3 – 24 of 35 fields filled (68.57% completion).",
+    "relevance": "2.0/2 – Lokesh's skills, education, and projects align well with the stated target role of AI, ML engineer. He has experience with machine learning, deep learning algorithms such as CNN, linear regression, MTCNN and worked on machine learning and deep learning projects at COTHON Solutions. Additionally, he showcased his abilities in predictive analytics and automation through his projects like ConvAi and Project 11.",
+    "projects_or_internships": "2.5/3 – Lokesh's projects demonstrate strong quality with clear problem statements, solutions, and outcomes. The projects are relevant to the target role as they involve AI, machine learning, and deep learning technologies.",
+    "extra_achievements": "1.5/2 – Lokesh has several significant achievements like earning certifications in GitHub Foundations, Data Literacy from Datacamp, Chad GPT (Intermediate), Google Data Analytics specialization, Excellence in Academia Award and active participation in university coding and AI clubs. These achievements demonstrate his commitment to professional growth."
+  },
+  "grading_debug": {
+    "completeness_score": "2.71",
+    "relevance_score": "2.0",
+    "projects_score": "2.5",
+    "achievements_score": "1.5",
+    "calculated_sum": "8.7",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.7"
+    },
+    "notes": "Lokesh has a strong profile with relevant skills and experiences. He could improve by providing more details about his work experience at COTHON Solutions, as well as any specific accomplishments during his internship."
+  },
+  "evaluated_file": "filled_forms\\23112071\\form_20250611_173417.json",
+  "evaluation_timestamp": "2025-06-11T17:34:29.629702"
+}

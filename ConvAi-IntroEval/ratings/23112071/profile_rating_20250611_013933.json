@@ -1,0 +1,23 @@
+{
+  "profile_rating": "9.5",
+  "grading_explanation": {
+    "completeness": "3.0/3 – 3 of 35 fields filled (86% completion).",
+    "relevance": "2.0/2 – Strong alignment: The candidate has a degree in Data Science and relevant skills such as Python, machine learning, deep learning; the internship experience also contributes to their target role.",
+    "projects_or_internships": "2.5/3 – Very good: The project ‘ConvAi’ is detailed with mentioned technologies and clear problem/solution, but there are no specific outcomes/accomplishments mentioned for the other projects.",
+    "extra_achievements": "2.0/2 – Outstanding: The candidate has several significant achievements like Excellence in Academia Award, ranked second at Hindustan University, first place at AI Genesis and INNOTHON 2025."
+  },
+  "grading_debug": {
+    "completeness_score": "3.0",
+    "relevance_score": "2.0",
+    "projects_score": "2.5",
+    "achievements_score": "2.0",
+    "calculated_sum": "9.5",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "9.5"
+    },
+    "notes": "The candidate needs to provide more information about their age, professional status, work experience details, and some outcomes/accomplishments from their projects. Additionally, it is beneficial if they specify the roles they held in their projects."
+  },
+  "evaluated_file": "filled_forms\\23112071_20250611_013818\\form_20250611_013902.json",
+  "evaluation_timestamp": "2025-06-11T01:39:15.486016"
+}

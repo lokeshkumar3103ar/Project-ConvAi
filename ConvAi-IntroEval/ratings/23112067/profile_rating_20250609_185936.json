@@ -1,0 +1,23 @@
+{
+  "profile_rating": "7.4",
+  "grading_explanation": {
+    "completeness": "2.4/3 – 24 of 35 fields filled (68.57% completion).",
+    "relevance": "1.5/2 – Lokesh has a bachelor's degree in Data Science, with experience in machine learning and deep learning, making him a good fit for an AI or ML role.",
+    "projects_or_internships": "2.0/3 – Lokesh mentions several projects (ConvAi, Project 11, Face and QR attendance) without explicitly stating his roles and the outcomes achieved, but the mention of technologies used suggests that the descriptions could be more detailed.",
+    "extra_achievements": "1.5/2 – Lokesh has several achievements such as GitHub Foundations, Data Literacy from Datacamp, Google Data Analytics specialization, Excellence in Academia Award, and ranked second at Hindustan University for academic performance."
+  },
+  "grading_debug": {
+    "completeness_score": "2.4",
+    "relevance_score": "1.5",
+    "projects_score": "2.0",
+    "achievements_score": "1.5",
+    "calculated_sum": "7.4",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "7.4"
+    },
+    "notes": "Lokesh's profile is generally well-rounded, but there are areas for improvement in terms of providing more detailed information about projects and explicitly stating roles within them. Additionally, it would be beneficial to clarify the target job role."
+  },
+  "evaluated_file": "filled_forms\\23112067\\form_20250609_185924.json",
+  "evaluation_timestamp": "2025-06-09T18:59:36.039034"
+}

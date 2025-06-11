@@ -30,6 +30,7 @@ class Teacher(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
+    roll_number = Column(String, unique=True, nullable=True, index=True)  # Add roll_number for consistency
 
 class TeacherStudentMap(Base):
     __tablename__ = "teacher_student_map"

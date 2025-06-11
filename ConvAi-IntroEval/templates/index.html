@@ -1519,10 +1519,174 @@
                     </div>
                 </div>
             </header>
-
+            
             <main class="container">
                 <div class="row">
-                    <div class="col-lg-8 mx-auto">
+                    <div class="col-lg-8 mx-auto">                        <!-- User Profile Section -->
+                        <div id="user-profile-section" class="user-profile-card mb-4">
+                            <div class="user-profile-header">
+                                <div class="profile-header-content">
+                                    <div class="profile-icon">
+                                        <i class="fas fa-user-circle"></i>
+                                    </div>
+                                    <div class="profile-title">
+                                        <h5 class="mb-0">User Profile</h5>
+                                        <small class="profile-subtitle">Your account information</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="user-profile-body">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="profile-info-item">
+                                            <div class="profile-info-icon">
+                                                <i class="fas fa-id-badge"></i>
+                                            </div>
+                                            <div class="profile-info-content">
+                                                <label class="profile-label">Username</label>
+                                                <span id="profile-username" class="profile-value">Loading...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="profile-info-item">
+                                            <div class="profile-info-icon">
+                                                <i class="fas fa-graduation-cap"></i>
+                                            </div>
+                                            <div class="profile-info-content">
+                                                <label class="profile-label">Roll Number</label>
+                                                <span id="profile-roll-number" class="profile-value">Loading...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row g-3 mt-2">
+                                    <div class="col-md-6">
+                                        <div class="profile-info-item">
+                                            <div class="profile-info-icon">
+                                                <i class="fas fa-user-tag"></i>
+                                            </div>
+                                            <div class="profile-info-content">
+                                                <label class="profile-label">User Type</label>
+                                                <span id="profile-user-type" class="profile-user-type-badge">Loading...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="profile-info-item profile-logout-item">
+                                            <button id="logout-btn" class="btn-logout">
+                                                <i class="fas fa-sign-out-alt"></i>
+                                                <span>Logout</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                        <!-- Two-Phase Queue Status Monitor -->
+                        <div id="queue-status-monitor" class="queue-monitor-card mb-4" style="display: none;">
+                            <div class="queue-monitor-header">
+                                <div class="queue-header-content">
+                                    <div class="queue-icon">
+                                        <i class="fas fa-cogs"></i>
+                                    </div>
+                                    <div class="queue-title">
+                                        <h5 class="mb-0">Processing Queue Status</h5>
+                                        <small class="queue-subtitle">Two-phase AI processing system</small>
+                                    </div>
+                                </div>
+                                <div class="queue-status-indicator">
+                                    <div class="status-dot" id="system-status-dot"></div>
+                                    <span class="status-text" id="system-status-text">Active</span>
+                                </div>
+                            </div>
+                            <div class="queue-monitor-body">
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <div class="queue-info-section">
+                                            <div class="queue-section-header">
+                                                <i class="fas fa-info-circle"></i>
+                                                <h6>Current System Phase</h6>
+                                            </div>
+                                            <div class="phase-indicator">
+                                                <span id="current-phase" class="phase-badge">Idle</span>
+                                            </div>
+                                        </div>
+                                        <div class="queue-info-section mt-3">
+                                            <div class="queue-section-header">
+                                                <i class="fas fa-users"></i>
+                                                <h6>Queue Positions</h6>
+                                            </div>
+                                            <div class="queue-stats">
+                                                <div class="queue-stat-item">
+                                                    <span class="stat-label">STT Queue:</span>
+                                                    <span id="stt-queue-count" class="stat-value">0</span>
+                                                    <span class="stat-unit">students</span>
+                                                </div>
+                                                <div class="queue-stat-item">
+                                                    <span class="stat-label">Evaluation Queue:</span>
+                                                    <span id="eval-queue-count" class="stat-value">0</span>
+                                                    <span class="stat-unit">students</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="queue-info-section">
+                                            <div class="queue-section-header">
+                                                <i class="fas fa-chart-line"></i>
+                                                <h6>Performance Metrics</h6>
+                                            </div>
+                                            <div class="performance-stats">
+                                                <div class="perf-stat-item">
+                                                    <div class="perf-stat-icon completed">
+                                                        <i class="fas fa-check-circle"></i>
+                                                    </div>
+                                                    <div class="perf-stat-content">
+                                                        <span class="perf-stat-value" id="completed-count">0</span>
+                                                        <span class="perf-stat-label">Completed</span>
+                                                    </div>
+                                                </div>
+                                                <div class="perf-stat-item">
+                                                    <div class="perf-stat-icon failed">
+                                                        <i class="fas fa-exclamation-triangle"></i>
+                                                    </div>
+                                                    <div class="perf-stat-content">
+                                                        <span class="perf-stat-value" id="failed-count">0</span>
+                                                        <span class="perf-stat-label">Failed</span>
+                                                    </div>
+                                                </div>
+                                                <div class="perf-stat-item">
+                                                    <div class="perf-stat-icon timing">
+                                                        <i class="fas fa-clock"></i>
+                                                    </div>
+                                                    <div class="perf-stat-content">
+                                                        <span class="perf-stat-value" id="avg-time">-</span>
+                                                        <span class="perf-stat-label">Avg Time (s)</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="task-status" class="queue-info-section mt-3" style="display: none;">
+                                            <div class="queue-section-header">
+                                                <i class="fas fa-user-clock"></i>
+                                                <h6>Your Task Status</h6>
+                                            </div>
+                                            <div class="task-status-content">
+                                                <div class="task-status-item">
+                                                    <span class="task-status-label">Status:</span>
+                                                    <span id="your-task-status" class="task-status-badge">-</span>
+                                                </div>
+                                                <div class="task-status-item">
+                                                    <span class="task-status-label">Queue Position:</span>
+                                                    <span id="your-queue-position" class="task-position-value">-</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Progress Tracker -->
                         <div class="progress-tracker mb-4">
                             <div class="progress-step active" id="step-upload">
@@ -1663,15 +1827,15 @@
                                 <h2 class="card-title"><i class="fas fa-clipboard-check me-2"></i>Evaluation Results</h2>
 
                                 <!-- Tabs for different results -->
-                                <ul class="nav nav-tabs mb-3" id="resultsTabs" role="tablist">
-                                    <li class="nav-item" role="presentation">
+                                <ul class="nav nav-tabs mb-3" id="resultsTabs" role="tablist">                                    <li class="nav-item" role="presentation">
                                         <button class="nav-link active" id="transcript-tab" data-bs-toggle="tab"
                                             data-bs-target="#transcript" type="button" role="tab" aria-controls="transcript"
                                             aria-selected="true">
                                             <i class="fas fa-headphones me-1"></i> Transcript
                                         </button>
                                     </li>
-                                    <li class="nav-item" role="presentation">
+                                    <!-- Extracted Fields tab hidden for production but still functioning in backend -->
+                                    <li class="nav-item d-none" role="presentation">
                                         <button class="nav-link" id="fields-tab" data-bs-toggle="tab"
                                             data-bs-target="#fields" type="button" role="tab" aria-controls="fields"
                                             aria-selected="false">
@@ -1702,10 +1866,8 @@
                                                 <pre id="transcript-content" class="transcript-content"></pre>
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <!-- Extracted Fields Tab -->
-                                    <div class="tab-pane fade" id="fields" role="tabpanel">
+                                    </div>                                    <!-- Extracted Fields Tab (Hidden in UI but still functional in backend) -->
+                                    <div class="tab-pane fade d-none" id="fields" role="tabpanel">
                                         <div class="card bg-light">
                                             <div class="card-body">
                                                 <h5 class="card-title">Extracted Information</h5>
@@ -1767,422 +1929,43 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+                </div>            </div>        </div>    </div>    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../static/js/rating-utils.js"></script>
     <script src="../static/js/app.js"></script>
-    <script>    // Simple CSS-based fluid transition
-        document.addEventListener('DOMContentLoaded', function () {
-            const overlay = document.getElementById('fluid-transition');
-
-            // Test function for manual triggering
-            window.testTransition = function () {
-                localStorage.setItem('showFluidTransition', 'true');
-                location.reload();
-            };
-
-            if (localStorage.getItem('showFluidTransition')) {
-                localStorage.removeItem('showFluidTransition');
-
-                // Show and start the transition
-                overlay.classList.add('active');
-
-                // Hide the overlay after animation completes (extended duration)
-                setTimeout(() => {
-                    overlay.style.display = 'none';
-                }, 5500); // Increased from 2000ms to 5500ms for smoother fade
+    <script src="../static/js/queue_enhancer.js"></script>
+    <script src="../static/js/queue-enhancer.js"></script>
+    <script src="../static/js/auto-recovery.js"></script>
+    <script>
+        // Initialize the enhanced queue polling features for multi-user support
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Initializing queue enhancement modules');
+            
+            // Fix result display for all users
+            if (typeof window.fixResultDisplay === 'function') {
+                console.log('🔧 Activating result display fix');
+                window.fixResultDisplay();
+            } else {
+                console.warn('❌ Result display fix not available');
             }
-
-            // Theme Toggle Functionality
-            const themeToggle = document.getElementById('theme-toggle');
-            const themeIcon = document.getElementById('theme-icon');
-            const html = document.documentElement;
-
-            // Check for saved theme preference or default to dark
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            html.setAttribute('data-theme', savedTheme);
-            updateThemeIcon(savedTheme);
-
-            themeToggle.addEventListener('click', function () {
-                const currentTheme = html.getAttribute('data-theme');
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
-                html.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-                updateThemeIcon(newTheme);
-            });
-            function updateThemeIcon(theme) {
-                if (theme === 'dark') {
-                    themeIcon.className = 'fas fa-sun'; // Show sun icon in dark mode
-                } else {
-                    themeIcon.className = 'fas fa-moon'; // Show moon icon in light mode
-                }
+            
+            // Enhance queue polling for better task completion detection
+            if (typeof window.enhanceQueuePolling === 'function') {
+                console.log('🔧 Activating enhanced queue polling');
+                window.enhanceQueuePolling();
+            } else {
+                console.warn('❌ Enhanced queue polling not available');
             }
-
-            // Voice Input Modal Functionality
-            const voiceInputToggle = document.getElementById('voice-input-toggle');
-            const voiceModal = document.getElementById('voice-input-modal');
-            const voiceStartBtn = document.getElementById('voice-start-btn');
-            const voiceStopBtn = document.getElementById('voice-stop-btn');
-            const voiceCloseBtn = document.getElementById('voice-close-btn');
-            const voiceStatusMessage = document.getElementById('voice-status-message');
-            const voiceTranscript = document.getElementById('voice-transcript');
-            const voiceIcon = document.getElementById('voice-icon');
-            const voicePulseRing = document.querySelector('.voice-pulse-ring');
-            const voiceMicIcon = document.querySelector('.voice-microphone-icon');
-
-            let isRecording = false;
-            let recognition = null;
-
-            // Initialize speech recognition if available
-            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                recognition = new SpeechRecognition();
-                recognition.continuous = true;
-                recognition.interimResults = true;
-                recognition.lang = 'en-US';
-
-                recognition.onstart = function () {
-                    voiceStatusMessage.textContent = "Listening... Speak now!";
-                    voiceTranscript.classList.remove('empty');
-                    voicePulseRing.classList.add('listening');
-                    voiceMicIcon.classList.add('listening');
-                };
-
-                recognition.onresult = function (event) {
-                    let finalTranscript = '';
-                    let interimTranscript = '';
-
-                    for (let i = event.resultIndex; i < event.results.length; i++) {
-                        const transcript = event.results[i][0].transcript;
-                        if (event.results[i].isFinal) {
-                            finalTranscript += transcript + ' ';
-                        } else {
-                            interimTranscript += transcript;
-                        }
-                    }
-
-                    voiceTranscript.innerHTML = finalTranscript + '<span style="color: #888;">' + interimTranscript + '</span>';
-                };
-
-                recognition.onerror = function (event) {
-                    voiceStatusMessage.textContent = "Error occurred in recognition: " + event.error;
-                    stopRecording();
-                };
-
-                recognition.onend = function () {
-                    if (isRecording) {
-                        voiceStatusMessage.textContent = "Recording stopped. Click Start to record again.";
-                    }
-                    stopRecording();
-                };
+            
+            // Initialize auto-recovery system
+            if (typeof window.initializeRecoverySystem === 'function') {
+                console.log('🔄 Activating result auto-recovery system');
+                window.initializeRecoverySystem();
+            } else {
+                console.warn('❌ Auto-recovery system not available');
             }
-
-            // Open voice modal
-            voiceInputToggle.addEventListener('click', function () {
-                voiceModal.classList.add('active');
-                voiceStatusMessage.textContent = "Tell me who you are...";
-                voiceTranscript.textContent = "";
-                voiceTranscript.classList.add('empty');
-                resetModalState();
-            });
-
-            // Close voice modal
-            voiceCloseBtn.addEventListener('click', function () {
-                voiceModal.classList.remove('active');
-                if (isRecording) {
-                    stopRecording();
-                }
-            });
-
-            // Start recording
-            voiceStartBtn.addEventListener('click', function () {
-                if (recognition) {
-                    startRecording();
-                } else {
-                    voiceStatusMessage.textContent = "Speech recognition not supported in this browser.";
-                }
-            });
-
-            // Stop recording
-            voiceStopBtn.addEventListener('click', function () {
-                stopRecording();
-            });
-
-            // Close modal when clicking outside
-            voiceModal.addEventListener('click', function (e) {
-                if (e.target === voiceModal) {
-                    voiceModal.classList.remove('active');
-                    if (isRecording) {
-                        stopRecording();
-                    }
-                }
-            });
-
-            function startRecording() {
-                if (!isRecording && recognition) {
-                    isRecording = true;
-                    voiceInputToggle.classList.add('recording');
-                    voiceStartBtn.style.display = 'none';
-                    voiceStopBtn.style.display = 'flex';
-                    voiceStatusMessage.textContent = "Starting recording...";
-
-                    try {
-                        recognition.start();
-                    } catch (error) {
-                        console.error('Error starting recognition:', error);
-                        voiceStatusMessage.textContent = "Error starting recording. Please try again.";
-                        stopRecording();
-                    }
-                }
-            }
-
-            function stopRecording() {
-                if (isRecording && recognition) {
-                    isRecording = false;
-                    recognition.stop();
-                }
-
-                voiceInputToggle.classList.remove('recording');
-                voiceStartBtn.style.display = 'flex';
-                voiceStopBtn.style.display = 'none';
-                voicePulseRing.classList.remove('listening');
-                voiceMicIcon.classList.remove('listening');
-
-                if (voiceTranscript.textContent.trim()) {
-                    voiceStatusMessage.textContent = "Recording complete! You can start a new recording or close.";
-                } else {
-                    voiceStatusMessage.textContent = "No speech detected. Try again.";
-                }
-            }
-
-            function resetModalState() {
-                isRecording = false;
-                voiceStartBtn.style.display = 'flex';
-                voiceStopBtn.style.display = 'none';
-                voicePulseRing.classList.remove('listening');
-                voiceMicIcon.classList.remove('listening'); voiceInputToggle.classList.remove('recording');
-            }
+            
+            console.log('🚀 Queue enhancement features initialized for multi-user support');
         });
-
-        // Record and Upload Modal Functionality
-        const recordUploadButton = document.getElementById('record-upload-button');
-        const recordModal = document.getElementById('record-upload-modal');
-        const recordStartBtn = document.getElementById('record-start-btn');
-        const recordStopBtn = document.getElementById('record-stop-btn');
-        const recordUploadFileBtn = document.getElementById('record-upload-file-btn');
-        const recordCloseBtn = document.getElementById('record-close-btn');
-        const recordStatusMessage = document.getElementById('record-status-message');
-        const recordTimer = document.getElementById('record-timer');
-        const recordWaveform = document.getElementById('record-waveform');
-        const recordPulseRing = document.querySelector('.record-pulse-ring');
-        const recordPulseRingSecondary = document.querySelector('.record-pulse-ring-secondary');
-        const recordMicIcon = document.querySelector('.record-microphone-icon');
-
-        let isRecordingAudio = false;
-        let mediaRecorder = null;
-        let recordedChunks = [];
-        let startTime = null;
-        let timerInterval = null;
-        let recordedBlob = null;
-
-        // Check for MediaRecorder support
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            recordUploadButton.disabled = true;
-            recordUploadButton.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Recording Not Supported';
-        }
-
-        // Open record modal
-        recordUploadButton.addEventListener('click', function () {
-            recordModal.classList.add('active');
-            recordStatusMessage.textContent = "Ready to record your introduction...";
-            resetRecordingState();
-        });
-
-        // Close record modal
-        recordCloseBtn.addEventListener('click', function () {
-            recordModal.classList.remove('active');
-            if (isRecordingAudio) {
-                stopRecording();
-            }
-        });
-
-        // Close modal when clicking outside
-        recordModal.addEventListener('click', function (e) {
-            if (e.target === recordModal) {
-                recordModal.classList.remove('active');
-                if (isRecordingAudio) {
-                    stopRecording();
-                }
-            }
-        });
-
-        // Start recording
-        recordStartBtn.addEventListener('click', async function () {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    audio: {
-                        echoCancellation: true,
-                        noiseSuppression: true,
-                        sampleRate: 44100
-                    }
-                });
-
-                recordedChunks = [];
-                mediaRecorder = new MediaRecorder(stream, {
-                    mimeType: 'audio/webm;codecs=opus'
-                });
-
-                mediaRecorder.ondataavailable = function (event) {
-                    if (event.data.size > 0) {
-                        recordedChunks.push(event.data);
-                    }
-                };
-
-                mediaRecorder.onstop = function () {
-                    recordedBlob = new Blob(recordedChunks, { type: 'audio/webm' });
-                    stream.getTracks().forEach(track => track.stop());
-
-                    recordStatusMessage.textContent = "Recording completed! Click upload to process.";
-                    recordUploadFileBtn.style.display = 'flex';
-                };
-
-                mediaRecorder.start();
-                startRecordingUI();
-
-            } catch (error) {
-                console.error('Error accessing microphone:', error);
-                recordStatusMessage.textContent = "Error accessing microphone. Please check permissions.";
-            }
-        });
-
-        // Stop recording
-        recordStopBtn.addEventListener('click', function () {
-            stopRecording();
-        });    // Upload recorded file
-        recordUploadFileBtn.addEventListener('click', async function () {
-            if (recordedBlob) {
-                try {
-                    // Convert blob to file
-                    const recordedFile = new File([recordedBlob], `recording_${Date.now()}.webm`, {
-                        type: 'audio/webm'
-                    });
-
-                    console.log('Created recorded file:', recordedFile);
-
-                    // First ensure the file handler exists
-                    if (typeof window.handleFileSelect !== 'function') {
-                        throw new Error('File handler not initialized. Please reload the page.');
-                    }
-
-                    // Use the handler and check its result
-                    const fileHandled = window.handleFileSelect(recordedFile);
-                    if (!fileHandled) {
-                        throw new Error('Failed to process the recorded file.');
-                    }
-
-                    // Close the modal
-                    recordModal.classList.remove('active');
-
-                    // Submit the form to trigger normal file upload processing
-                    const uploadForm = document.getElementById('upload-form');
-                    if (uploadForm) {
-                        console.log('Submitting form with recorded file');
-                        uploadForm.dispatchEvent(new Event('submit', {
-                            bubbles: true,
-                            cancelable: true
-                        }));
-                    } else {
-                        throw new Error('Upload form not found');
-                    }
-                } catch (error) {
-                    console.error('Error processing recording:', error);
-                    recordStatusMessage.textContent = error.message || "Error processing recording. Please try again.";
-                }
-            }
-        });
-
-        function startRecordingUI() {
-            isRecordingAudio = true;
-            startTime = Date.now();
-
-            // Update UI
-            recordStartBtn.style.display = 'none';
-            recordStopBtn.style.display = 'flex';
-            recordUploadFileBtn.style.display = 'none';
-
-            // Add recording classes
-            recordPulseRing.classList.add('recording');
-            recordPulseRingSecondary.classList.add('recording');
-            recordMicIcon.classList.add('recording');
-            recordTimer.classList.add('recording');
-            recordWaveform.classList.add('active');
-
-            // Start timer
-            timerInterval = setInterval(updateTimer, 100);
-
-            recordStatusMessage.textContent = "Recording in progress... Speak clearly!";
-        }
-
-        function stopRecording() {
-            if (isRecordingAudio && mediaRecorder) {
-                isRecordingAudio = false;
-                mediaRecorder.stop();
-            }
-
-            // Update UI
-            recordStartBtn.style.display = 'flex';
-            recordStopBtn.style.display = 'none';
-
-            // Remove recording classes
-            recordPulseRing.classList.remove('recording');
-            recordPulseRingSecondary.classList.remove('recording');
-            recordMicIcon.classList.remove('recording');
-            recordTimer.classList.remove('recording');
-            recordWaveform.classList.remove('active');
-
-            // Stop timer
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-            }
-        }
-
-        function updateTimer() {
-            if (startTime) {
-                const elapsed = Date.now() - startTime;
-                const minutes = Math.floor(elapsed / 60000);
-                const seconds = Math.floor((elapsed % 60000) / 1000);
-                recordTimer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            }
-        }
-
-        function resetRecordingState() {
-            isRecordingAudio = false;
-            recordedChunks = [];
-            recordedBlob = null;
-            startTime = null;
-
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-            }
-
-            // Reset UI
-            recordStartBtn.style.display = 'flex';
-            recordStopBtn.style.display = 'none';
-            recordUploadFileBtn.style.display = 'none';
-
-            recordPulseRing.classList.remove('recording');
-            recordPulseRingSecondary.classList.remove('recording');
-            recordMicIcon.classList.remove('recording');
-            recordTimer.classList.remove('recording');
-            recordWaveform.classList.remove('active');
-            recordTimer.textContent = '00:00';
-        }
     </script>
 </body>
 

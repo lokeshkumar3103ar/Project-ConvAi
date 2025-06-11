@@ -1,0 +1,33 @@
+{
+  "intro_rating": "7.5",
+  "grading_explanation": {
+    "grammar_and_clarity": "2.5/3.0 – Speaker uses mostly fluent and clear sentences, but with minor grammatical errors like the missing comma after 'Applications' at 00:07 - 00:13.",
+    "structure": "1.0/1.5 – The speaker provides a general structure, but there might be minor jumps in their narrative.",
+    "info_coverage": "2.5/3.5 – They cover most key areas (name/intro, educational background, skills, work experience, goals), missing only personal interests or unique qualities."
+  },
+  "relevance_to_role": "1.5/2.0 – The speaker attempts to connect their strengths and goals to a professional role, but the connection could be stronger or more explicit.",
+  "insights": [
+    "Tone: Confident and enthusiastic",
+    "Style: Structured and organized",
+    "Fluency: Smooth and well-paced"
+  ],
+  "feedback": [
+    "Specific actionable suggestion for improvement #1: Consider providing a brief overview of personal interests or unique qualities to make your introduction more engaging.",
+    "Specific actionable suggestion for content enhancement #2: Ensure the connection between your strengths, experiences, and goals is clearer and stronger in relation to a typical desired job role. Make it easier for potential employers to understand how you would be a good fit for their organization.",
+    "Specific actionable suggestion for structure improvement #3: Work on improving transitions and providing more context for the listener when moving between different topics."
+  ],
+  "grading_debug": {
+    "grammar_clarity_score": "2.5",
+    "structure_score": "1.0",
+    "info_coverage_score": 2.5,
+    "relevance_score": "1.5",
+    "calculated_sum": "7.5",
+    "sum_check": {
+      "intro_expected": 10.0,
+      "intro_reported": "7.5"
+    },
+    "notes": "The speaker demonstrates strong technical skills and a clear passion for AI, but could benefit from refining their connection to specific job roles and providing more personal insights."
+  },
+  "evaluated_file": "transcription\\23112001\\20250611_225057_my_intro_transcription_turbo.txt",
+  "evaluation_timestamp": "2025-06-11T22:53:06.683523"
+}

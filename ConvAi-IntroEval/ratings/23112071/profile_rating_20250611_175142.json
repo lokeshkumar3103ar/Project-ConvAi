@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.7",
+  "grading_explanation": {
+    "completeness": "2.67/3 – 24 of 35 fields filled (68% completion).",
+    "relevance": "1.5/2 – The candidate has a Bachelor's degree in Data Science and some relevant skills such as Python, machine learning, and AI system design. However, the work experience listed is an internship at COTHON Solutions without clear role or project details, which reduces alignment to a 'Good Alignment.'",
+    "projects_or_internships": "2.5/3 – The candidate has participated in multiple projects including ConvAi, Project 11, and Face and QR attendance. Although the candidate mentions the technologies used, there is no clear description of problem statements, solutions, or outcomes for each project.",
+    "extra_achievements": "2.0/2 – The candidate has several achievements such as winning first place at AI Genesis and INNOTHON 2025, receiving the Excellence in Academia Award, and being ranked second at Hindustan University for academic performance. These achievements are relevant to the target role."
+  },
+  "grading_debug": {
+    "completeness_score": "2.67",
+    "relevance_score": "1.5",
+    "projects_score": "2.5",
+    "achievements_score": "2.0",
+    "calculated_sum": "8.7",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.7"
+    },
+    "notes": "The candidate's profile is relatively strong in terms of education and achievements but could benefit from more specific project descriptions and clearly stated work experiences to better align with the target role."
+  },
+  "evaluated_file": "filled_forms\\23112071\\form_20250611_175112.json",
+  "evaluation_timestamp": "2025-06-11T17:51:24.253592"
+}

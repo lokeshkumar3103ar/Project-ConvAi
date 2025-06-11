@@ -1,0 +1,23 @@
+{
+  "profile_rating": "9.5",
+  "grading_explanation": {
+    "completeness": "3.0/3 – 3 of 35 fields filled (100% completion).",
+    "relevance": "2.0/2 – Lokesh has a Bachelor's degree in Data Science, and his projects and skills demonstrate direct alignment with an AI or ML role.",
+    "projects_or_internships": "2.5/3 – Lokesh has several well-detailed projects showcasing machine learning, deep learning, and AI applications, such as ConvAi and Project 11.",
+    "extra_achievements": "2.0/2 – Lokesh has multiple significant achievements including first place at AI Genesis and INNOTHON 2025, Excellence in Academia Award, and ranked second at Hindustan University for academic performance."
+  },
+  "grading_debug": {
+    "completeness_score": "3.0",
+    "relevance_score": "2.0",
+    "projects_score": "2.5",
+    "achievements_score": "2.0",
+    "calculated_sum": "9.5",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "9.5"
+    },
+    "notes": "Lokesh's profile is strong with a good mix of projects, achievements, and skills. He has shown excellent adaptability in various AI projects and is actively participating in tech communities. However, it would be beneficial to clarify his specific role in each project and provide a more detailed explanation of the technologies used and the problem statements."
+  },
+  "evaluated_file": "filled_forms\\23112003\\form_20250612_000630.json",
+  "evaluation_timestamp": "2025-06-12T00:06:41.601573"
+}

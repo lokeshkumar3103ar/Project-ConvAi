@@ -1,16 +1,61 @@
-🤖 AI ASSISTANT - READ THIS FIRST! 🤖
+🤖 AI ASSISTANT STARTUP INSTRUCTIONS 🤖
 
-When starting any new conversation with AI:
+REQUIRED STEPS (Complete in order):
 
-1. FIRST: Open and read RTXlogs/AI_CONTEXT_PROTOCOL.md
-2. THEN: Check the latest RTX log file in RTXlogs/
-3. FOLLOW: The RTX logging protocol (log before coding)
+1. READ: RTXlogs/AI_CONTEXT_PROTOCOL.md
+    - This contains essential project context and protocols
 
-Quick Start Commands:
-- "Read RTXlogs/AI_CONTEXT_PROTOCOL.md to understand the project context"
-- "RTX time" (to start logging)
-- "What's the current project status?"
+2. FIND: Latest RTX folder 
+    - Format: RTX_MonthDD_YYYY (e.g., RTX_June8_2025)
+    - Look in RTXlogs/ directory
 
-Project: ConvAi-IntroEval User Management System
-Master: Lokesh Kumar A R
-Last Updated: June 8, 2025
+3. SCAN: RTXlogs/ structure
+    - Review all files in root directory
+    - Check all subdirectories for context
+
+4. VERIFY: Today's RTX log exists
+    - If missing: Create new subfolder with today's date
+    - Format: RTX_MonthDD_YYYY
+
+5. ENABLE: RTX logging protocol
+    - Create daily subfolder: RTX_MonthDD_YYYY (e.g., RTX_June9_2025)
+    - Each log file follows the naming pattern (Inside the Days Subfolder):
+        `RTX_[component]_[activity]_[monthname]_[day]_[time].md`
+        Examples:
+        - `RTX_concurrency_discussion_june_9_1430.md`
+        - `RTX_pipeline_implementation_june_9_1500.md`
+        - `RTX_testing_results_june_9_1630.md`
+    - Always log activities BEFORE coding
+    - Log discussions, decisions, analysis, and implementations
+    - Required for debugging and progress tracking
+
+# RTX Logs Directory Structure
+
+This directory contains organized logs of changes made to the ConvAi-IntroEval application.
+
+## Organization
+
+Logs are organized in date-based subfolders with the naming convention `RTX_MMMDD_YYYY`.
+
+Example: `RTX_June8_2025` contains all logs from June 8, 2025.
+
+## Log Files
+
+Each log file follows the naming pattern:
+`RTX_[component]_[activity]_[monthname]_[day]_[time].md`
+
+Examples:
+- `RTX_concurrency_discussion_june_9_1430.md` - Discussion log
+- `RTX_pipeline_implementation_june_9_1500.md` - Implementation log
+- `RTX_testing_results_june_9_1630.md` - Testing results log
+- `RTX_database_changes_june_9_1700.md` - Database modification log
+
+Special files:
+- `RTX_summary_all_changes_[monthname]_[day]_[time].md` - Daily summary
+- `RTX_discussion_[topic]_[monthname]_[day]_[time].md` - Topic discussions
+
+PROJECT: ConvAi-IntroEval User Management System
+LEAD: Lokesh Kumar A R
+LAST UPDATED: June 9, 2025
+
+⚠️ WARNING: Complete ALL steps 1-5 before proceeding with any tasks

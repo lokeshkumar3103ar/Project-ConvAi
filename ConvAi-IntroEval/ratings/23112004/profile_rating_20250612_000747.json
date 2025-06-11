@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.8",
+  "grading_explanation": {
+    "completeness": "2.7/3 – 27 of 35 fields filled (77% completion).",
+    "relevance": "1.8/2 – The candidate has a Bachelor's degree in Data Science, and their projects show expertise in machine learning and AI. However, the role they are seeking is not explicitly stated in the profile.",
+    "projects_or_internships": "2.5/3 – The candidate has detailed descriptions of multiple projects that demonstrate their skills in various technologies and domains related to AI and data science.",
+    "extra_achievements": "1.8/2 – The candidate has several notable achievements such as GitHub Foundations, Data Literacy from Datacamp, Chad GPT, Intermediate, Google Data Analytics specialization, Excellence in Academia Award, ranked second at Hindustan University for academic performance."
+  },
+  "grading_debug": {
+    "completeness_score": "2.7",
+    "relevance_score": "1.8",
+    "projects_score": "2.5",
+    "achievements_score": "1.8",
+    "calculated_sum": "8.8",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.8"
+    },
+    "notes": "The candidate's profile is quite strong with a good mix of education and projects, but there seems to be no explicit mention of the target role in their current pursuits. This could potentially impact the relevance score, so it's essential to clarify the target job role during an interview."
+  },
+  "evaluated_file": "filled_forms\\23112004\\form_20250612_000721.json",
+  "evaluation_timestamp": "2025-06-12T00:07:32.761362"
+}

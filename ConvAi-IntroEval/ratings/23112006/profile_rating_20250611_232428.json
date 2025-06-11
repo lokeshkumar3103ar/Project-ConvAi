@@ -1,0 +1,23 @@
+{
+  "profile_rating": "9.5",
+  "grading_explanation": {
+    "completeness": "3.0/3 – 3 of 35 fields filled (100% completion).",
+    "relevance": "2.0/2 – Strong alignment: Most key skills present but missing some important elements (AI, ML engineer, data scientist, prompt engineer) but has relevant experience in machine learning, deep learning, and AI system design.",
+    "projects_or_internships": "2.5/3 – Very good: 1 well-detailed project with technologies, problem statement, solution, and some outcomes (ConvAi)",
+    "extra_achievements": "2.0/2 – Outstanding: Multiple significant achievements (First place at AI Genesis and INNOTHON 2025, Excellence in Academia Award, ranked second at Hindustan University for academic performance)"
+  },
+  "grading_debug": {
+    "completeness_score": "3.0",
+    "relevance_score": "2.0",
+    "projects_score": "2.5",
+    "achievements_score": "2.0",
+    "calculated_sum": "9.5",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "9.5"
+    },
+    "notes": "[This candidate has a strong educational background and relevant projects with significant achievements. However, the lack of work experience or specific role may affect their suitability for certain positions.]"
+  },
+  "evaluated_file": "filled_forms\\23112006\\form_20250611_232401.json",
+  "evaluation_timestamp": "2025-06-11T23:24:12.268936"
+}

@@ -1,0 +1,23 @@
+{
+  "profile_rating": "9.5",
+  "grading_explanation": {
+    "completeness": "3.0/3 – 3 of 35 fields filled (86% completion).",
+    "relevance": "2.0/2 – Skills such as Python, machine learning, and deep learning align directly with the target role.",
+    "projects_or_internships": "2.5/3 – The first project 'ConvAi' is exceptionally detailed, while the second project has a decent level of detail.",
+    "extra_achievements": "2.0/2 – Multiple significant achievements such as winning AI Genesis and INNOTHON 2025, and being ranked second at Hindustan University for academic performance."
+  },
+  "grading_debug": {
+    "completeness_score": "3.0",
+    "relevance_score": "2.0",
+    "projects_score": "2.5",
+    "achievements_score": "2.0",
+    "calculated_sum": "9.5",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "9.5"
+    },
+    "notes": "The candidate has a well-rounded profile with solid project experience and significant achievements in line with the target role. The lack of clear work experience may require additional consideration."
+  },
+  "evaluated_file": "filled_forms\\23112008\\form_20250612_001038.json",
+  "evaluation_timestamp": "2025-06-12T00:10:48.507934"
+}

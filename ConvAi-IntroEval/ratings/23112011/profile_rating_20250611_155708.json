@@ -1,0 +1,23 @@
+{
+  "profile_rating": "9.0",
+  "grading_explanation": {
+    "completeness": "2.98/3 – 34 of 35 fields filled (97% completion).",
+    "relevance": "1.5/2 – The candidate has a Bachelor's degree in Data Science, which aligns well with the target role. However, the work experience section only mentions internships, so there is some gap in terms of direct industry experience for an entry-level role.",
+    "projects_or_internships": "2.5/3 – The candidate has described several projects that they have worked on, including ConvAi, Project 11, and Face and QR attendance. Each project demonstrates a good understanding of technologies and problem solving, but more detailed explanations of the outcomes achieved would strengthen this section.",
+    "extra_achievements": "2.0/2 – The candidate has multiple significant achievements such as winning first place at AI Genesis and INNOTHON 2025, receiving the Excellence in Academia Award, and ranking second at Hindustan University for academic performance."
+  },
+  "grading_debug": {
+    "completeness_score": "2.98",
+    "relevance_score": "1.5",
+    "projects_score": "2.5",
+    "achievements_score": "2.0",
+    "calculated_sum": "9.0",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "9.0"
+    },
+    "notes": "The candidate has strong project experience and achievements that demonstrate their potential for the target role. However, they should consider providing more detail about their past projects' outcomes to better showcase their skills and the impact of their work."
+  },
+  "evaluated_file": "filled_forms\\23112011\\form_20250611_155642.json",
+  "evaluation_timestamp": "2025-06-11T15:56:54.345602"
+}

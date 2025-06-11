@@ -1,4 +1,5 @@
 from fastapi import Depends, HTTPException, Request, status
+from fastapi import Request, Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from argon2 import PasswordHasher, exceptions
@@ -10,9 +11,10 @@ import models
 from models import get_db
 
 # Security configuration
-SECRET_KEY = "your-secret-key"  # Change this to a secure secret key
+# TODO: Move this to environment variable in production
+SECRET_KEY = "7K8mN2pQ9vR5sT1wX4yZ8cF6hJ3lM7nP2qS5vY8bE1dG4jK7oR9uW2zC5fH8kN1p"  # Generated secure key
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 60  # Increased for better UX
 
 ph = PasswordHasher()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login", auto_error=False)

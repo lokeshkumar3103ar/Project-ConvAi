@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.2",
+  "grading_explanation": {
+    "completeness": "2.59/3 – 25 of 35 fields filled (71% completion).",
+    "relevance": "1.8/2 – Lokesh has demonstrated strong alignment for the target role of AI, ML engineer and Data Science. He possesses relevant technical skills such as Python, machine learning, deep learning, and domain expertise in AI system design, generative AI applications, and automation frameworks. However, he lacks specific work experience as an ML engineer.",
+    "projects_or_internships": "2.0/3 – Lokesh has mentioned multiple projects with decent detail (technologies + problem/solution mentioned). He has won first place at AI Genesis and INNOTHON 2025, built AI chatbots for data analysis and visualization, and interned at COTHON Solutions.",
+    "extra_achievements": "1.8/2 – Lokesh has several significant achievements like GitHub Foundations, Data Literacy from Datacamp, Chad GPT (Intermediate), Google Data Analytics specialization, Excellence in Academia Award, ranked second at Hindustan University for academic performance, and internship at COTHON Solutions."
+  },
+  "grading_debug": {
+    "completeness_score": "2.59",
+    "relevance_score": "1.8",
+    "projects_score": "2.0",
+    "achievements_score": "1.8",
+    "calculated_sum": "8.2",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.2"
+    },
+    "notes": "Lokesh demonstrates strong technical skills and achievements relevant to the target role, but lacks specific work experience as an ML engineer."
+  },
+  "evaluated_file": "filled_forms\\23112071\\form_20250611_213335.json",
+  "evaluation_timestamp": "2025-06-11T21:33:47.376284"
+}

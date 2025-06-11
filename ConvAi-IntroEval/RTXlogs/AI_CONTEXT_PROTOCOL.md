@@ -11,7 +11,7 @@
 4. **EXAMPLE**: `RTXlogs/rtx_june_8_2025`
 
 ### Before Making ANY Code Changes:
-1. **FIRST**: Log what you're about to do in RTXlogs directory
+1. **FIRST**: Log what you're about to do in RTXlogs directory(Into respective Day's Subfolder)
 2. **THEN**: Proceed with actual code modifications
 3. **ALWAYS**: Update the log with results and status
 

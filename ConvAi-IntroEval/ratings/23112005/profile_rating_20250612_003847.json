@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.7",
+  "grading_explanation": {
+    "completeness": "2.71/3 – 27 of 35 fields filled (77% completion).",
+    "relevance": "1.5/2 – Lokesh has experience with AI, ML, and deep learning, but may need additional skills for specific roles in prompt engineering.",
+    "projects_or_internships": "2.5/3 – Lokesh has detailed descriptions of 2 projects (ConvAi and Face and QR attendance), showing a good understanding of AI systems and technology.",
+    "extra_achievements": "2.0/2 – Lokesh has multiple significant achievements such as the Excellence in Academia Award, ranked second at Hindustan University for academic performance, first place at AI Genesis and INNOTHON 2025."
+  },
+  "grading_debug": {
+    "completeness_score": "2.71",
+    "relevance_score": "1.5",
+    "projects_score": "2.5",
+    "achievements_score": "2.0",
+    "calculated_sum": "8.7",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.7"
+    },
+    "notes": "Lokesh's profile shows a strong foundation in relevant technical skills and achievements, but it may be beneficial for them to improve their work experience section by specifying their roles and responsibilities during the internship."
+  },
+  "evaluated_file": "filled_forms\\23112005\\form_20250612_003823.json",
+  "evaluation_timestamp": "2025-06-12T00:38:33.921593"
+}

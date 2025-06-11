@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.9",
+  "grading_explanation": {
+    "completeness": "2.92/3 – 29 of 35 fields filled (82% completion).",
+    "relevance": "1.5/2 – The candidate has a strong background in data science and AI, with relevant skills such as Python, machine learning, deep learning, and domain expertise in AI system design and generative AI applications. However, some key experiences like detailed work experience or specific target job role are missing.",
+    "projects_or_internships": "2.5/3 – The candidate has mentioned one well-detailed project (ConvAi) with technologies, problem statement, solution, and some outcomes. He also mentions other projects but they lack sufficient detail.",
+    "extra_achievements": "2.0/2 – The candidate has several achievements such as first place at AI Genesis and INNOTHON 2025, Excellence in Academia Award, and ranked second at Hindustan University for academic performance."
+  },
+  "grading_debug": {
+    "completeness_score": "2.92",
+    "relevance_score": "1.5",
+    "projects_score": "2.5",
+    "achievements_score": "2.0",
+    "calculated_sum": "8.9",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.9"
+    },
+    "notes": "The candidate has a strong educational and achievement background in data science and AI. However, more specific information regarding work experience or detailed projects would strengthen their profile."
+  },
+  "evaluated_file": "filled_forms\\23112071\\form_20250610_002039.json",
+  "evaluation_timestamp": "2025-06-10T00:20:50.980407"
+}

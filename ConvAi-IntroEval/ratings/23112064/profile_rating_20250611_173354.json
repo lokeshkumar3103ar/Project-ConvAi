@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.8",
+  "grading_explanation": {
+    "completeness": "2.83/3 – 27 of 35 fields filled (77% completion).",
+    "relevance": "1.5/2 – Most key skills present but missing some important elements for the target role AI engineer, ML engineer or prompt engineering. Technical skills: Python, machine learning, deep learning, data analysis. Domain expertise: AI system design, generative AI applications, automation frameworks.",
+    "projects_or_internships": "2.5/3 – 1 well-detailed project with technologies, problem statement, solution, and some outcomes. Developed conversational AI system for automating forum filling and interviews using voice and AI, built data-driven project focused on predictive analytics and automation.",
+    "extra_achievements": "2.0/2 – Multiple significant achievements (Excellence in Academia Award, GitHub Foundations, Data Literacy from Datacamp, Chad GPT (Intermediate), Google Data Analytics specialization)"
+  },
+  "grading_debug": {
+    "completeness_score": "2.83",
+    "relevance_score": "1.5",
+    "projects_score": "2.5",
+    "achievements_score": "2.0",
+    "calculated_sum": "8.8",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.8"
+    },
+    "notes": "Candidate has strong academic and project achievements but the profile completeness can be improved. Relevant experience for the target role is partially shown in technical skills. Enhancing the description of work experience, previous roles, and key responsibilities & achievements will strengthen the profile."
+  },
+  "evaluated_file": "filled_forms\\23112064\\form_20250611_173327.json",
+  "evaluation_timestamp": "2025-06-11T17:33:39.133521"
+}

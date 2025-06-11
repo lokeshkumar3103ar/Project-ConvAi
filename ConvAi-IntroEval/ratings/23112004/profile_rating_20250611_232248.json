@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.6",
+  "grading_explanation": {
+    "completeness": "2.85/3 – 28 of 35 fields filled (80% completion).",
+    "relevance": "1.75/2 – The candidate has strong skills in machine learning, data analysis, and AI system design which are relevant to the target role. However, there is a lack of expertise in deep learning algorithms. The work experience as an intern might not have provided significant exposure to real-world projects.",
+    "projects_or_internships": "2.0/3 – The candidate has participated in multiple projects, some of which have received recognition (e.g., AI Genesis and INNOTHON 2025). While the problem statements and technologies used are mentioned for each project, specific solutions or outcomes are not explicitly stated.",
+    "extra_achievements": "2.0/2 – The candidate has achieved multiple significant milestones such as certifications, awards (e.g., Excellence in Academia Award), and academic recognitions (e.g., ranked second at Hindustan University for academic performance)."
+  },
+  "grading_debug": {
+    "completeness_score": "2.85",
+    "relevance_score": "1.75",
+    "projects_score": "2.0",
+    "achievements_score": "2.0",
+    "calculated_sum": "8.6",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.6"
+    },
+    "notes": "The candidate has a strong background in education and achievements but lacks detail in the projects section. There is potential in this profile with room for improvement in demonstrating the specific solutions implemented and outcomes achieved for each project."
+  },
+  "evaluated_file": "filled_forms\\23112004\\form_20250611_232220.json",
+  "evaluation_timestamp": "2025-06-11T23:22:33.079623"
+}

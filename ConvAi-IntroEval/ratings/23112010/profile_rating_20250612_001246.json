@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.2",
+  "grading_explanation": {
+    "completeness": "2.67/3 – 26 of 35 fields filled (74% completion).",
+    "relevance": "1.5/2 – Skills listed include machine learning, deep learning, and AI system design which are relevant for roles like AI Engineer or ML Engineer, but there is no mention of experience with programming languages specific to these roles such as HTML, JS, SQL.",
+    "projects_or_internships": "2.0/3 – The candidate has mentioned multiple projects (ConvAi, Project 11, Face and QR attendance) with clear problem statements, solutions implemented, and outcomes/accomplishments, but only one of these projects, ConvAi, mentions the technologies used in detail.",
+    "extra_achievements": "2.0/2 – The candidate has multiple significant achievements (First place at AI Genesis and INNOTHON 2025, Excellence in Academia Award, ranked second at Hindustan University for academic performance) that demonstrate professional growth."
+  },
+  "grading_debug": {
+    "completeness_score": "2.67",
+    "relevance_score": "1.5",
+    "projects_score": "2.0",
+    "achievements_score": "2.0",
+    "calculated_sum": "8.2",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.2"
+    },
+    "notes": "The candidate has a good set of skills and achievements relevant to an AI-related role. However, there is no specific mention of programming languages like HTML, JS or SQL which are commonly used in the roles mentioned (AI Engineer, ML Engineer, Data Scientist, or Prompt Engineer). Additionally, the work experience section could be improved by clearly stating the role and responsibilities during the internship."
+  },
+  "evaluated_file": "filled_forms\\23112010\\form_20250612_001218.json",
+  "evaluation_timestamp": "2025-06-12T00:12:31.909832"
+}

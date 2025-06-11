@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.1",
+  "grading_explanation": {
+    "completeness": "2.57/3 – 25 of 35 fields filled (71% completion).",
+    "relevance": "1.5/2 – Relevant skills include Python, machine learning, data analysis, and AI system design. The candidate has experience in deep learning algorithms such as CNN, linear regression, and MTCNN. However, missing specific skills for the target role (e.g., SQL, Java) that are typically required.",
+    "projects_or_internships": "2.0/3 – The profile mentions multiple projects with a clear problem statement and technology usage, as well as some outcomes. ConvAi, Project 11, and Face and QR attendance demonstrate the candidate's hands-on experience in machine learning and deep learning.",
+    "extra_achievements": "2.0/2 – The candidate has several significant achievements such as first place at AI Genesis and INNOTHON 2025, Excellence in Academia Award, ranked second at Hindustan University."
+  },
+  "grading_debug": {
+    "completeness_score": "2.57",
+    "relevance_score": "1.5",
+    "projects_score": "2.0",
+    "achievements_score": "2.0",
+    "calculated_sum": "8.1",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.1"
+    },
+    "notes": "[The candidate's profile demonstrates a solid foundation in AI and machine learning with impressive achievements. However, the lack of specific skills for the target role and missing personal details may require further discussion during an interview.]"
+  },
+  "evaluated_file": "filled_forms\\23112007\\form_20250611_232451.json",
+  "evaluation_timestamp": "2025-06-11T23:25:03.037425"
+}

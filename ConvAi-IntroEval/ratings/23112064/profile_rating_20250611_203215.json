@@ -1,0 +1,23 @@
+{
+  "profile_rating": "8.7",
+  "grading_explanation": {
+    "completeness": "2.67/3 – 26 of 35 fields filled (74% completion).",
+    "relevance": "1.5/2 – The target job role is AI, ML engineer and prompt engineering but the candidate has not explicitly mentioned their role in the project or experience section.",
+    "projects_or_internships": "2.5/3 – The projects mentioned are well-detailed with technologies, problem statement, solution, and some outcomes.",
+    "extra_achievements": "2.0/2 – Multiple significant achievements such as certifications (GitHub Foundations, Data Literacy from Datacamp, Chad GPT (Intermediate), Google Data Analytics specialization) and awards (Excellence in Academia Award, ranked second at Hindustan University for academic performance)."
+  },
+  "grading_debug": {
+    "completeness_score": "2.67",
+    "relevance_score": "1.5",
+    "projects_score": "2.5",
+    "achievements_score": "2.0",
+    "calculated_sum": "8.7",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.7"
+    },
+    "notes": "Strengths: Strong education background, multiple achievements and activities relevant to the field. Weaknesses: Incomplete profile with missing information such as age, work experience details, and professional status, unclear role in the projects mentioned."
+  },
+  "evaluated_file": "filled_forms\\23112064\\form_20250611_203151.json",
+  "evaluation_timestamp": "2025-06-11T20:32:02.078222"
+}

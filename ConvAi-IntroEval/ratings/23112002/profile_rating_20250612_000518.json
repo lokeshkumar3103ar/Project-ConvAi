@@ -1,0 +1,23 @@
+{
+  "profile_rating": "9.5",
+  "grading_explanation": {
+    "completeness": "3.0/3 – 3 of 35 fields filled (100% completion).",
+    "relevance": "2.0/2 – Relevant skills mentioned include machine learning, deep learning, AI system design, and data analysis which are all crucial for the target role.",
+    "projects_or_internships": "2.5/3 – Lokesh's projects demonstrate the use of multiple technologies, clear problem statements, solutions implemented, and notable accomplishments such as winning first place at AI Genesis and INNOTHON 2025.",
+    "extra_achievements": "2.0/2 – Lokesh has significant achievements like GitHub Foundations, Data Literacy from Datacamp, Chad GPT (Intermediate), Google Data Analytics specialization, Excellence in Academia Award, and ranked second at Hindustan University for academic performance."
+  },
+  "grading_debug": {
+    "completeness_score": "3.0",
+    "relevance_score": "2.0",
+    "projects_score": "2.5",
+    "achievements_score": "2.0",
+    "calculated_sum": "9.5",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "9.5"
+    },
+    "notes": "Lokesh has a well-rounded skillset and impressive achievements that align with the target role in AI, ML, data science, or prompt engineering."
+  },
+  "evaluated_file": "filled_forms\\23112002\\form_20250612_000451.json",
+  "evaluation_timestamp": "2025-06-12T00:05:01.807777"
+}

@@ -67,14 +67,29 @@ def get_user_directory(base_dir: Path, roll_number: Optional[str]) -> Path:
     """
     base_dir = Path(base_dir)
     
+    # Always create a user-specific directory to prevent file collisions
     if roll_number and roll_number.strip():
-        user_dir = base_dir / roll_number.strip()
-        user_dir.mkdir(parents=True, exist_ok=True)
-        print(f"📁 Created/verified user directory: {user_dir}")
-        return user_dir
+        # Clean up the roll number to prevent invalid paths
+        clean_roll = roll_number.strip().replace('/', '_').replace('\\', '_')
+        
+        # Handle special user types
+        if clean_roll.lower() == "teacher":
+            user_dir = base_dir / "teacher"
+        elif clean_roll.lower() == "guest":
+            user_dir = base_dir / "guest"
+        else:
+            # Regular student - use roll number
+            user_dir = base_dir / clean_roll
     else:
-        base_dir.mkdir(parents=True, exist_ok=True)
-        return base_dir
+        # Use timestamp-based temporary directory for unknown users
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        user_dir = base_dir / f"temp_user_{timestamp}"
+    
+    # Create directory if it doesn't exist
+    user_dir.mkdir(parents=True, exist_ok=True)
+    print(f"📁 Created/verified user directory: {user_dir}")
+    
+    return user_dir
 
 
 def organize_path(base_path: Path, filename: str, roll_number: Optional[str]) -> Path:
@@ -101,7 +116,7 @@ def save_file_with_organization(
     file_type: str = "text"
 ) -> Tuple[bool, Path, str]:
     """
-    Save file with proper roll number organization.
+    Save file with proper roll number organization, ensuring it's in a user-specific directory.
     
     Args:
         content: Content to save (string, bytes, or dict for JSON)
@@ -114,8 +129,13 @@ def save_file_with_organization(
         Tuple of (success: bool, file_path: Path, status_message: str)
     """
     try:
+        # Always organize files by user to prevent collisions
         file_path = organize_path(base_dir, filename, roll_number)
         
+        # Ensure the parent directory exists
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        # Save file with appropriate method
         if file_type == "json":
             with open(file_path, 'w', encoding='utf-8') as f:
                 json.dump(content, f, indent=2, ensure_ascii=False)
@@ -126,8 +146,9 @@ def save_file_with_organization(
             with open(file_path, 'w', encoding='utf-8') as f:
                 f.write(content)
         
-        location_info = f"in {roll_number}/ subdirectory" if roll_number else "in root directory"
-        status_message = f"File saved {location_info}: {file_path}"
+        # Log operation with clear user identifier
+        user_info = f"(user: {roll_number})" if roll_number else "(anonymous user)"
+        status_message = f"File saved in user directory: {file_path} {user_info}"
         print(f"✅ {status_message}")
         
         return True, file_path, status_message
