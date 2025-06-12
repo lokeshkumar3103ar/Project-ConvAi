@@ -24,6 +24,7 @@ class User(Base):
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
     roll_number = Column(String, unique=True, nullable=True, index=True)
+    name = Column(String, nullable=True)
 
 class Teacher(Base):
     __tablename__ = "teachers"

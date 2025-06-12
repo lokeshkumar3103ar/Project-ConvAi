@@ -1124,15 +1124,15 @@ async def get_index(current_user: Optional[Union[User, Teacher]] = Depends(get_c
 async def register(
     username: str = Form(...),
     password: str = Form(...),
-    roll_number: str = Form(None),
+    name: str = Form(None),
     db: Session = Depends(get_db)
 ):
     user = db.query(User).filter(User.username == username).first()
     if user:
         raise HTTPException(status_code=400, detail="Username already registered")
     
-    if roll_number:
-        existing_roll = db.query(User).filter(User.roll_number == roll_number).first()
+    if username:
+        existing_roll = db.query(User).filter(User.roll_number == username).first()
         if existing_roll:
             raise HTTPException(status_code=400, detail="Roll number already registered")
     
@@ -1140,7 +1140,8 @@ async def register(
     new_user = User(
         username=username,
         hashed_password=hashed_password,
-        roll_number=roll_number
+        roll_number=username,
+        name=name
     )
     db.add(new_user)
     db.commit()

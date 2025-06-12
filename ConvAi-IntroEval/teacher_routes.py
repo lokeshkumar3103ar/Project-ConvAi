@@ -42,7 +42,7 @@ async def get_teacher_students(
         ).first()
         if student:
             students.append({
-                "username": student.username,
+                "name": student.name,
                 "roll_number": student.roll_number
             })
 
@@ -325,7 +325,7 @@ async def assign_student(
     try:
         db.add(new_mapping)
         db.commit()
-        return {"message": f"Successfully assigned student {student.username}"}
+        return {"message": f"Successfully assigned student {student.name}"}
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail="Failed to assign student")
@@ -355,6 +355,6 @@ async def search_student(
         raise HTTPException(status_code=404, detail="Student not found")
         
     return {
-        "username": student.username,
+        "name": student.name,
         "roll_number": student.roll_number
     }

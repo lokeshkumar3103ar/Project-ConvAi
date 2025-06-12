@@ -111,10 +111,10 @@ async function loadStudents() {
             const div = document.createElement('div');
             div.className = 'student-item';
             div.innerHTML = `
-                <div class="student-name">${student.username}</div>
+                <div class="student-name">${student.name}</div>
                 <div class="student-roll">${student.roll_number}</div>
             `;
-            div.onclick = () => showStudentRatings(student.roll_number, student.username);
+            div.onclick = () => showStudentRatings(student.roll_number, student.name);
             studentList.appendChild(div);
         });
     } catch (error) {
@@ -139,7 +139,7 @@ async function handleStudentSearch(e) {
                 <div class="alert alert-success">
                     <div class="student-info">
                         <div class="info-item">
-                            <strong>Student Name:</strong> ${data.username}
+                            <strong>Student Name:</strong> ${data.name}
                         </div>
                         <div class="info-item">
                             <strong>Roll Number:</strong> ${data.roll_number}
@@ -217,7 +217,7 @@ async function assignStudent() {
 /**
  * Analytics and Visualization
  */
-async function showStudentRatings(rollNumber, username) {
+async function showStudentRatings(rollNumber, name) {
     try {
         // Highlight active student
         document.querySelectorAll('.student-item').forEach(item => {
@@ -237,7 +237,7 @@ async function showStudentRatings(rollNumber, username) {
         const studentDetails = document.getElementById('studentDetails');
 
         studentDetails.style.display = 'block';
-        studentDetails.innerHTML = createAnalyticsHTML(analytics, username);
+        studentDetails.innerHTML = createAnalyticsHTML(analytics, name);
 
         // Initialize charts after DOM is ready
         setTimeout(() => {
@@ -255,11 +255,11 @@ async function showStudentRatings(rollNumber, username) {
     }
 }
 
-function createAnalyticsHTML(analytics, username) {
+function createAnalyticsHTML(analytics, name) {
     const { performance_summary, score_trends, latest_feedback, improvement_areas, strengths } = analytics;
     
     return `
-        <h3>${username}'s Performance Analytics</h3>
+        <h3>${name}'s Performance Analytics</h3>
         
         <!-- Performance Summary Cards -->
         <div class="analytics-grid">
