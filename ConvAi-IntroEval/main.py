@@ -1125,6 +1125,7 @@ async def register(
     username: str = Form(...),
     password: str = Form(...),
     name: str = Form(None),
+    email: str = Form(...),
     db: Session = Depends(get_db)
 ):
     user = db.query(User).filter(User.username == username).first()
@@ -1141,7 +1142,8 @@ async def register(
         username=username,
         hashed_password=hashed_password,
         roll_number=username,
-        name=name
+        name=name,
+        email=email
     )
     db.add(new_user)
     db.commit()
