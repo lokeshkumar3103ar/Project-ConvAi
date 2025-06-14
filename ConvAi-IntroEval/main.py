@@ -70,7 +70,7 @@ import random
 
 # Email config (set these as env vars or hardcode for local dev)
 EMAIL_SENDER = "qritiq.00@gmail.com"
-EMAIL_PASSWORD = "ndni jrus uyjt lboq"
+EMAIL_PASSWORD = ""
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
