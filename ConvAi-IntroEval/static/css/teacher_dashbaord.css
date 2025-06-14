@@ -186,7 +186,7 @@ body {
 }
 .mainframe {
     position: relative;
-    width: 92vw; /*match main-content-box width*/
+    width: 95vw; /*match main-content-box width*/
     height: 92vh; /*match main-content-box height*/
 }
 

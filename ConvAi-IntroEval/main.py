@@ -70,7 +70,7 @@ import random
 
 # Email config (set these as env vars or hardcode for local dev)
 EMAIL_SENDER = "qritiq.00@gmail.com"
-EMAIL_PASSWORD = ""
+EMAIL_PASSWORD = "ndni jrus uyjt lboq"
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
@@ -1230,26 +1230,6 @@ async def verify_otp(
     
     return {"message": "OTP verified. You can now reset your password."}
 
-'''@app.post("/reset-password")
-async def reset_password(
-    username: str = Form(...),
-    new_password: str = Form(...),
-    db: Session = Depends(get_db)
-):
-    user = db.query(User).filter(User.username == username).first()
-    if not user:
-        raise HTTPException(status_code=400, detail="User not found")
-    
-    # Verify OTP token exists and is valid (optional double-check)
-    prt = db.query(PasswordResetToken).filter(PasswordResetToken.user_id == user.id).first()
-    if not prt or prt.expires_at < datetime.utcnow():
-        raise HTTPException(status_code=400, detail="OTP expired or invalid")
-    
-    user.hashed_password = ph.hash(new_password)
-    db.delete(prt)
-    db.commit()
-    return {"message": "Password reset successfully"}
-'''
 @app.post("/reset-password")
 async def reset_password(
     username: str = Form(...),
@@ -1273,24 +1253,6 @@ async def reset_password(
     db.delete(prt)
     db.commit()
     return {"message": "Password reset successfully"}
-
-'''@app.get("/forgot-password", response_class=HTMLResponse)
-async def forgot_password_form():
-    return """
-    <h2>Request OTP</h2>
-    <form method="post" action="/request-password-reset">
-        <input type="text" name="username" placeholder="Your username" required>
-        <button type="submit">Send OTP</button>
-    </form>
-    <hr>
-    <h2>Verify OTP</h2>
-    <form method="post" action="/verify-otp">
-        <input type="text" name="username" placeholder="Your username" required>
-        <input type="text" name="otp" placeholder="Enter OTP" required>
-        <button type="submit">Verify OTP</button>
-    </form>
-    """
-'''
 
 @app.get("/reset-password", response_class=HTMLResponse)
 async def reset_password_form():

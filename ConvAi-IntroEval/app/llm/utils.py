@@ -25,7 +25,7 @@ import sys
 sys.path.append(str(Path(__file__).parent.parent.parent))
 from file_organizer import glob_with_roll_number
 
-DISABLE_LLM = False # ✅ Set to False to enable LLM calls
+DISABLE_LLM = True # ✅ Set to False to enable LLM calls
 
 def preprocess_llm_json_response(response_text):
     """

@@ -47,3 +47,5 @@ SET email="lokeshkumar3103ar@gmail.com"
 WHERE roll_number=23112067;
 
 SELECT * FROM users;
+
+SELECT * FROM password_reset_tokens;

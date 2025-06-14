@@ -1,3 +1,35 @@
+function initializeTheme() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const html = document.documentElement;
+
+    // Check for saved theme preference or default to dark
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    html.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+
+    themeToggle.addEventListener('click', function () {
+        const currentTheme = html.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+        html.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcon(newTheme);
+    });
+
+    function updateThemeIcon(theme) {
+        if (theme === 'dark') {
+            themeIcon.className = 'fas fa-sun'; // Show sun icon in dark mode
+        } else {
+            themeIcon.className = 'fas fa-moon'; // Show moon icon in light mode
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    initializeTheme();
+});
+
 document.getElementById("resetPasswordForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const resultDiv = document.getElementById("resetPasswordResult");
