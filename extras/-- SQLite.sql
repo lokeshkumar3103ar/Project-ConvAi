@@ -41,3 +41,9 @@ SET email="mthamilelelan@gmail.com"
 WHERE roll_number=23112011;
 
 SELECT * FROM users;
+
+UPDATE users
+SET email="lokeshkumar3103ar@gmail.com"
+WHERE roll_number=23112067;
+
+SELECT * FROM users;
