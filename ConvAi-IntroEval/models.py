@@ -20,11 +20,11 @@ def get_db():
 
 class User(Base):
     __tablename__ = "users"
-    id = Column(Integer, primary_key=True, index=True)
+    roll_number = Column(String, unique=True, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
-    roll_number = Column(String, unique=True, nullable=True, index=True)
     name = Column(String, nullable=True)
+    email = Column(String, nullable=False)
 
 class Teacher(Base):
     __tablename__ = "teachers"
@@ -51,7 +51,7 @@ class Note(Base):
 class PasswordResetToken(Base):
     __tablename__ = "password_reset_tokens"
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
+    user_roll = Column(Integer, ForeignKey("users.roll_number"))
     token = Column(String, unique=True, index=True)
     expires_at = Column(DateTime)
 

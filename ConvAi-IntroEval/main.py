@@ -62,6 +62,19 @@ def get_db():
 #password hasher
 ph = PasswordHasher()
 
+#import for reset mail
+import smtplib
+from email.message import EmailMessage
+from fastapi import BackgroundTasks
+import random
+
+# Email config (set these as env vars or hardcode for local dev)
+EMAIL_SENDER = "qritiq.00@gmail.com"
+EMAIL_PASSWORD = ""
+SMTP_SERVER = "smtp.gmail.com"
+SMTP_PORT = 587
+
+
 # Import project modules
 from stt import transcribe_file, SUPPORTED_EXTENSIONS
 from auth import get_current_user
@@ -1125,6 +1138,7 @@ async def register(
     username: str = Form(...),
     password: str = Form(...),
     name: str = Form(None),
+    email: str = Form(...),
     db: Session = Depends(get_db)
 ):
     user = db.query(User).filter(User.username == username).first()
@@ -1141,45 +1155,145 @@ async def register(
         username=username,
         hashed_password=hashed_password,
         roll_number=username,
-        name=name
+        name=name,
+        email=email
     )
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
     return {"message": "User registered successfully"}
 
+async def send_reset_email(email_to: str, token: str):
+    msg = EmailMessage()
+    msg["Subject"] = "Your Password Reset OTP"
+    msg["From"] = EMAIL_SENDER
+    msg["To"] = email_to
+    
+    html_content = f"""
+    <p>Your OTP for password reset is:</p>
+    <h2>{token}</h2>
+    <p>This OTP is valid for 10 minutes.</p>
+    """
+    msg.set_content(html_content, subtype="html")
+
+    try:
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls()
+            server.login(EMAIL_SENDER, EMAIL_PASSWORD)
+            server.send_message(msg)
+    except Exception as e:
+        print(f"Error sending email: {e}")
 
 @app.post("/request-password-reset")
-async def request_password_reset(username: str = Form(...), db: Session = Depends(get_db)):
+async def request_password_reset(
+    background_tasks: BackgroundTasks,
+    username: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    user = db.query(User).filter(User.username == username).first()
+    if user:
+        # Generate 6-digit OTP as string with leading zeros
+        otp = f"{random.randint(0, 999999):06d}"
+        expires_at = datetime.utcnow() + timedelta(minutes=10)  # OTP valid for 10 minutes
+        
+        # Save OTP in DB (replace existing OTP for user if any)
+        existing = db.query(PasswordResetToken).filter(PasswordResetToken.user_roll == user.username).first()
+        if existing:
+            existing.token = otp
+            existing.expires_at = expires_at
+        else:
+            db.add(PasswordResetToken(user_roll=user.username, token=otp, expires_at=expires_at))
+        db.commit()
+        
+        # Email OTP asynchronously
+        background_tasks.add_task(send_reset_email, email_to=user.email, token=otp)
+    return {"message": "If this username exists, an OTP has been sent to the registered email."}
+
+@app.post("/verify-otp")
+async def verify_otp(
+    username: str = Form(...),
+    otp: str = Form(...),
+    db: Session = Depends(get_db)
+):
     user = db.query(User).filter(User.username == username).first()
     if not user:
-        # Always respond with success to avoid leaking user existence
-        return {"message": "If this email exists, a reset link was sent."}
-    # Generate secure token
-    token = secrets.token_urlsafe(64)
-    expires_at = datetime.utcnow() + timedelta(hours=1)
-    # Store token
-    db.add(PasswordResetToken(user_id=user.id, token=token, expires_at=expires_at))
-    db.commit()
-    # TODO: Send email to user with link (e.g., http://yourdomain/reset-password?token=...)
-    print(f"Password reset link: http://localhost:8000/reset-password?token={token}")
-    return {"message": "If this username exists, a reset link was sent."}
+        raise HTTPException(status_code=400, detail="Invalid username or OTP")
+    
+    prt = db.query(PasswordResetToken).filter(
+        PasswordResetToken.user_roll == user.username,
+        PasswordResetToken.token == otp,
+        PasswordResetToken.expires_at > datetime.utcnow()
+    ).first()
+    
+    if not prt:
+        raise HTTPException(status_code=400, detail="Invalid or expired OTP")
+    
+    return {"message": "OTP verified. You can now reset your password."}
 
-@app.post("/reset-password")
-async def reset_password(token: str = Form(...), new_password: str = Form(...), db: Session = Depends(get_db)):
-    prt = db.query(PasswordResetToken).filter(PasswordResetToken.token == token).first()
-    if not prt or prt.expires_at < datetime.utcnow():
-        raise HTTPException(status_code=400, detail="Invalid or expired token")
-    user = db.query(User).filter(User.id == prt.user_id).first()
+'''@app.post("/reset-password")
+async def reset_password(
+    username: str = Form(...),
+    new_password: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    user = db.query(User).filter(User.username == username).first()
     if not user:
         raise HTTPException(status_code=400, detail="User not found")
+    
+    # Verify OTP token exists and is valid (optional double-check)
+    prt = db.query(PasswordResetToken).filter(PasswordResetToken.user_id == user.id).first()
+    if not prt or prt.expires_at < datetime.utcnow():
+        raise HTTPException(status_code=400, detail="OTP expired or invalid")
+    
     user.hashed_password = ph.hash(new_password)
-    db.delete(prt)  # Remove used token
+    db.delete(prt)
+    db.commit()
+    return {"message": "Password reset successfully"}
+'''
+@app.post("/reset-password")
+async def reset_password(
+    username: str = Form(...),
+    otp: str = Form(...),
+    new_password: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        raise HTTPException(status_code=400, detail="User not found")
+
+    prt = db.query(PasswordResetToken).filter(
+        PasswordResetToken.user_roll == user.username,
+        PasswordResetToken.token == otp,
+        PasswordResetToken.expires_at > datetime.utcnow()
+    ).first()
+    if not prt:
+        raise HTTPException(status_code=400, detail="OTP expired or invalid")
+
+    user.hashed_password = ph.hash(new_password)
+    db.delete(prt)
     db.commit()
     return {"message": "Password reset successfully"}
 
+'''@app.get("/forgot-password", response_class=HTMLResponse)
+async def forgot_password_form():
+    return """
+    <h2>Request OTP</h2>
+    <form method="post" action="/request-password-reset">
+        <input type="text" name="username" placeholder="Your username" required>
+        <button type="submit">Send OTP</button>
+    </form>
+    <hr>
+    <h2>Verify OTP</h2>
+    <form method="post" action="/verify-otp">
+        <input type="text" name="username" placeholder="Your username" required>
+        <input type="text" name="otp" placeholder="Enter OTP" required>
+        <button type="submit">Verify OTP</button>
+    </form>
+    """
+'''
+
 @app.get("/reset-password", response_class=HTMLResponse)
-async def get_reset_password():
+async def reset_password_form():
     html_path = TEMPLATES_DIR / "reset_password.html"
     with open(html_path, "r", encoding="utf-8") as html_file:
         return html_file.read()

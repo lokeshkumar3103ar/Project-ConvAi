@@ -268,7 +268,7 @@ html, body {
       letter-spacing: 0.04em;
       font-family: 'Khand', sans-serif;
       font-weight: 400;
-    }    input[type="text"], input[type="password"] {
+    }    input[type="text"], input[type="password"], input[type="email"] {
       width: 100%;
       padding: 9px 8px;
       margin-bottom: 20px;
