@@ -63,7 +63,7 @@ class UserManager:
             return
         
         if detailed:
-            headers = ["ID", "Username", "Roll Number", "Assigned Teachers"]
+            headers = ["Username", "Roll Number", "Assigned Teachers"]
             data = []
             for user in users:
                 # Get assigned teachers
@@ -73,7 +73,6 @@ class UserManager:
                 teachers = [mapping.teacher_username for mapping in mappings]
                 
                 data.append([
-                    user.id,
                     user.username,
                     user.roll_number or "Not Set",
                     ", ".join(teachers) if teachers else "None"

@@ -35,3 +35,9 @@ PRAGMA table_info(users);
 SELECT * FROM teachers;
 
 INSERT INTO teachers VALUES(1,'dr_teacher','$argon2id$v=19$m=65536,t=3,p=4$VvkyIPy+pYydMEFhgennQg$9XiHnhvaH4LmI7yX74x+lgdqxtikAVxoNhuVF5uYZa4',NULL);
+
+UPDATE users
+SET email="mthamilelelan@gmail.com"
+WHERE roll_number=23112011;
+
+SELECT * FROM users;

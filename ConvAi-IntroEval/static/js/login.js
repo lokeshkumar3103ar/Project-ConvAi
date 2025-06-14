@@ -123,17 +123,25 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
   }
 });
 
-// Forgot Password
+// Forgot Password - send OTP request
 document.getElementById("forgotPasswordForm").addEventListener("submit", async (e) => {
   e.preventDefault();
+  const btn = e.target.querySelector("button[type=submit]");
+  btn.disabled = true;
   const formData = new FormData(e.target);
   const params = new URLSearchParams();
   for (const pair of formData) params.append(pair[0], pair[1]);
-  const response = await fetch("/request-password-reset", {
-    method: "POST",
-    body: params,
-    headers: { "Content-Type": "application/x-www-form-urlencoded" }
-  });
-  const result = await response.json();
-  document.getElementById("forgotPasswordResult").innerHTML = result.message;
+  try {
+    const response = await fetch("/request-password-reset", {
+      method: "POST",
+      body: params,
+      headers: { "Content-Type": "application/x-www-form-urlencoded" }
+    });
+    const result = await response.json();
+    document.getElementById("forgotPasswordResult").textContent = result.message;
+  } catch (error) {
+    document.getElementById("forgotPasswordResult").textContent = "Error sending OTP. Please try again.";
+  } finally {
+    btn.disabled = false;
+  }
 });
