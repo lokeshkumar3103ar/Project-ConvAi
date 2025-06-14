@@ -139,6 +139,8 @@ textarea:focus {
     --button-primary-color: #111;
     --button-secondary-bg: #555;
     --button-secondary-color: #fff;
+    --alert-error: #ff45457a;
+    --alert-success: #086e1152;
 }
 
 /* =========================
@@ -173,7 +175,7 @@ body {
     background-size: 18px 18px;
     border: 2.5px solid var(--outer-frame-border);
     border-radius: var(--border-radius);
-    width: 92vw;
+    width: 95vw;
     height: 92vh;
     display: flex;
     flex-direction: column;
@@ -240,8 +242,8 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-    background: var(--button-secondary-bg);
-    color: var(--button-secondary-color);
+    background: var(--content-box-bg);
+    color: var(--primary-color);
 }
 
 /* Remove input outline on click for a cleaner look */
@@ -300,7 +302,7 @@ input:focus, button:focus {
     gap: 25px;
     width: 95%;
     padding: 20px;
-    margin: 100px;
+    margin: 3rem 0;
     color: var(--text-primary);
     font-family: 'Oswald', Arial, sans-serif;
     min-height: 400px;
@@ -429,17 +431,20 @@ input:focus, button:focus {
 
 #assignButton button {
     background-color: var(--primary-color);
-    color: #fff;
+    color: var(--button-secondary-bg);
     padding: 0.6rem 1.2rem;
-    border: none;
+    border: 1px solid var(--primary-color);
     border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
     transition: background-color 0.3s;
+    margin-left: 63px;
 }
 
 #assignButton button:hover {
-    background-color: #2980b9;
+    background-color: var(--content-box-bg);
+    border: 1px solid var(--content-box-border);
+    color: var(--primary-color);
 }
 
 /* =========================
@@ -533,17 +538,23 @@ h4, h5, h6 {
 .alert {
     padding: 1rem;
     border-radius: 8px;
-    margin-top: 1rem;
+    margin-top: 1.2rem;
 }
 
 .alert-success {
+    color: var(--dark-color);
     background-color: var(--alert-success);
+    border-radius: 20px;
     border-left: 4px solid var(--secondary-color);
+    margin-bottom: 1.2rem;
 }
 
 .alert-error {
+    border: 2px dotted var(--danger-color);
+    border-radius: 20px;
     background-color: var(--alert-error);
-    border-left: 4px solid var(--danger-color);
+    color: var(--dark-color);
+    text-align: center;
 }
 
 .alert-info {
@@ -568,13 +579,16 @@ h4, h5, h6 {
     border: 1px solid var(--border-color);
     border-radius: 8px;
     cursor: pointer;
-    color: var(--text-color);
-    font-family: 'Oswald', Arial, sans-serif;
+    color: var(--primary-color);
+    font-family: 'Khand', Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.04rem;
 }
 
 .tab-button.active {
     background-color: var(--primary-color);
-    color: #fff;
+    color: var(--light-color);
     border-color: var(--primary-color);
 }
 

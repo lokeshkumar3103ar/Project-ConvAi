@@ -208,6 +208,7 @@ async function assignStudent() {
                 ${error.message}
             </div>
         `;
+        document.getElementById('assignButton').style.display = 'block';
     } finally {
         assignButton.disabled = false;
         assignButton.textContent = 'Add Student to My List';
@@ -484,11 +485,11 @@ function initializeCharts(analytics) {
                     title: {
                         display: true,
                         text: 'Score Progression Over Time',
-                        color: getComputedStyle(document.documentElement).getPropertyValue('--text-color')
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color')
                     },
                     legend: {
                         labels: {
-                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-color')
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color')
                         }
                     }
                 },
@@ -500,7 +501,7 @@ function initializeCharts(analytics) {
                             color: getComputedStyle(document.documentElement).getPropertyValue('--border-color')
                         },
                         ticks: {
-                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-color')
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color')
                         }
                     },
                     x: {
@@ -508,7 +509,7 @@ function initializeCharts(analytics) {
                             color: getComputedStyle(document.documentElement).getPropertyValue('--border-color')
                         },
                         ticks: {
-                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-color')
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color')
                         }
                     }
                 }
@@ -558,11 +559,11 @@ function initializeCharts(analytics) {
                     title: {
                         display: true,
                         text: 'Introduction vs Profile Performance',
-                        color: getComputedStyle(document.documentElement).getPropertyValue('--text-color')
+                        color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color')
                     },
                     legend: {
                         labels: {
-                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-color')
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color')
                         }
                     }
                 },
@@ -574,7 +575,7 @@ function initializeCharts(analytics) {
                             color: getComputedStyle(document.documentElement).getPropertyValue('--border-color')
                         },
                         ticks: {
-                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-color')
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color')
                         }
                     },
                     x: {
@@ -582,7 +583,7 @@ function initializeCharts(analytics) {
                             color: getComputedStyle(document.documentElement).getPropertyValue('--border-color')
                         },
                         ticks: {
-                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-color')
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--primary-color')
                         }
                     }
                 }
