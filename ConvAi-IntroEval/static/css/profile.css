@@ -1,0 +1,280 @@
+/* GLOBAL TEXT CURSOR REMOVAL - Disable I-beam cursor throughout the login page */
+
+/* Root level cursor override - remove text cursor globally */
+* {
+  cursor: default !important;
+}
+
+/* Override specific elements that should be clickable */
+button,
+.btn,
+a,
+[role="button"],
+.tab-btn,
+.forgot-link,
+.clickable {
+  cursor: pointer !important;
+}
+
+/* Input fields should have text cursor only when focused */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="url"],
+input[type="tel"],
+textarea {
+  cursor: text !important;
+}
+
+/* Disable text selection and I-beam cursor for all non-input text */
+p,
+span,
+div,
+h1, h2, h3, h4, h5, h6,
+.form-message,
+label {
+  cursor: default !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  -khtml-user-select: none !important;
+  -webkit-touch-callout: none !important;
+}
+
+/* Labels should be pointer when they're for form elements */
+label[for] {
+  cursor: pointer !important;
+}
+
+/* Global text selection prevention for better UX */
+body {
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  -khtml-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+/* Allow text selection only in actual input areas */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="search"]:focus,
+input[type="url"]:focus,
+input[type="tel"]:focus,
+textarea:focus {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+}
+
+/* Theme System - Light and Dark Mode Support */
+:root {
+  /* Light Theme (Default) */
+  --primary-color: #333;
+  --secondary-color: #34a853;
+  --danger-color: #ea4335;
+  --warning-color: #fbbc05;
+  --dark-color: #333;
+  --light-color: #fff;
+  --border-radius: 20px;
+  --box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  --transition: all 0.3s ease;
+  --input-bg: #fff;
+  --text-primary: #333;
+  --body-bg: #fff;
+  --outer-frame-border: #333;
+  --outer-frame-dots: rgba(0, 0, 0, 0.281);
+  --content-box-bg: #fff;
+  --content-box-border: #333;
+  --card-bg: #fff;
+  --card-border: #ddd;
+  --input-border: #ddd;
+  --button-primary-bg: #333;
+  --button-primary-color: #fff;
+  --button-secondary-bg: #6c757d;
+  --button-secondary-color: #fff;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  --primary-color: #ffffff;
+  --secondary-color: #34a853;
+  --danger-color: #ea4335;
+  --warning-color: #fbbc05;
+  --dark-color: #ffffff;
+  --light-color: #111;
+  --box-shadow: 0 2px 12px rgba(255,255,255,0.03);
+  --input-bg: #222;
+  --text-primary: #ffffff;
+  --body-bg: #111;
+  --outer-frame-border: #fff;
+  --outer-frame-dots: rgba(255, 255, 255, 0.281);
+  --content-box-bg: #222;
+  --content-box-border: #fff;
+  --card-bg: #333;
+  --card-border: #555;
+  --input-border: #555;
+  --button-primary-bg: #ffffff;
+  --button-primary-color: #111;
+  --button-secondary-bg: #555;
+  --button-secondary-color: #fff;
+}
+
+.outer-frame {
+  /* Dotted grid background */
+  background-image: radial-gradient(var(--outer-frame-dots) 1.2px, transparent 1.2px);
+  background-size: 18px 18px;
+  border: 2.5px solid var(--outer-frame-border);
+  border-radius: 20px;
+  width: 95vw;
+  height: 92vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  position: relative;
+  transition: var(--transition);
+}
+
+/* Left Taskbar for Switches */
+.left-taskbar {
+  position: absolute;
+  left: -25px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Theme Toggle Button Styles */
+.theme-toggle-container {
+  display: flex;
+  align-items: center;
+}
+
+.theme-toggle-btn {
+  background: var(--card-bg);
+  border: 2px solid var(--outer-frame-border);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--text-primary);
+  font-size: 1.2rem;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--primary-color);
+  color: var(--button-primary-color);
+  border-color: var(--primary-color);
+  transform: scale(1.1);
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  min-width: 100vw;
+  box-sizing: border-box;
+  background: var(--body-bg);
+  font-family: 'Oswald', Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  transition: var(--transition);
+}
+
+a{
+  text-decoration: none;
+}
+
+.container{
+  display: flex;
+  border-radius: 20px;
+  border: 2px solid var(--content-box-border);
+  background-color: var(--content-box-bg);
+  padding: 30px;
+  align-items: center;
+  justify-content: center;
+  min-width: 500px;
+}
+
+.profile-header{
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}
+
+.profile-header  h5 {
+  font-size: 30px;
+  margin: 0;
+  padding-bottom: 5px;
+  border-bottom: 2px solid var(--card-border);
+  margin-bottom: 5px;
+}
+
+.profile-header  p {
+  font-family: "Khand", sans-serif;
+  margin: 0;
+  font-size: 16px;
+  
+}
+
+.profile-body{
+  border-left: 2px solid var(--content-box-border);  
+  border-right: 2px solid var(--content-box-border);
+  margin: 30px;
+  padding: 0px 20px;
+}
+
+.profile-info label{
+  font-family: "Oswald", Helvetica, sans-serif;
+  font-size: 22px;
+	font-weight: 450;
+}
+
+.profile-info span{
+  font-family: "Khand", sans-serif;
+  font-size: 18px;
+}
+
+.btn-logout {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background:  var(--danger-color);
+  color: white;
+  border: 2px solid var(--content-box-border);
+  border-radius: 25px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(234, 67, 53, 0.3);
+  margin: 20px;
+  font-family: 'Oswald', Helvetica, sans-serif;
+}
+
+.btn-logout:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(234, 67, 53, 0.4);
+  filter: brightness(1.1);
+}

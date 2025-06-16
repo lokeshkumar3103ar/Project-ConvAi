@@ -1260,6 +1260,32 @@ async def reset_password_form():
     with open(html_path, "r", encoding="utf-8") as html_file:
         return html_file.read()
 
+@app.get("/profile", response_class=HTMLResponse)
+async def reset_password_form():
+    html_path = TEMPLATES_DIR / "profile.html"
+    with open(html_path, "r", encoding="utf-8") as html_file:
+        return html_file.read()
+
+@app.get("/api/auth/profile")
+async def get_user_profile(current_user: Optional[Union[User, Teacher]] = Depends(get_current_user)):
+    """Get current user's username, name, and email"""
+    try:
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Authentication required")
+        
+        user_info = {
+            "username": current_user.username,
+            "name": getattr(current_user, "name", None),
+            "email": getattr(current_user, "email", None)
+        }
+        return JSONResponse(content=user_info)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        log_error("❌ Failed to get user profile", e)
+        raise HTTPException(status_code=500, detail="Failed to retrieve user information")
+
 # ==================== TEACHER AUTHENTICATION ====================
 
 @app.post("/teacher/login")

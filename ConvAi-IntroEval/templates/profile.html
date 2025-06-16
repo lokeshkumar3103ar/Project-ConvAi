@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../static/css/login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Khand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/profile.css">
+
 </head>
+
 <body>
     <div class="outer-frame">
         <!-- Left Taskbar for Toggle Switches -->
@@ -18,13 +23,40 @@
             </div>
             <!-- Future switches can be added here -->
             <div class="theme-toggle-container">
-                <button id="home" class="theme-toggle-btn" aria-label="Go to Home">
+                <a href="./index" id="home" class="theme-toggle-btn" aria-label="Go to Home">
                     <i class="fa-solid fa-home"></i>
+                </a>
+            </div>
+        </div>
+        <div class="profile-details container">
+            <div class="profile-header">
+
+                <h5 class="mb-0">User Profile</h5>
+                <p class="profile-subtitle">Your account information</p>
+            </div>
+            <div class="profile-body">
+                <div class="profile-info useranme">
+                    <label class="profile-label">Username :</label>
+                    <span id="profile-username" class="profile-value">Loading...</span>
+                </div>
+                <div class="profile-info Name">
+                    <label class="profile-label">Name :</label>
+                    <span id="profile-name" class="profile-value">Loading...</span>
+                </div>
+                <div class="profile-info Email">
+                    <label class="profile-label">Email :</label>
+                    <span id="profile-email" class="profile-user-type-badge">Loading...</span>
+                </div>
+            </div>
+            <div class="logout">
+                <button id="logout-btn" class="btn-logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
                 </button>
             </div>
         </div>
-        <div class="profile-details">
-        </div>
     </div>
+    <script src="../static/js/profile.js"></script>
 </body>
+
 </html>
