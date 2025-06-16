@@ -12,7 +12,7 @@ except ImportError:  # Fallback for direct execution if needed
 
 
 def get_profile_rating_prompt(form_data: dict) -> str:
-    """Creates and returns the prompt for evaluating profile rating"""
+    """Creates and returns the prompt for evaluating profile rating with strong employability focus"""
     # Extract the fields from the form data structure
     extracted_fields = None
     
@@ -26,67 +26,79 @@ def get_profile_rating_prompt(form_data: dict) -> str:
     else:
         extracted_fields = str(form_data)
     
-    return f"""You are an expert HR evaluator with extensive experience in candidate assessment and selection. Your task is to provide an objective, data-driven rating of candidate profiles based on specific evaluation criteria.
+    return f"""You are an expert HR evaluator with extensive experience in candidate assessment and hiring decisions. Your task is to provide an objective, data-driven rating that directly predicts EMPLOYABILITY and likelihood of being hired by companies.
+
+    ⚡ CRITICAL: This profile rating score directly determines the candidate's employability potential. Higher scores indicate candidates who are most likely to be hired and succeed in professional roles.
 
     PROFILE RATING INSTRUCTIONS:
-    - Analyze the candidate profile data carefully and thoroughly
-    - Apply the rubrics objectively and consistently
+    - Analyze the candidate profile with a hiring manager's perspective
+    - Focus on practical skills, real-world experience, and industry readiness
+    - Apply the rubrics objectively based on what employers actually value
     - Base your assessment ONLY on information explicitly present in the profile
-    - Do not make assumptions about unstated qualifications
+    - Remember: Academic credentials alone do not guarantee employability
     - Calculate scores precisely according to the formulas provided
 
-    PROFILE RATING RUBRICS (out of 10 total points):
+    PROFILE RATING RUBRICS (out of 10 total points) - EMPLOYABILITY FOCUSED:
     
-    1. Completeness (max 3.0 points):
+    1. Practical Foundation & Completeness (max 3.0 points):
+        EMPLOYABILITY INSIGHT: Comprehensive profiles demonstrate thoroughness and self-awareness - key traits employers seek.
+        
         - Count all fields that are **not empty or "Not Mentioned"**.
         - Use this formula exactly:  
             `completeness_score = min(3.0, (filled_fields / 35) * 3)`
         - NEVER exceed 3.0 points for this category even if calculation yields higher value.
-        🔒 Your response must:
-        - Follow the formula exactly.
-        - Always cap the result at 3.0 even if the calculation yields a higher number.
-        - Round the result to **2 decimal places**.
-        - Always include the count of filled fields and the exact formula used.
+        
+        🔒 Enhanced Field Categories for College Students:
+         - Personal Details (4 fields): Name, Age (optional), Languages known, Hometown/Origin
+         - Academic Focus (5 fields): Current degree program, Year of study, Major/specialization, University, CGPA (if mentioned)
+         - Practical Experience (8 fields): Internships, Workshops & certifications, College competitions, Research projects, Applied learning experiences, Current projects, Work experience, Project technologies
+         - Skills Development (6 fields): Programming languages, Tools & technologies, Technical skills, Soft skills, Leadership roles, Initiative in learning
+         - Personal Context & Growth (7 fields): Interests & hobbies, Career aspirations, Field of interest, What motivates them, Personal qualities, Academic projects, Target role
+         - Professional Readiness (5 fields): Skills gained, Key responsibilities, Professional achievements, Extra-curricular activities, Industry readiness indicators
 
-       • The 35 fields are categorized as:
-         - Personal Details (4 fields): Name, Age, Languages known, Professional Status
-         - Education Background (5 fields): Degree & specialization, College/university, Year of graduation, CGPA, Notable achievements/certifications
-         - Projects (6 fields): Project name, Technology/tools used, Problem statement, Solution implemented, Outcomes/accomplishments, Your role
-         - Work Experience (6 fields): Company name, Role, Time period, Total years of experience, Skills gained, Key responsibilities & achievements
-         - Skills (4 fields): Technical skills, Soft skills, Tools & technologies, Domain expertise
-         - Achievements & Activities (3 fields): Professional achievements, Extracurricular activities, Relevant hobbies
-         - Personal Traits (1 field): Personality Traits
-         - Role Expectation (1 field): Target Job Role
-         - Career Preferences (5 fields): Career goals, Preferred location, Willingness to relocate, Work environment preference, Expected Salary Range
-       • MUST format as: "X.X/3 – X of 35 fields filled (X% completion)."
+       • MUST format as: "X.X/3 – X of 35 fields filled (X% completion). Higher completion indicates better self-awareness and thoroughness."
 
-    2. Relevance to Target Role (0-2 points):
-       • Examine skills, experience, and education against the stated target role
-       • 2.0 = Strong alignment: Skills/experience directly match the target role (e.g., fullstack dev → HTML, JS, DB)
-       • 1.5 = Good alignment: Most key skills present but missing some important elements
-       • 1.0 = Partial alignment: Some relevant skills but significant gaps
-       • 0.5 = Minimal alignment: Few relevant skills mentioned
-       • 0.0 = No alignment: No relevance shown to target role or target role not mentioned
-       • Provide specific examples of matching or missing skills in your explanation  
+    2. Industry Relevance & Technical Competency (0-2 points):
+       EMPLOYABILITY INSIGHT: Technical skills aligned with target roles are the primary hiring criteria in today's market.
+       
+       • Examine programming languages, technical skills, tools, and domain knowledge against industry standards
+       • 2.0 = Highly employable: Strong technical foundation with relevant skills for target field (e.g., web dev → React, Node.js, databases)
+       • 1.5 = Good employability: Solid technical skills with minor gaps that can be quickly filled
+       • 1.0 = Moderate employability: Basic technical foundation but needs significant skill development
+       • 0.5 = Limited employability: Minimal technical skills, extensive training required
+       • 0.0 = Not industry-ready: No relevant technical competency demonstrated
+       • Consider modern industry requirements and emerging technologies
+       • Provide specific examples of technical strengths and gaps in your explanation  
 
-    3. Projects/Internships Quality (0-3 points):
-    IMPORTANT: Look for ALL project mentions, not just detailed ones
-       • 3.0 = Exceptional: Multiple (2+) well-described projects OR 1 exceptionally detailed project with technologies, clear problem/solution, and outcomes
-       • 2.5 = Very good: 1 well-detailed project with technologies, problem statement, solution, and some outcomes
-       • 2.0 = Good: 1+ projects with decent detail (technologies + problem/solution mentioned)
-       • 1.5 = Adequate: 1+ projects mentioned with basic technologies or brief description
-       • 1.0 = Minimal: Project(s) mentioned but very vague description (just project name or basic mention)
-       • 0.5 = Very minimal: Unclear project references or academic assignments only
-       • 0.0 = None: No projects or internships mentioned at all
-       • SCORING TIP: Multiple projects should score higher even if individually less detailed
+    3. Hands-On Experience & Project Portfolio (0-3 points):
+    EMPLOYABILITY INSIGHT: Practical experience is the strongest predictor of job performance and hiring success.
+    
+    IMPORTANT: Look for ALL practical experience - internships, projects, competitions, research
+       • 3.0 = Highly hireable: Multiple substantial experiences (2+ internships OR 3+ detailed projects OR research + competition experience)
+       • 2.5 = Strong candidate: 1 solid internship + projects OR 2+ well-described projects with real-world applications
+       • 2.0 = Good potential: 1+ internships OR 2+ projects with decent technical detail and problem-solving evidence
+       • 1.5 = Developing candidate: Some practical experience (1+ projects or workshops) but limited depth
+       • 1.0 = Entry-level: Basic project experience or academic assignments with minimal industry relevance
+       • 0.5 = Very limited: Vague mentions of projects without clear technical implementation
+       • 0.0 = No practical experience: Pure academic background with no hands-on work
+       • CRITICAL: Prioritize internships and real-world projects over academic assignments
 
-    4. Achievements and Extra-curricular Value (0-2 points):
-       • 2.0 = Outstanding: Multiple significant achievements (certifications, awards, leadership roles)
-       • 1.5 = Strong: Several achievements or activities with clear relevance to professional growth
-       • 1.0 = Moderate: At least 1 meaningful achievement or activity mentioned
-       • 0.5 = Limited: Vague mention of achievements without specifics
-       • 0.0 = None: No achievements or activities mentioned
-       • Consider the relevance and significance of achievements to the target role
+    4. Professional Growth & Leadership Potential (0-2 points):
+       EMPLOYABILITY INSIGHT: Leadership, initiative, and continuous learning indicate high-potential employees who will grow with the company.
+       
+       • 2.0 = High potential: Multiple indicators of leadership (club roles, event organization, team projects) + career direction + learning initiative
+       • 1.5 = Good potential: Some leadership experience OR strong career direction OR demonstrated learning initiative
+       • 1.0 = Moderate potential: Basic extra-curricular involvement OR some career awareness
+       • 0.5 = Limited indicators: Minimal evidence of leadership or professional development
+       • 0.0 = No growth indicators: No evidence of leadership, initiative, or career planning
+       • Consider: Leadership roles, competition participation, certifications, career goals, learning initiatives
+
+    🎯 EMPLOYABILITY SCORING GUIDE:
+    • 8.5-10.0: HIGHLY EMPLOYABLE - Top candidates likely to receive multiple job offers
+    • 7.0-8.4: GOOD EMPLOYABILITY - Strong candidates with solid hiring potential
+    • 5.5-6.9: MODERATE EMPLOYABILITY - Decent candidates who may need some skill development
+    • 4.0-5.4: DEVELOPING POTENTIAL - Entry-level candidates requiring significant training
+    • Below 4.0: LIMITED EMPLOYABILITY - Extensive development needed before industry readiness
 
     FORM DATA TO EVALUATE:
     {extracted_fields}
@@ -94,30 +106,38 @@ def get_profile_rating_prompt(form_data: dict) -> str:
     Return your evaluation as a JSON object with this exact structure:
     {{
       "profile_rating": X.X,
+      "employability_level": "[HIGHLY EMPLOYABLE/GOOD EMPLOYABILITY/MODERATE EMPLOYABILITY/DEVELOPING POTENTIAL/LIMITED EMPLOYABILITY]",
       "grading_explanation": {{
-        "completeness": "X.X/3 – X of 35 fields filled (X% completion).",
-        "relevance": "X/2 – [specific explanation with examples of matching/missing skills]",
-        "projects_or_internships": "X/3 – [detailed assessment with examples]",
-        "extra_achievements": "X/2 – [specific achievements and their relevance]"
+        "practical_foundation": "X.X/3 – X of 35 fields filled (X% completion). Higher completion indicates better self-awareness and thoroughness.",
+        "technical_competency": "X.X/2 – [specific technical skills analysis and industry relevance]",
+        "hands_on_experience": "X.X/3 – [detailed assessment of practical experience and project quality]",
+        "growth_potential": "X.X/2 – [leadership, initiative, and professional development indicators]"
+      }},
+      "hiring_insights": {{
+        "strongest_assets": "[Top 2-3 strengths that make this candidate attractive to employers]",
+        "development_areas": "[Key areas that would improve employability]",
+        "industry_readiness": "[Assessment of readiness for professional work]"
       }},
       "grading_debug": {{
-        "completeness_score": X.X,
-        "relevance_score": X.X,
-        "projects_score": X.X,
-        "achievements_score": X.X,
+        "practical_foundation_score": X.X,
+        "technical_competency_score": X.X,
+        "hands_on_experience_score": X.X,
+        "growth_potential_score": X.X,
         "calculated_sum": X.X,
         "sum_check": {{
           "profile_expected": 10,
           "profile_reported": X.X
         }},
-        "notes": "[any observations about strengths/weaknesses and improvement areas]"
+        "notes": "[observations about employability strengths/weaknesses and hiring potential]"
       }}
     }}
 
     IMPORTANT FINAL CHECKS:
-    1. Ensure completeness_score is NEVER greater than 3.0, regardless of the calculation result
-    2. Double-check that profile_rating equals completeness_score + relevance_score + projects_score + achievements_score
-    3. Respond ONLY with the JSON object, no additional text.
+    1. Ensure practical_foundation_score is NEVER greater than 3.0, regardless of the calculation result
+    2. Double-check that profile_rating equals all four component scores
+    3. Assign appropriate employability_level based on total score
+    4. Focus hiring_insights on what employers actually care about
+    5. Respond ONLY with the JSON object, no additional text.
     """
 
 
@@ -155,8 +175,8 @@ def evaluate_profile_rating(form_path=None) -> dict:
                 "model": "mistral",
                 "prompt": prompt,
                 "stream": False,  # Disable streaming for queue mode
-                "temperature": 0.0,  # Remove randomness for consistent output
-                "top_p": 1.0,        # Set top_p to 1.0 for deterministic sampling
+                "temperature": 0.1,  # Remove randomness for consistent output
+                "top_p": 0.95,        # Set top_p to 1.0 for deterministic sampling
                 "top_k": 40,         # Limit token selection to top 40 tokens
                 "seed": 42,          # Fixed seed for reproducible results
                 "stop": ["\n\n"]     # Stop token for clean output termination
@@ -206,4 +226,3 @@ def evaluate_profile_rating(form_path=None) -> dict:
         print(f"Exception in profile rating evaluation: {str(e)}")
         return {"status": "error", "message": f"Exception: {str(e)}"}
 
-# Streaming function removed as requested

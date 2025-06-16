@@ -344,9 +344,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Invalid rating data provided:', ratingData);
                 return;
             }
-            
-            console.log('Rating data structure:', Object.keys(ratingData).join(', '));
+              console.log('Rating data structure:', Object.keys(ratingData).join(', '));
             console.log('Rating data values:', JSON.stringify(ratingData, null, 2).substring(0, 500) + '...');
+            
+            // Specific check for hiring insights
+            if (ratingData.hiring_insights) {
+                console.log('🎯 Found hiring_insights in data:', ratingData.hiring_insights);
+            } else {
+                console.log('❌ No hiring_insights found in data');
+            }
               // Make a copy of the data to avoid manipulation issues
             const data = JSON.parse(JSON.stringify(ratingData));
             
@@ -525,18 +531,42 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Fallback to other possible fields
                 return data.overall_feedback || data.summary || data.feedback || 'No overall feedback provided.';
-            }
-              // Add grading explanation categories if available
+            }            // Add grading explanation categories if available
             if (data.grading_explanation && typeof data.grading_explanation === 'object') {
-                html += `<h5 class="mt-4">Category Ratings</h5>`;
+                html += `
+                    <div class="rating-card" style="margin-top: 24px;">
+                        <div class="rating-header">
+                            <h4 class="rating-title">
+                                <i class="fas fa-chart-bar me-2"></i>Category Ratings
+                            </h4>
+                        </div>
+                        <div class="rating-details">
+                `;
                 
-                for (const [category, score] of Object.entries(data.grading_explanation)) {
-                    // Format the category name for display
-                    const categoryDisplay = category
-                        .replace(/_/g, ' ')
-                        .split(' ')
-                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                        .join(' ');
+                for (const [category, score] of Object.entries(data.grading_explanation)) {                    // Create mapping for updated intro rating field names  
+                    const categoryDisplayMap = {
+                        // New intro rating field names
+                        'grammar_and_clarity': 'Grammar & Clarity',
+                        'structure': 'Structure & Organization', 
+                        'information_coverage': 'Information Coverage',
+                        'relevance_to_professional_context': 'Professional Relevance',
+                        // Legacy intro rating field names (for backward compatibility)
+                        'info_coverage': 'Information Coverage',
+                        'relevance_to_role': 'Professional Relevance',
+                        // Profile rating field names (for compatibility)
+                        'practical_foundation': 'Practical Foundation',
+                        'technical_competency': 'Technical Competency',
+                        'hands_on_experience': 'Hands-On Experience',
+                        'growth_potential': 'Growth Potential'
+                    };
+                    
+                    // Use mapped display name or format the original category name
+                    const categoryDisplay = categoryDisplayMap[category] || 
+                        category
+                            .replace(/_/g, ' ')
+                            .split(' ')
+                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                            .join(' ');
                     
                     html += `
                         <div class="rating-subcategory mb-2">
@@ -549,30 +579,60 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     `;
                 }
+                
+                html += `
+                        </div>
+                    </div>
+                `;
             }
-            
-            // Add insights section for intro ratings
+              // Add insights section for intro ratings
             if (!isProfileRating && data.insights && Array.isArray(data.insights) && data.insights.length > 0) {
-                html += `<h5 class="mt-4">Key Insights</h5>`;
-                html += `<ul class="list-group mb-4">`;
+                html += `
+                    <div class="rating-card" style="margin-top: 24px;">
+                        <div class="rating-header">
+                            <h4 class="rating-title">
+                                <i class="fas fa-lightbulb me-2"></i>Key Insights
+                            </h4>
+                        </div>
+                        <div class="rating-details">
+                            <ul class="list-group list-group-flush">
+                `;
                 
                 data.insights.forEach(insight => {
-                    html += `<li class="list-group-item"><i class="fas fa-lightbulb text-warning me-2"></i>${insight}</li>`;
+                    html += `<li class="list-group-item" style="background: var(--background-primary); border-color: var(--border-color); color: var(--text-secondary);">
+                        <i class="fas fa-lightbulb text-warning me-2"></i>${insight}
+                    </li>`;
                 });
                 
-                html += `</ul>`;
+                html += `
+                            </ul>
+                        </div>
+                    </div>
+                `;
             }
-            
-            // Add specific feedback section for intro ratings
+              // Add specific feedback section for intro ratings
             if (!isProfileRating && data.feedback && Array.isArray(data.feedback) && data.feedback.length > 0) {
-                html += `<h5 class="mt-4">Detailed Feedback</h5>`;
-                html += `<ul class="list-group mb-4">`;
+                html += `
+                    <div class="rating-card" style="margin-top: 24px;">
+                        <div class="rating-header">
+                            <h4 class="rating-title">
+                                <i class="fas fa-comment-dots me-2"></i>Detailed Feedback
+                            </h4>
+                        </div>
+                        <div class="rating-details">
+                            <ul class="list-group list-group-flush">
+                `;
                 
                 data.feedback.forEach(feedbackItem => {
-                    html += `<li class="list-group-item"><i class="fas fa-comment-dots text-primary me-2"></i>${feedbackItem}</li>`;
+                    html += `<li class="list-group-item" style="background: var(--background-primary); border-color: var(--border-color); color: var(--text-secondary);">
+                        <i class="fas fa-comment-dots text-primary me-2"></i>${feedbackItem}
+                    </li>`;
                 });
                 
-                html += `</ul>`;
+                html += `                            </ul>
+                        </div>
+                    </div>
+                `;
             }
             
             // Profile-specific ratings
@@ -671,8 +731,107 @@ document.addEventListener('DOMContentLoaded', function() {
                             html += `<li class="list-group-item"><i class="fas fa-arrow-alt-circle-up text-primary me-2"></i>${improvement}</li>`;
                         }
                     });
+                      html += `</ul>`;
+                }                // Add hiring insights section for profile ratings
+                if (data.hiring_insights && typeof data.hiring_insights === 'object') {
+                    console.log('🔍 Processing hiring insights:', data.hiring_insights);
+                    html += `
+                        <div class="rating-card" style="margin-top: 24px;">
+                            <div class="rating-header">
+                                <h4 class="rating-title">
+                                    <i class="fas fa-briefcase text-info me-2"></i>Hiring Insights
+                                </h4>
+                            </div>
+                            <div class="rating-details">
+                    `;
                     
-                    html += `</ul>`;
+                    const insights = data.hiring_insights;
+                    
+                    // Helper function to extract text from array or string
+                    const extractText = (value) => {
+                        if (Array.isArray(value)) {
+                            return value.join(', ');
+                        } else if (typeof value === 'string') {
+                            // Remove brackets if they exist
+                            return value.replace(/^\[|\]$/g, '').trim();
+                        }
+                        return value;
+                    };
+                    
+                    // Strongest Assets
+                    if (insights.strongest_assets) {
+                        const assetsText = extractText(insights.strongest_assets);
+                        console.log('📊 Assets text:', assetsText);
+                        if (assetsText && assetsText.length > 0) {
+                            html += `
+                                <div class="insight-section mb-3">
+                                    <h6 class="insight-title"><i class="fas fa-star text-warning me-2"></i>Strongest Assets</h6>
+                                    <div class="insight-content">
+                                        ${assetsText}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                    
+                    // Development Areas
+                    if (insights.development_areas) {
+                        const developmentText = extractText(insights.development_areas);
+                        console.log('📈 Development text:', developmentText);
+                        if (developmentText && developmentText.length > 0) {
+                            html += `
+                                <div class="insight-section mb-3">
+                                    <h6 class="insight-title"><i class="fas fa-chart-line text-primary me-2"></i>Development Areas</h6>
+                                    <div class="insight-content">
+                                        ${developmentText}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                    
+                    // Industry Readiness
+                    if (insights.industry_readiness) {
+                        const readinessText = extractText(insights.industry_readiness);
+                        console.log('🏭 Readiness text:', readinessText);
+                        if (readinessText && readinessText.length > 0) {
+                            html += `
+                                <div class="insight-section mb-3">
+                                    <h6 class="insight-title"><i class="fas fa-industry text-success me-2"></i>Industry Readiness</h6>
+                                    <div class="insight-content">
+                                        ${readinessText}
+                                    </div>
+                                </div>
+                            `;                        }
+                    }
+                    
+                    // Close the rating card structure
+                    html += `
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    console.log('❌ No hiring insights found or invalid format:', data.hiring_insights);
+                }
+
+                // Add employability level if available
+                if (data.employability_level && data.employability_level.length > 0) {
+                    // Get color class based on employability level
+                    let levelColor = 'secondary';
+                    if (data.employability_level.includes('HIGHLY EMPLOYABLE')) levelColor = 'success';
+                    else if (data.employability_level.includes('GOOD EMPLOYABILITY')) levelColor = 'info';
+                    else if (data.employability_level.includes('MODERATE EMPLOYABILITY')) levelColor = 'warning';
+                    else if (data.employability_level.includes('DEVELOPING POTENTIAL')) levelColor = 'primary';
+                    else if (data.employability_level.includes('LIMITED EMPLOYABILITY')) levelColor = 'danger';
+                    
+                    html += `
+                        <div class="employability-badge mt-3 mb-4">
+                            <h6 class="mb-2"><i class="fas fa-user-tie me-2"></i>Employability Assessment</h6>
+                            <span class="badge bg-${levelColor} fs-6 px-3 py-2">
+                                <i class="fas fa-briefcase me-1"></i>${data.employability_level}
+                            </span>
+                        </div>
+                    `;
                 }
             } 
             // Introduction-specific ratings
@@ -1178,21 +1337,33 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (profileResponse.ok) {
                         const profileData = await profileResponse.json();
                         console.log('Raw profile rating data:', profileData);
-                        
-                        // Extract the actual rating data - try multiple paths
+                          // Extract the actual rating data - try multiple paths
                         let ratingData = null;
+                        console.log('🔍 Extracting rating data, profileData structure:', Object.keys(profileData));
+                        
                         if (profileData.rating_data) {
+                            console.log('📍 Using path 1: profileData.rating_data');
                             ratingData = profileData.rating_data;
                         } else if (profileData.success && profileData.data) {
+                            console.log('📍 Using path 2: profileData.data (success=true)');
                             ratingData = profileData.data;
                         } else if (profileData.data && profileData.data.rating_data) {
+                            console.log('📍 Using path 3: profileData.data.rating_data');
                             ratingData = profileData.data.rating_data;
                         } else {
+                            console.log('📍 Using path 4: fallback to entire profileData');
                             // Try to use the entire response as rating data if it has expected properties
                             if (profileData.overall_score || profileData.overall_rating || 
                                 profileData.skills || profileData.strengths) {
                                 ratingData = profileData;
                             }
+                        }
+                        
+                        console.log('🎯 Final ratingData to be displayed:', ratingData);
+                        if (ratingData && ratingData.hiring_insights) {
+                            console.log('✅ hiring_insights found in ratingData:', ratingData.hiring_insights);
+                        } else {
+                            console.log('❌ No hiring_insights in ratingData');
                         }
                         
                         // Store and display the rating

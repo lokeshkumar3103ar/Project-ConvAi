@@ -16,9 +16,11 @@ if str(Path(__file__).parent.parent.parent) not in sys.path:
 from file_organizer import organize_path, log_file_operation
 
 def get_extraction_prompt(transcript_text: str) -> str:
-    """Creates and returns the prompt for extracting data from transcripts"""
+    """Creates and returns the prompt for extracting data from transcripts - optimized for college students"""
     return f"""
-    You are a precise data extraction assistant that parses and structures information from professional self-introduction transcripts.    EXTRACTION RULES:
+    You are a precise data extraction assistant that parses and structures information in JSON from college student self-introduction transcripts.    
+    
+    EXTRACTION RULES:
     1. Only extract information that is EXPLICITLY stated in the text - never infer or assume.
     2. If information for a field is not clearly mentioned, write exactly "Not Mentioned" - do not guess.
     3. Use direct quotes where possible, especially for technical terms, project names, and qualifications.
@@ -30,58 +32,67 @@ def get_extraction_prompt(transcript_text: str) -> str:
     
     ### Personal Details 
     - Name (full name as mentioned)
-    - Age (exact number only)
+    - Age (exact number only - if mentioned, but not required for evaluation)
     - Languages known (list all mentioned languages with proficiency levels if stated)
-    - Professional Status (exactly as stated: "Fresher", "Experienced", or specific experience level)
+    - Hometown/Origin (where they're from - city, state, or region)
 
-    ### Education Background
-    - Degree & specialization (complete degree name with field/major)
-    - College/university (full institution name)
-    - Year of graduation (exact year, if mentioned)
-    - CGPA (exact value with scale, e.g., "8.5/10")
-    - Notable achievements/certifications (list specific qualifications with dates if mentioned)
+    ### Academic Focus
+    - Current degree program (B.Tech, B.E., M.Tech, etc.)
+    - Year of study (1st year, 2nd year, 3rd year, 4th year, final year)
+    - Major/Specialization (Computer Science, Mechanical, Electronics, etc.)
+    - College/University (full institution name)
+    - CGPA (exact value with scale, e.g., "8.5/10" - only if mentioned proudly)
+    - Academic projects (course projects, final year projects, semester projects)
 
-    ### Projects
+    ### Practical Experience
+    - Internships (summer internships, industry exposure, company names, duration)
+    - Workshops and certifications (specific workshops attended, certifications earned)
+    - College competitions (hackathons, coding competitions, technical events participated)
+    - Research projects (projects with professors, research work, publications)
+    - Applied learning experiences (practical implementations, real-world applications)
+
+    ### Skills Development
+    - Programming languages (all languages mentioned with proficiency if stated)
+    - Tools & technologies (frameworks, software, platforms explored)
+    - Technical skills (domain-specific technical capabilities)
+    - Soft skills (communication, teamwork, leadership skills developed through group projects)
+    - Leadership roles (positions in college clubs, events organized, team leadership)
+
+    ### Personal Context & Motivation
+    - Interests and hobbies (personal interests, recreational activities)
+    - Career aspirations (what they want to become, future goals in their field)
+    - Field of interest (specific areas within their domain they're passionate about)
+    - What motivates them (driving factors, inspiration, passion areas)
+    - Initiative in learning (self-learning efforts, extra-curricular technical activities)
+
+    ### Current Projects & Work (if any)
+    - Current projects (ongoing academic or personal projects)
     - Project name (exact project title)
     - Technology/tools used (list all technologies mentioned)
     - Problem statement (concise description of the problem addressed)
     - Solution implemented (specific approach or methodology used)
-    - Outcomes/accomplishments (quantifiable results or impacts, if mentioned)
     - Your role (specific responsibilities in team projects)
 
-    ### Work Experience
-    - Company name (full organization name)
-    - Role (exact job title)
-    - Time period (start and end dates or duration)
-    - Total years of experience (exact value, e.g., "2 years 3 months")
+    ### Work Experience (if any)
+    - Company name (full organization name - internships or part-time work)
+    - Role (exact position title)
+    - Duration (time period or months worked)
     - Skills gained (specific skills acquired during this experience)
-    - Key responsibilities & achievements (bullet points of main duties and accomplishments)
+    - Key responsibilities (main duties and learning outcomes)
 
-    ### Skills
-    - Technical skills (programming languages, frameworks, methodologies)
-    - Soft skills (communication, teamwork, etc.)
-    - Tools & technologies (software, platforms, systems) 
-    - Domain expertise (industry-specific knowledge areas)
+    ### Achievements & Extra-curricular Activities
+    - Academic achievements (scholarships, academic awards, honors)
+    - Technical achievements (competition wins, project recognitions)
+    - Extra-curricular activities (clubs, societies, volunteering, organizing events)
+    - Relevant hobbies (activities that complement their academic/career interests)
 
-    ### Achievements & Activities
-    - Professional achievements (awards, recognitions, certifications)
-    - Extracurricular activities (clubs, volunteering, competitions)
-    - Relevant hobbies (activities related to professional interests)
+    ### Career Goals & Preferences
+    - Target role/field (specific job roles or career paths they're interested in)
+    - Short-term goals (immediate career objectives post-graduation)
+    - Long-term aspirations (career vision, where they see themselves)
+    - Professional interests (specific domains or technologies they want to work with)
 
-    ### Personal Traits
-    - Personality Traits: List specific character traits mentioned (e.g., adaptive, leader, quick learner)
-
-    ### Role Expectation
-    - Target Job Role: Exact position or role mentioned (e.g., Full Stack Developer, Data Analyst)
-
-    ### Career Preferences
-    - Career goals (short or long-term professional objectives)
-    - Preferred location (specific cities/regions/countries)
-    - Willingness to relocate (explicit yes/no statement with any conditions)
-    - Work environment preference (exact preference: remote/hybrid/on-site)
-    - Expected Salary Range (exact figures with currency, if mentioned)
-
-    IMPORTANT: Extract information exactly as stated in the text. Do not add any interpretation or inferences.
+    IMPORTANT: Extract information exactly as stated in the text. Focus on college-relevant experiences and academic journey. Do not add any interpretation or inferences.
 
     Text: {transcript_text}
     \"\"\""""
@@ -114,8 +125,8 @@ def extract_fields_from_transcript(transcript_text: str, roll_number: str = None
                 "model": "mistral",
                 "prompt": prompt,
                 "stream": False,  # Disable streaming for queue mode
-                "temperature": 0.0,  # Remove randomness for consistent output
-                "top_p": 1.0,        # Set top_p to 1.0 for deterministic sampling
+                "temperature": 0.1,  # Remove randomness for consistent output
+                "top_p": 0.95,        # Set top_p to 1.0 for deterministic sampling
                 "top_k": 40,         # Limit token selection to top 40 tokens
                 "seed": 42,          # Fixed seed for reproducible results                
                 "stop": ["\n\n"]     # Stop token for clean output termination
@@ -156,7 +167,7 @@ def extract_fields_from_transcript(transcript_text: str, roll_number: str = None
                 print(f"✅ Saved extracted data to: {file_path}")
                 log_file_operation("CREATE form", file_path, roll_number)
                 
-                # Return status information (ratings will be triggered separately via streaming)
+                # Return status information 
                 return {
                     "status": "saved", 
                     "file": str(file_path)
@@ -173,5 +184,4 @@ def extract_fields_from_transcript(transcript_text: str, roll_number: str = None
         print(f"Exception calling LLM: {str(e)}")
         return {"status": "error", "message": f"Exception: {str(e)}"}
 
-# Streaming function removed as requested
 

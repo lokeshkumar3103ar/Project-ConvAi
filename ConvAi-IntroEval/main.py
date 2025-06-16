@@ -94,7 +94,7 @@ from app.llm.profile_rater_updated import (
     evaluate_profile_rating
 )
 from app.llm.intro_rater_updated import (
-    evaluate_intro_rating_sync
+    evaluate_intro_rating
 )
 from app.llm.utils import (
     get_latest_form_file,
@@ -102,8 +102,6 @@ from app.llm.utils import (
     save_rating_to_file,
     DISABLE_LLM
 )
-from app.llm.queue_manager import PhaseType, TaskStatus
-
 # ==================== CONFIGURATION ====================
 
 # Application settings
@@ -124,6 +122,7 @@ STATIC_DIR = BASE_DIR / "static"
 # Ensure directories exist
 for directory in [VIDEOS_DIR, TRANSCRIPTION_DIR, FILLED_FORMS_DIR, RATINGS_DIR]:
     directory.mkdir(parents=True, exist_ok=True)
+
 
 # ==================== FASTAPI APPLICATION ====================
 
@@ -264,9 +263,7 @@ async def process_rating_background(form_filepath: str, transcript_filepath: str
         log_info(f"Starting {rating_type} rating processing for roll: {roll_number or 'unknown'}")
         
         # Import rating functions directly
-        if rating_type == "profile":
-            from app.llm.profile_rater_updated import evaluate_profile_rating
-            
+        if rating_type == "profile":            
             # Generate profile rating synchronously 
             rating_filepath = await asyncio.to_thread(
                 evaluate_profile_rating,
@@ -274,12 +271,10 @@ async def process_rating_background(form_filepath: str, transcript_filepath: str
                 transcript_filepath, 
                 roll_number
             )
-        elif rating_type == "intro":
-            from app.llm.intro_rater_updated import evaluate_intro_rating_sync
-            
+        elif rating_type == "intro":            
             # Generate intro rating synchronously
             rating_filepath = await asyncio.to_thread(
-                evaluate_intro_rating_sync,
+                evaluate_intro_rating,
                 form_filepath, 
                 transcript_filepath, 
                 roll_number

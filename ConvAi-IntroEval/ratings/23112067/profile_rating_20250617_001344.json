@@ -1,0 +1,31 @@
+{
+  "profile_rating": "7.9",
+  "employability_level": "GOOD EMPLOYABILITY",
+  "grading_explanation": {
+    "practical_foundation": "2.9/3 – 28 of 35 fields filled (80% completion). Higher completion indicates better self-awareness and thoroughness.",
+    "technical_competency": "1.5/2 – Strong technical foundation with relevant skills for the target field (Python, machine learning, deep learning).",
+    "hands_on_experience": "2.0/3 – 1 solid internship at COTHON Solutions and multiple projects with real-world applications.",
+    "growth_potential": "1.5/2 – Some leadership experience (university coding and AI clubs, participation in various tech fests, hackathons, and social initiatives) OR demonstrated learning initiative."
+  },
+  "hiring_insights": {
+    "strongest_assets": "[Strong technical foundation, relevant hands-on experience, and a clear career aspiration]",
+    "development_areas": [
+      "Specific skills gaps, academic details, and personal qualities"
+    ],
+    "industry_readiness": "[Likely ready for an entry-level position with potential for growth]"
+  },
+  "grading_debug": {
+    "practical_foundation_score": "2.9",
+    "technical_competency_score": "1.5",
+    "hands_on_experience_score": "2.0",
+    "growth_potential_score": "1.5",
+    "calculated_sum": "7.9",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "7.9"
+    },
+    "notes": "[This candidate has a strong technical foundation and relevant hands-on experience. The profile is mostly complete, and the career aspiration is clear. However, additional details about skills gaps, academic achievements, and personal qualities are needed to fully evaluate employability.]"
+  },
+  "evaluated_file": "filled_forms\\23112067\\form_20250617_001302.json",
+  "evaluation_timestamp": "2025-06-17T00:13:22.568373"
+}

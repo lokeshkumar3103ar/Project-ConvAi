@@ -24,7 +24,7 @@ import requests
 from .utils import DISABLE_LLM
 from .form_extractor import extract_fields_from_transcript
 from .profile_rater_updated import evaluate_profile_rating
-from .intro_rater_updated import evaluate_intro_rating_sync
+from .intro_rater_updated import evaluate_intro_rating
 
 # Import STT function and file organizer
 import sys
@@ -810,7 +810,7 @@ class TwoPhaseQueueManager:
                 profile_rating = evaluate_profile_rating(task.form_path)
                 
                 # Generate intro rating using Mistral
-                intro_rating = evaluate_intro_rating_sync(task.transcript_path)
+                intro_rating = evaluate_intro_rating(task.transcript_path)
                 
                 # Save ratings
                 self._save_ratings(task, profile_rating, intro_rating)

@@ -39,8 +39,13 @@ def cleanup_videos():
             except Exception as e:
                 print(f"Error deleting file {file}: {e}")
     
-    print("Cleanup completed.")
+    print("Video Cleanup completed.")
 # do the same to clean transcription files in a folder named transcription and has subdirectory rollnumbers, inside txt files
+def cleanup_transcriptions():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(script_dir)  # Go up one level from 'python scripts'
+    convai_dir = os.path.join(project_root, 'ConvAi-IntroEval')
+    transcription_dir = os.path.join(convai_dir, 'transcription')   
     if not os.path.exists(transcription_dir):
         print(f"Directory {transcription_dir} does not exist.")
         return
@@ -59,5 +64,19 @@ def cleanup_videos():
                 print(f"Deleted transcription file: {file}")
             except Exception as e:
                 print(f"Error deleting transcription file {file}: {e}")
-if __name__ == "__main__":
-    cleanup_videos()
+    print("Transcription Cleanup completed.")
+        
+#ask user if they want to run the cleanup, and select which cleanup, videos or transcription or both
+def main():
+    print("Welcome to the cleanup script!")
+    choice = input("Do you want to clean up (1) Videos, (2) Transcriptions, or (3) Both? (Enter 1, 2, or 3): ")
+    
+    if choice == '1':
+        cleanup_videos()
+    elif choice == '2':
+        cleanup_transcriptions()
+    elif choice == '3':#clean both
+        cleanup_transcriptions()
+        cleanup_videos()
+
+main()

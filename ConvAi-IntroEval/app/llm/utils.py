@@ -369,41 +369,54 @@ def fix_json_and_rating_calculation(rating_text, rating_type="profile", enhance_
                             rating_data["grading_explanation"]["completeness"] = corrected_value
                             print(f"  ⚠️ Fixed completeness in grading_explanation: {value} -> {corrected_value}")
                     except ValueError:
-                        pass        
-        # Validate and correct scores based on rating type
+                        pass          # Validate and correct scores based on rating type
         if rating_type == "profile":
             debug_info = rating_data.get("grading_debug", {})
             try:
-                # Fix completeness score if it exceeds max 3.0 points
-                if "completeness_score" in debug_info:
-                    original_completeness = extract_numeric_score(debug_info.get("completeness_score", 0.0))
-                    if original_completeness > 3.0:
-                        print(f"⚠️ Completeness score {original_completeness} exceeds max 3.0, capping to 3.0")
-                        debug_info["completeness_score"] = "3.0"
-                
-                # Calculate correct sum for profile rating
-                completeness_score = min(3.0, extract_numeric_score(debug_info.get("completeness_score", 0.0)))
-                relevance_score = extract_numeric_score(debug_info.get("relevance_score", 0.0))
-                projects_score = extract_numeric_score(debug_info.get("projects_score", 0.0))
-                achievements_score = extract_numeric_score(debug_info.get("achievements_score", 0.0))
-                calculated_sum = round(completeness_score + relevance_score + projects_score + achievements_score, 1)
+                # Check for new field names first (updated prompt structure)
+                if "practical_foundation_score" in debug_info:
+                    # New field names (updated prompt)
+                    practical_foundation = extract_numeric_score(debug_info.get("practical_foundation_score", 0.0))
+                    technical_competency = extract_numeric_score(debug_info.get("technical_competency_score", 0.0))
+                    hands_on_experience = extract_numeric_score(debug_info.get("hands_on_experience_score", 0.0))
+                    growth_potential = extract_numeric_score(debug_info.get("growth_potential_score", 0.0))
+                    
+                    # Fix practical foundation score if it exceeds max 3.0 points
+                    if practical_foundation > 3.0:
+                        print(f"⚠️ Practical foundation score {practical_foundation} exceeds max 3.0, capping to 3.0")
+                        practical_foundation = 3.0
+                        debug_info["practical_foundation_score"] = "3.0"                    
+                    calculated_sum = round(practical_foundation + technical_competency + hands_on_experience + growth_potential, 1)
+                    
+                    # Store the calculated sum in debug info
+                    debug_info["calculated_sum"] = str(calculated_sum)
+                    
+                else:
+                    # Old field names (legacy support)
+                    completeness_score = min(3.0, extract_numeric_score(debug_info.get("completeness_score", 0.0)))
+                    relevance_score = extract_numeric_score(debug_info.get("relevance_score", 0.0))
+                    projects_score = extract_numeric_score(debug_info.get("projects_score", 0.0))
+                    achievements_score = extract_numeric_score(debug_info.get("achievements_score", 0.0))
+                    calculated_sum = round(completeness_score + relevance_score + projects_score + achievements_score, 1)
+                    
+                    # Store the calculated sum in debug info
+                    debug_info["calculated_sum"] = str(calculated_sum)
+                    
             except (ValueError, TypeError) as e:
                 print(f"⚠️ Error extracting profile scores: {e}")
                 calculated_sum = 0.0
-            
-            # Correct the rating if there's a discrepancy
+              # Correct the rating if there's a discrepancy or if it's 0.0
             try:
                 llm_reported_rating = extract_numeric_score(rating_data.get("profile_rating", 0.0))
             except (ValueError, TypeError) as e:
                 print(f"⚠️ Error converting profile_rating to float: {e}. Using calculated sum instead.")
                 llm_reported_rating = calculated_sum
 
-            if abs(llm_reported_rating - calculated_sum) > 0.01:
+            if abs(llm_reported_rating - calculated_sum) > 0.01 or llm_reported_rating == 0.0:
                 print(f"⚠️ Correcting profile sum. LLM: {llm_reported_rating}, Calculated: {calculated_sum}")
                 rating_data["profile_rating"] = str(calculated_sum)
                 if "grading_debug" not in rating_data:
                     rating_data["grading_debug"] = {}
-                rating_data["grading_debug"]["calculated_sum"] = str(calculated_sum)
                 if "sum_check" in rating_data["grading_debug"]:
                     rating_data["grading_debug"]["sum_check"]["profile_reported"] = str(calculated_sum)
         
@@ -423,19 +436,20 @@ def fix_json_and_rating_calculation(rating_text, rating_type="profile", enhance_
                 debug_info["info_coverage_score"] = info_coverage
             
             calculated_sum = round(grammar_clarity + structure + info_coverage + relevance, 1)
-              # Safe conversion of intro_rating to float
+            
+            # Store the calculated sum in debug info
+            debug_info["calculated_sum"] = str(calculated_sum)            # Safe conversion of intro_rating to float and correct if needed
             try:
                 llm_reported_rating = extract_numeric_score(rating_data.get("intro_rating", 0.0))
             except (ValueError, TypeError) as e:
                 print(f"⚠️ Error converting intro_rating to float: {e}. Using calculated sum instead.")
                 llm_reported_rating = calculated_sum
 
-            if abs(llm_reported_rating - calculated_sum) > 0.01:
+            if abs(llm_reported_rating - calculated_sum) > 0.01 or llm_reported_rating == 0.0:
                 print(f"⚠️ Correcting intro sum. LLM: {llm_reported_rating}, Calculated: {calculated_sum}")
                 rating_data["intro_rating"] = str(calculated_sum)
                 if "grading_debug" not in rating_data:
                     rating_data["grading_debug"] = {}
-                rating_data["grading_debug"]["calculated_sum"] = str(calculated_sum)
                 if "sum_check" in rating_data["grading_debug"]:
                     rating_data["grading_debug"]["sum_check"]["intro_reported"] = str(calculated_sum)
         

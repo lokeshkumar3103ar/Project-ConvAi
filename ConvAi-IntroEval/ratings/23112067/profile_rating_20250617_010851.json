@@ -1,0 +1,33 @@
+{
+  "profile_rating": "6.9",
+  "employability_level": "DEVELOPING POTENTIAL",
+  "grading_explanation": {
+    "practical_foundation": "2.97/3 – 29 of 35 fields filled (82% completion). Higher completion indicates better self-awareness and thoroughness.",
+    "technical_competency": "1.0/2 – Demonstrates proficiency in Python, machine learning, deep learning, data analysis, and other relevant technical skills for AI roles, however, lacks experience with more advanced tools like GitHub or VS Code.",
+    "hands_on_experience": "2.5/3 – Showcases participation in multiple projects (ConvAi, Project 11, Face and QR attendance) with some technical detail provided but limited evidence of problem-solving.",
+    "growth_potential": "0.47/2 – Limited indicators of leadership or professional development despite strong career aspirations."
+  },
+  "hiring_insights": {
+    "strongest_assets": [
+      "strong academic performance, demonstrated technical skills in machine learning and deep learning"
+    ],
+    "development_areas": [
+      "increase hands-on project experience with well-documented problem-solving examples, improve self-awareness by filling out the profile more thoroughly"
+    ],
+    "industry_readiness": "[requires additional training to become fully industry-ready]"
+  },
+  "grading_debug": {
+    "practical_foundation_score": "2.97",
+    "technical_competency_score": "1.0",
+    "hands_on_experience_score": "2.5",
+    "growth_potential_score": "0.47",
+    "calculated_sum": "6.9",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "6.9"
+    },
+    "notes": "[Candidate has a strong academic background and technical skills but requires more practical experience with project detail and leadership development for greater employability]"
+  },
+  "evaluated_file": "filled_forms\\23112067\\form_20250617_010817.json",
+  "evaluation_timestamp": "2025-06-17T01:08:33.753862"
+}

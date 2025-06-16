@@ -972,13 +972,271 @@
 
         .record-upload-btn:hover::before {
             left: 100%;
-        }
-
-        .record-upload-btn:hover {
+        }        .record-upload-btn:hover {
             background: linear-gradient(135deg, #60a5fa 0%, #448bff 50%, #2563eb 100%);
             border-color: #60a5fa;
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(68, 139, 255, 0.4);
+        }
+
+        /* Employability Scoring Guide Styles */
+        .employability-guide {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, 
+                var(--card-bg) 0%, 
+                rgba(68, 139, 255, 0.05) 100%);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .employability-guide h4 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .employability-guide h4 i {
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+        }
+
+        .employability-levels {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .employability-item {
+            display: grid;
+            grid-template-columns: 80px 1fr 2fr;
+            gap: 1rem;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+        }
+
+        .employability-item.excellent {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%);
+            border-left-color: #22c55e;
+        }
+
+        .employability-item.good {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+            border-left-color: #3b82f6;
+        }
+
+        .employability-item.average {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+            border-left-color: #f59e0b;
+        }
+
+        .employability-item.below {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
+            border-left-color: #ef4444;
+        }
+
+        .employability-item.poor {
+            background: linear-gradient(135deg, rgba(107, 114, 128, 0.1) 0%, rgba(107, 114, 128, 0.05) 100%);
+            border-left-color: #6b7280;
+        }
+
+        .employability-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .score-range {
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 8px;
+            text-align: center;
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .level-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .level-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }        /* Responsive adjustments for employability guide */
+        @media (max-width: 768px) {
+            .employability-item {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 0.5rem;
+            }
+            
+            .score-range {
+                justify-self: center;
+                width: fit-content;
+            }
+        }
+
+        /* Info Areas Grid Layout */
+        .info-areas ul {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0;
+        }
+
+        .info-areas li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(68, 139, 255, 0.05);
+            border-radius: 8px;
+            border-left: 3px solid var(--secondary-color);
+            transition: var(--transition);
+        }
+
+        .info-areas li:hover {
+            background: rgba(68, 139, 255, 0.1);
+            transform: translateX(4px);
+        }
+
+        .info-areas li:last-child {
+            grid-column: 1 / -1; /* Span across both columns */
+        }
+
+        .info-areas li i {
+            color: var(--secondary-color);
+            font-size: 1rem;
+            margin-top: 0.1rem;
+            flex-shrink: 0;
+        }        /* Responsive layout for info areas */
+        @media (max-width: 768px) {
+            .info-areas ul {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-areas li:last-child {
+                grid-column: 1;
+            }
+        }        /* Field Categories Styling */
+        .field-categories {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: linear-gradient(135deg, 
+                rgba(68, 139, 255, 0.03) 0%, 
+                rgba(68, 139, 255, 0.08) 100%);
+            border: 1px solid rgba(68, 139, 255, 0.15);
+            border-radius: 12px;
+        }
+
+        .field-categories h5 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem 1.25rem;
+            margin-top: 1rem;
+        }        .category-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            transition: var(--transition);
+            border-left: 3px solid var(--secondary-color);
+        }
+
+        .category-item:hover {
+            transform: translateX(3px);
+            box-shadow: 0 2px 8px rgba(68, 139, 255, 0.1);
+            border-color: var(--secondary-color);
+        }
+
+        .category-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            line-height: 1.2;
+            margin-bottom: 0.25rem;
+            border-bottom: 1px solid rgba(68, 139, 255, 0.2);
+            padding-bottom: 0.25rem;
+        }        .category-count {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            font-weight: 400;
+            padding-left: 1rem;
+            position: relative;
+        }
+
+        .category-count::before {
+            content: "→";
+            position: absolute;
+            left: 0.25rem;
+            color: var(--secondary-color);
+            font-weight: 600;
+            font-style: normal;
+        }        /* Responsive adjustments for category grid */
+        @media (max-width: 768px) {
+            .category-grid {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+            
+            .category-name {
+                font-size: 0.85rem;
+            }
+            
+            .category-count {
+                font-size: 0.7rem;
+                padding-left: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .field-categories {
+                padding: 0.75rem;
+            }
+            
+            .field-categories h5 {
+                font-size: 0.9rem;
+            }
+            
+            .category-name {
+                font-size: 0.8rem;
+            }
+            
+            .category-count {
+                font-size: 0.65rem;
+                padding-left: 0.5rem;
+            }
         }
     </style>
 </head>
@@ -1163,9 +1421,7 @@
                     <button class="rubrics-tab" data-tab="profile">
                         <i class="fas fa-user"></i> Profile Evaluation
                     </button>
-                </div>
-
-                <!-- Introduction Rubrics Tab -->
+                </div>                <!-- Introduction Rubrics Tab -->
                 <div class="rubrics-tab-content active" id="intro-rubrics">
                     <div class="rubrics-overview">
                         <h3><i class="fas fa-info-circle"></i> Introduction Rating Overview</h3>
@@ -1185,22 +1441,19 @@
                                 <div class="rubric-breakdown">
                                     <div class="rubric-level excellent">
                                         <span class="level-score">3.0</span>
-                                        <span class="level-desc">Fluent, grammatically perfect, clear and
-                                            coherent</span>
+                                        <span class="level-desc">Fluent, grammatically appropriate, clear and coherent sentences throughout</span>
                                     </div>
                                     <div class="rubric-level good">
                                         <span class="level-score">2.5</span>
-                                        <span class="level-desc">Mostly fluent, minor errors that don't hinder
-                                            understanding</span>
+                                        <span class="level-desc">Mostly fluent and clear, minor grammatical errors that don't hinder understanding</span>
                                     </div>
                                     <div class="rubric-level average">
                                         <span class="level-score">2.0</span>
-                                        <span class="level-desc">Understandable with noticeable grammatical
-                                            errors</span>
+                                        <span class="level-desc">Understandable, but with noticeable grammatical errors or clarity issues</span>
                                     </div>
                                     <div class="rubric-level below">
                                         <span class="level-score">1.0-1.5</span>
-                                        <span class="level-desc">Several errors making it difficult to follow</span>
+                                        <span class="level-desc">Several errors in grammar or unclear sentences, making it difficult to follow</span>
                                     </div>
                                 </div>
                             </div>
@@ -1216,18 +1469,15 @@
                                 <div class="rubric-breakdown">
                                     <div class="rubric-level excellent">
                                         <span class="level-score">1.5</span>
-                                        <span class="level-desc">Excellent logical flow (past-present-future), easy to
-                                            follow</span>
+                                        <span class="level-desc">Effective organization that creates coherent impression, regardless of specific format</span>
                                     </div>
                                     <div class="rubric-level good">
                                         <span class="level-score">1.0</span>
-                                        <span class="level-desc">Generally logical flow with minor organizational
-                                            issues</span>
+                                        <span class="level-desc">Generally logical flow, but might have minor jumps or could be more organized</span>
                                     </div>
                                     <div class="rubric-level average">
                                         <span class="level-score">0.5</span>
-                                        <span class="level-desc">Some structure attempt but lacks clear
-                                            organization</span>
+                                        <span class="level-desc">Some attempt at structure, but lacks clear organization or is difficult to follow</span>
                                     </div>
                                     <div class="rubric-level below">
                                         <span class="level-score">0.0</span>
@@ -1243,215 +1493,237 @@
                                 <span class="rubric-points">3.5 points</span>
                             </div>
                             <div class="rubric-description">
-                                <p>How comprehensively you cover key professional information</p>
+                                <p>How well the introduction covers key areas for college students preparing for interviews</p>
                                 <div class="info-areas">
                                     <h5>Key Areas to Cover:</h5>
                                     <ul>
-                                        <li><i class="fas fa-user"></i> Name/Introduction</li>
-                                        <li><i class="fas fa-graduation-cap"></i> Educational Background</li>
-                                        <li><i class="fas fa-cogs"></i> Skills & Expertise</li>
-                                        <li><i class="fas fa-project-diagram"></i> Work/Projects</li>
-                                        <li><i class="fas fa-bullseye"></i> Career Goals</li>
-                                        <li><i class="fas fa-star"></i> Personal Qualities</li>
+                                        <li><i class="fas fa-user"></i> Name and personal introduction</li>
+                                        <li><i class="fas fa-graduation-cap"></i> Academic background (degree, major, university, year of study)</li>
+                                        <li><i class="fas fa-project-diagram"></i> Practical experience and projects (internships, projects, competitions, hands-on work)</li>
+                                        <li><i class="fas fa-cogs"></i> Technical skills and competencies (programming languages, tools)</li>
+                                        <li><i class="fas fa-bullseye"></i> Career direction and goals (professional aspirations)</li>
                                     </ul>
                                 </div>
                                 <div class="rubric-breakdown">
                                     <div class="rubric-level excellent">
                                         <span class="level-score">3.5</span>
-                                        <span class="level-desc">Covers ALL 6 areas comprehensively</span>
+                                        <span class="level-desc">Comprehensively covers ALL key areas with good balance of academic and practical elements</span>
                                     </div>
                                     <div class="rubric-level good">
                                         <span class="level-score">3.0</span>
-                                        <span class="level-desc">Covers 5 out of 6 areas thoroughly</span>
+                                        <span class="level-desc">Covers 4-5 key areas thoroughly, with good balance</span>
                                     </div>
                                     <div class="rubric-level average">
                                         <span class="level-score">2.0-2.5</span>
-                                        <span class="level-desc">Covers 3-4 areas adequately</span>
+                                        <span class="level-desc">Covers 3-4 key areas well, but may lack depth in practical experience or technical skills</span>
                                     </div>
                                     <div class="rubric-level below">
                                         <span class="level-score">1.0-1.5</span>
-                                        <span class="level-desc">Covers 1-2 areas, limited information</span>
+                                        <span class="level-desc">Covers 2-3 key areas adequately, limited practical experience mentioned</span>
                                     </div>
                                 </div>
+                                <p><strong>Note:</strong> Higher weight given to practical experience, projects, internships, and technical skills as these demonstrate readiness.</p>
                             </div>
                         </div>
 
                         <div class="rubric-card">
                             <div class="rubric-header">
-                                <h4><i class="fas fa-bullseye"></i> Relevance to Role</h4>
+                                <h4><i class="fas fa-bullseye"></i> Relevance to Professional Context</h4>
                                 <span class="rubric-points">2.0 points</span>
                             </div>
                             <div class="rubric-description">
-                                <p>How well you connect your profile to your target job role</p>
+                                <p>How well you demonstrate practical readiness and connect experience to professional work</p>
                                 <div class="rubric-breakdown">
                                     <div class="rubric-level excellent">
                                         <span class="level-score">2.0</span>
-                                        <span class="level-desc">Clearly connects strengths and goals to target
-                                            role</span>
+                                        <span class="level-desc">Clearly demonstrates practical readiness and connects experience, skills, or projects to professional work context</span>
                                     </div>
                                     <div class="rubric-level good">
                                         <span class="level-score">1.5</span>
-                                        <span class="level-desc">Attempts connection but could be stronger</span>
+                                        <span class="level-desc">Shows some practical preparation and makes connections to professional roles, but could be more specific</span>
                                     </div>
                                     <div class="rubric-level average">
                                         <span class="level-score">1.0</span>
-                                        <span class="level-desc">Some relevant skills mentioned but no clear
-                                            connection</span>
+                                        <span class="level-desc">Mentions relevant skills or projects but doesn't clearly connect to professional context</span>
                                     </div>
                                     <div class="rubric-level below">
                                         <span class="level-score">0.0-0.5</span>
-                                        <span class="level-desc">No clear connection to any professional role</span>
+                                        <span class="level-desc">Vague about practical applications or no indication of professional preparation</span>
                                     </div>
                                 </div>
+                                <p><strong>Focus:</strong> How well you demonstrate value you can bring to employers through practical experience.</p>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Profile Rubrics Tab -->
+                </div>                <!-- Profile Rubrics Tab -->
                 <div class="rubrics-tab-content" id="profile-rubrics">
                     <div class="rubrics-overview">
                         <h3><i class="fas fa-info-circle"></i> Profile Rating Overview</h3>
                         <p>Your extracted profile information will be evaluated on <strong>4 key criteria</strong> for a
-                            total of <strong>10 points</strong>:</p>
+                            total of <strong>10 points</strong> with strong focus on employability:</p>
                     </div>
 
                     <div class="rubrics-grid">
                         <div class="rubric-card">
                             <div class="rubric-header">
-                                <h4><i class="fas fa-check-circle"></i> Completeness</h4>
+                                <h4><i class="fas fa-check-circle"></i> Practical Foundation & Completeness</h4>
                                 <span class="rubric-points">3.0 points</span>
                             </div>
                             <div class="rubric-description">
-                                <p>How many profile fields you provide information for</p>
+                                <p>Comprehensiveness of profile information across key categories</p>
                                 <div class="completeness-formula">
                                     <h5>Scoring Formula:</h5>
                                     <code>Score = min(3.0, (filled_fields / 35) × 3)</code>
+                                    <p><strong>Maximum capped at 3.0 points regardless of calculation result</strong></p>
                                 </div>
                                 <div class="field-categories">
-                                    <h5>35 Total Fields Across Categories:</h5>
+                                    <h5>Enhanced Field Categories for College Students:</h5>
                                     <div class="category-grid">
                                         <div class="category-item">
                                             <span class="category-name">Personal Details</span>
-                                            <span class="category-count">4 fields</span>
+                                            <span class="category-count">4 fields: Name, Age, Languages, Hometown</span>
                                         </div>
                                         <div class="category-item">
-                                            <span class="category-name">Education</span>
-                                            <span class="category-count">5 fields</span>
+                                            <span class="category-name">Academic Focus</span>
+                                            <span class="category-count">5 fields: Degree, Year, Major, University, CGPA</span>
                                         </div>
                                         <div class="category-item">
-                                            <span class="category-name">Projects</span>
-                                            <span class="category-count">6 fields</span>
+                                            <span class="category-name">Practical Experience</span>
+                                            <span class="category-count">8 fields: Internships, Workshops, Competitions, Research, Projects, Technologies</span>
                                         </div>
                                         <div class="category-item">
-                                            <span class="category-name">Work Experience</span>
-                                            <span class="category-count">6 fields</span>
+                                            <span class="category-name">Skills Development</span>
+                                            <span class="category-count">6 fields: Programming, Tools, Technical, Soft, Leadership, Learning</span>
                                         </div>
                                         <div class="category-item">
-                                            <span class="category-name">Skills</span>
-                                            <span class="category-count">4 fields</span>
+                                            <span class="category-name">Personal Context & Growth</span>
+                                            <span class="category-count">7 fields: Interests, Aspirations, Field interest, Motivation, Qualities</span>
                                         </div>
                                         <div class="category-item">
-                                            <span class="category-name">Achievements</span>
-                                            <span class="category-count">3 fields</span>
-                                        </div>
-                                        <div class="category-item">
-                                            <span class="category-name">Career Preferences</span>
-                                            <span class="category-count">7 fields</span>
+                                            <span class="category-name">Professional Readiness</span>
+                                            <span class="category-count">5 fields: Skills gained, Responsibilities, Achievements, Activities</span>
                                         </div>
                                     </div>
                                 </div>
+                                <p><strong>Employability Insight:</strong> Comprehensive profiles demonstrate thoroughness and self-awareness - key traits employers seek.</p>
                             </div>
                         </div>
 
                         <div class="rubric-card">
                             <div class="rubric-header">
-                                <h4><i class="fas fa-bullseye"></i> Relevance to Target Role</h4>
+                                <h4><i class="fas fa-cogs"></i> Industry Relevance & Technical Competency</h4>
                                 <span class="rubric-points">2.0 points</span>
                             </div>
                             <div class="rubric-description">
-                                <p>How well your skills and experience align with your target job role</p>
+                                <p>Technical skills aligned with target roles and industry standards</p>
                                 <div class="rubric-breakdown">
                                     <div class="rubric-level excellent">
                                         <span class="level-score">2.0</span>
-                                        <span class="level-desc">Strong alignment - skills directly match target
-                                            role</span>
+                                        <span class="level-desc">Highly employable: Strong technical foundation with relevant skills for target field</span>
                                     </div>
                                     <div class="rubric-level good">
                                         <span class="level-score">1.5</span>
-                                        <span class="level-desc">Good alignment - most key skills present</span>
+                                        <span class="level-desc">Good employability: Solid technical skills with minor gaps that can be quickly filled</span>
                                     </div>
                                     <div class="rubric-level average">
                                         <span class="level-score">1.0</span>
-                                        <span class="level-desc">Partial alignment - some relevant skills</span>
+                                        <span class="level-desc">Moderate employability: Basic technical foundation but needs significant skill development</span>
                                     </div>
                                     <div class="rubric-level below">
                                         <span class="level-score">0.0-0.5</span>
-                                        <span class="level-desc">Minimal/no alignment with target role</span>
+                                        <span class="level-desc">Limited employability: Minimal technical skills, extensive training required</span>
                                     </div>
                                 </div>
+                                <p><strong>Employability Insight:</strong> Technical skills aligned with target roles are the primary hiring criteria in today's market.</p>
                             </div>
                         </div>
 
                         <div class="rubric-card">
                             <div class="rubric-header">
-                                <h4><i class="fas fa-project-diagram"></i> Projects & Internships</h4>
+                                <h4><i class="fas fa-project-diagram"></i> Hands-On Experience & Project Portfolio</h4>
                                 <span class="rubric-points">3.0 points</span>
                             </div>
                             <div class="rubric-description">
-                                <p>Quality and detail of your project and internship experiences</p>
+                                <p>Quality and detail of practical experience through projects, internships, and real-world work</p>
                                 <div class="rubric-breakdown">
                                     <div class="rubric-level excellent">
                                         <span class="level-score">3.0</span>
-                                        <span class="level-desc">Multiple well-described projects with technologies,
-                                            problems, solutions</span>
+                                        <span class="level-desc">Highly hireable: Multiple substantial experiences (2+ internships OR 3+ detailed projects OR research + competition experience)</span>
                                     </div>
                                     <div class="rubric-level good">
                                         <span class="level-score">2.0-2.5</span>
-                                        <span class="level-desc">1+ projects with good detail and clear
-                                            descriptions</span>
+                                        <span class="level-desc">Strong candidate: 1 solid internship + projects OR 2+ well-described projects with real-world applications</span>
                                     </div>
                                     <div class="rubric-level average">
                                         <span class="level-score">1.0-1.5</span>
-                                        <span class="level-desc">Projects mentioned with basic technologies or brief
-                                            descriptions</span>
+                                        <span class="level-desc">Developing candidate: Some practical experience but limited depth</span>
                                     </div>
                                     <div class="rubric-level below">
                                         <span class="level-score">0.0-0.5</span>
-                                        <span class="level-desc">No projects or very vague project references</span>
+                                        <span class="level-desc">No practical experience: Pure academic background with no hands-on work</span>
                                     </div>
                                 </div>
+                                <p><strong>Employability Insight:</strong> Practical experience is the strongest predictor of job performance and hiring success. Prioritizes internships and real-world projects over academic assignments.</p>
                             </div>
                         </div>
 
                         <div class="rubric-card">
                             <div class="rubric-header">
-                                <h4><i class="fas fa-trophy"></i> Achievements & Activities</h4>
+                                <h4><i class="fas fa-chart-line"></i> Professional Growth & Leadership Potential</h4>
                                 <span class="rubric-points">2.0 points</span>
                             </div>
                             <div class="rubric-description">
-                                <p>Quality and relevance of your achievements and extracurricular activities</p>
+                                <p>Leadership, initiative, and continuous learning that indicate high-potential employees</p>
                                 <div class="rubric-breakdown">
                                     <div class="rubric-level excellent">
                                         <span class="level-score">2.0</span>
-                                        <span class="level-desc">Multiple significant achievements (certifications,
-                                            awards, leadership)</span>
+                                        <span class="level-desc">High potential: Multiple indicators of leadership + career direction + learning initiative</span>
                                     </div>
                                     <div class="rubric-level good">
                                         <span class="level-score">1.5</span>
-                                        <span class="level-desc">Several achievements with clear professional
-                                            relevance</span>
+                                        <span class="level-desc">Good potential: Some leadership experience OR strong career direction OR demonstrated learning initiative</span>
                                     </div>
                                     <div class="rubric-level average">
                                         <span class="level-score">1.0</span>
-                                        <span class="level-desc">At least 1 meaningful achievement mentioned</span>
+                                        <span class="level-desc">Moderate potential: Basic extra-curricular involvement OR some career awareness</span>
                                     </div>
                                     <div class="rubric-level below">
                                         <span class="level-score">0.0-0.5</span>
-                                        <span class="level-desc">No achievements or vague mentions without
-                                            specifics</span>
+                                        <span class="level-desc">No growth indicators: No evidence of leadership, initiative, or career planning</span>
                                     </div>
                                 </div>
+                                <p><strong>Employability Insight:</strong> Leadership, initiative, and continuous learning indicate high-potential employees who will grow with the company.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="employability-guide">
+                        <h4><i class="fas fa-target"></i> Employability Scoring Guide</h4>
+                        <div class="employability-levels">
+                            <div class="employability-item excellent">
+                                <span class="score-range">8.5-10.0</span>
+                                <span class="level-name">HIGHLY EMPLOYABLE</span>
+                                <span class="level-desc">Top candidates likely to receive multiple job offers</span>
+                            </div>
+                            <div class="employability-item good">
+                                <span class="score-range">7.0-8.4</span>
+                                <span class="level-name">GOOD EMPLOYABILITY</span>
+                                <span class="level-desc">Strong candidates with solid hiring potential</span>
+                            </div>
+                            <div class="employability-item average">
+                                <span class="score-range">5.5-6.9</span>
+                                <span class="level-name">MODERATE EMPLOYABILITY</span>
+                                <span class="level-desc">Decent candidates who may need some skill development</span>
+                            </div>
+                            <div class="employability-item below">
+                                <span class="score-range">4.0-5.4</span>
+                                <span class="level-name">DEVELOPING POTENTIAL</span>
+                                <span class="level-desc">Entry-level candidates requiring significant training</span>
+                            </div>
+                            <div class="employability-item poor">
+                                <span class="score-range">Below 4.0</span>
+                                <span class="level-name">LIMITED EMPLOYABILITY</span>
+                                <span class="level-desc">Extensive development needed before industry readiness</span>
                             </div>
                         </div>
                     </div>

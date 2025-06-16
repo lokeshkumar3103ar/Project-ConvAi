@@ -1,0 +1,33 @@
+{
+  "intro_rating": "7.5",
+  "grading_explanation": {
+    "grammar_and_clarity": "2.5/3.0 – Fluent, with a few minor grammatical errors and awkward phrasing that doesn't hinder understanding.",
+    "structure": "1.5/1.5 – Effective organization that creates a coherent impression.",
+    "info_coverage": "3.4/3.5 – Covers all key areas thoroughly, with good balance of academic and practical elements",
+    "relevance_to_role": "1.0/2.0 – Shows some practical preparation and makes connections to professional roles, but could be more specific."
+  },
+  "insights": [
+    "Tone: Confident and Enthusiastic",
+    "Style: Structured and Informative",
+    "Fluency: Well-paced"
+  ],
+  "feedback": [
+    "Specific actionable suggestion for delivery improvement: Maintain eye contact during the interview to convey confidence.",
+    "Specific actionable suggestion for content enhancement: Provide more specific examples of how your technical skills have been applied in practical projects.",
+    "Specific actionable suggestion for structure improvement: Clearly articulate your career goals and explain why they align with the role you are applying for."
+  ],
+  "grading_debug": {
+    "grammar_clarity_score": "2.5",
+    "structure_score": "1.5",
+    "info_coverage_score": 2.5,
+    "relevance_score": "1.0",
+    "calculated_sum": "7.5",
+    "sum_check": {
+      "intro_expected": 10.0,
+      "intro_reported": "7.5"
+    },
+    "notes": "Lokesh presents himself well with a clear and concise introduction. He showcases a strong academic background, practical experience, and technical skills. However, he could improve by providing more specific examples of how his skills have been applied in projects and clearly articulating his career goals."
+  },
+  "evaluated_file": "transcription\\23112067\\20250617_001027_my_intro_transcription_turbo.txt",
+  "evaluation_timestamp": "2025-06-17T00:13:44.254126"
+}

@@ -71,22 +71,166 @@
     padding: 10px 14px;
 }
 
+/* Theme-aware list group items for rating sections */
+.rating-details .list-group-item {
+    background: var(--background-primary) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-secondary) !important;
+    transition: var(--transition);
+}
+
+.rating-details .list-group-item:hover {
+    background: var(--card-bg) !important;
+    transform: translateX(4px);
+}
+
+/* Ensure proper spacing for rating subcategories */
 .rating-subcategory {
-    background-color: var(--background-primary);
-    border-radius: 12px;
-    border: 2px solid var(--text-primary);
-    padding: 12px;
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.rating-subcategory:last-child {
+    border-bottom: none;
 }
 
 .rating-subcategory-header {
-    font-weight: 500;
     color: var(--text-primary);
+    margin-bottom: 4px;
 }
 
 .rating-subcategory-score {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Hiring Insights Styles - Redesigned to match site theme */
+.insight-section {
+    background: var(--card-bg);
+    border: 3px solid var(--card-border);
+    border-radius: 20px;
+    padding: 16px;
+    margin-bottom: 16px;
+    transition: var(--transition);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+    cursor: default !important;
+    user-select: none !important;
+}
+
+.insight-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.insight-title {
+    font-size: 16px;
+    font-weight: 600;
     color: var(--text-primary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid var(--card-border);
+    padding-bottom: 8px;
+}
+
+.insight-title i {
+    margin-right: 8px;
+    width: 20px;
+    text-align: center;
+}
+
+.insight-content {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
+    padding: 8px 0;
+    background: var(--background-primary);
+    border-radius: 12px;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+}
+
+/* Specific icon colors for different insight types */
+.insight-title .fa-star {
+    color: #fbbf24;
+}
+
+.insight-title .fa-chart-line {
+    color: #3b82f6;
+}
+
+.insight-title .fa-industry {
+    color: #10b981;
+}
+
+.insight-title .fa-briefcase {
+    color: var(--secondary-color);
+}
+
+/* Employability Badge Styles - Redesigned to match site theme */
+.employability-badge {
+    text-align: center;
+    padding: 16px;
+    background: var(--card-bg);
+    border-radius: 20px;
+    border: 3px solid var(--card-border);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.employability-badge h6 {
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+.employability-badge .badge {
+    font-size: 14px !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 20px;
+    padding: 8px 16px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: var(--transition);
+    border: 2px solid transparent;
+}
+
+.employability-badge .badge:hover {
+    transform: scale(1.02);
+}
+
+/* Responsive adjustments for hiring insights */
+@media (max-width: 768px) {
+    .insight-section {
+        padding: 12px;
+        border-radius: 16px;
+    }
+    
+    .insight-title {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+    
+    .insight-content {
+        font-size: 13px;
+        padding: 8px;
+    }
+    
+    .employability-badge {
+        padding: 12px;
+        border-radius: 16px;
+    }
+    
+    .employability-badge h6 {
+        font-size: 14px;
+    }
+      .employability-badge .badge {
+        font-size: 12px !important;
+        padding: 6px 12px !important;
+    }
 }

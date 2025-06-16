@@ -1,0 +1,29 @@
+{
+  "profile_rating": "7.3",
+  "employability_level": "DEVELOPING POTENTIAL",
+  "grading_explanation": {
+    "practical_foundation": "2.8/3 – 24 of 35 fields filled (68% completion). Higher completion indicates better self-awareness and thoroughness.",
+    "technical_competency": "1.5/2 – The candidate has some technical skills, but needs development in specific areas like Python proficiency for data science roles.",
+    "hands_on_experience": "2.0/3 – The candidate has some practical experience (internships and projects), but the lack of detail and depth makes it difficult to assess project quality.",
+    "growth_potential": "1.0/2 – The candidate shows some initiative in learning through participation in tech fests, hackathons, and social initiatives."
+  },
+  "hiring_insights": {
+    "strongest_assets": "Participation in AI Genesis, INNOTHON 2025, and the achievements at these events demonstrate problem-solving skills.",
+    "development_areas": "The candidate needs to improve on providing details about practical experiences, project implementations, and technical skills. Enhancing Python proficiency is also important for data science roles.",
+    "industry_readiness": "The candidate has gained some hands-on exposure to real-world AI projects and has learned programming skills, but more experience and skill development are needed before becoming industry-ready."
+  },
+  "grading_debug": {
+    "practical_foundation_score": "2.8",
+    "technical_competency_score": "1.5",
+    "hands_on_experience_score": "2.0",
+    "growth_potential_score": "1.0",
+    "calculated_sum": "7.3",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "7.3"
+    },
+    "notes": "The candidate has a solid academic background and some practical experience but lacks depth in technical skills and project details. The candidate needs to focus on enhancing practical experiences and providing more context about their work."
+  },
+  "evaluated_file": "filled_forms\\23112067\\form_20250616_235205.json",
+  "evaluation_timestamp": "2025-06-16T23:52:21.309448"
+}

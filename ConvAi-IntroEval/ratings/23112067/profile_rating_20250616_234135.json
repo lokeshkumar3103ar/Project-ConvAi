@@ -1,0 +1,31 @@
+{
+  "profile_rating": "0.0",
+  "employability_level": "MODERATE EMPLOYABILITY",
+  "grading_explanation": {
+    "practical_foundation": "2.8/3 – 23 of 35 fields filled (66% completion). Higher completion indicates better self-awareness and thoroughness.",
+    "technical_competency": "1.8/2 – Good technical skills, minor gaps in machine learning, deep learning, and other tools that can be quickly filled",
+    "hands_on_experience": "2.3/3 – 1 substantial internship (COTHON Solutions) + multiple well-described projects with real-world applications",
+    "growth_potential": "1.7/2 – Some leadership experience (participation in university coding and AI clubs, various tech fests, hackathons, and social initiatives)"
+  },
+  "hiring_insights": {
+    "strongest_assets": "[Strong practical experience with internship at COTHON Solutions and multiple well-described projects, good technical skills]",
+    "development_areas": [
+      "Increase completion of profile fields for better self-awareness and thoroughness, fill minor gaps in machine learning, deep learning, and other tools to be more industry-ready"
+    ],
+    "industry_readiness": "[The candidate requires significant skill development and has moderate employability]"
+  },
+  "grading_debug": {
+    "practical_foundation_score": "2.8",
+    "technical_competency_score": "1.8",
+    "hands_on_experience_score": "2.3",
+    "growth_potential_score": "1.7",
+    "calculated_sum": "0.0",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "0.0"
+    },
+    "notes": "[The candidate has good technical skills but requires significant skill development to fill the minor gaps in machine learning, deep learning, and other tools. They also have moderate employability due to their limited self-awareness and thoroughness demonstrated through an incomplete profile.]"
+  },
+  "evaluated_file": "filled_forms\\23112067\\form_20250616_234056.json",
+  "evaluation_timestamp": "2025-06-16T23:41:14.984417"
+}

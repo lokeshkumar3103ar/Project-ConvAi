@@ -1,0 +1,12 @@
+do not harcode smtp 
+
+adjust cors before deploying (middleware)
+
+handle disable llm and debug mode accordingly
+
+in app post login need to configre secure variable to true for production
+
+teacher register endpoint, is there unnecessarily since we ask them to contact admin to register
+
+need to update rubrics and info to the new form rating changes in the froontend,
+added insights, notes for profile rating too, need to handle them at frontend
