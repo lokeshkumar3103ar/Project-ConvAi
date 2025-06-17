@@ -27,10 +27,13 @@
                     <i class="fas fa-search"></i>
                 </button>
             </div>
+            <div class="logout">
+                <button id="logout-btn" class="theme-toggle-btn btn-logout">
+                    <i class="fas fa-sign-out"></i>
+                </button>
+            </div>
         </div>
         <div class="inner-frame">
-
-
             <!-- Search Modal -->
             <div id="searchModal" class="modal">
                 <div class="modal-content">
@@ -56,6 +59,10 @@
             <div class="dashboard">
                 <div class="sidebar">
                     <h2>Your Students</h2>
+                    <div class="filter-section" style="margin-bottom: 1rem;">
+                        <label for="classFilter" style="font-size: 0.95em;">Filter by Class</label>
+                        <input type="text" id="classFilter" placeholder="e.g. CSE5A"style="width: 100%; margin-top: 0.25em;">
+                    </div>
                     <div id="studentList" class="student-list">
                         <div class="student-item loading">Loading students...</div>
                     </div>
@@ -64,14 +71,15 @@
                 <div class="main-content">
                     <div id="studentDetails" style="display: none;" class="student-details"></div>
                 </div>
-            </div>        </div>
+            </div>
+        </div>
     </div>
-    
+
     <!-- Pass teacher username to JavaScript -->
     <script>
         window.TEACHER_USERNAME = '{{ teacher_username }}';
     </script>
-    
+
     <!-- External JavaScript -->
     <script src="../static/js/teacher-dashboard.js"></script>
 </body>

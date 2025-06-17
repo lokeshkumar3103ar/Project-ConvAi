@@ -47,6 +47,7 @@
         <div id="loginResult" class="form-message"></div>
         <button class="forgot-link" onclick="showSection('forgotSection')">Forgot Password?</button>
       </div>
+      <!-- Register section -->
       <div id="registerSection" class="form-section">
         <form id="registerForm" style="width:100%;">
           <label for="register-username">Username</label>
@@ -55,6 +56,8 @@
           <input id="register-password" type="password" name="password" required />
           <label for="register-name">Name</label>
           <input id="register-name" type="text" name="name" required/>
+          <label for="register-classname">Class (e.g. CSE4A)</label>
+          <input id="register-classname" type="text" name="classname" pattern="^[A-Z]{3,5}\d[A-Z]$" title="Format: DEPT-SEM-SEC (e.g. CSE4A)">
           <label for="register-email">Email</label>
           <input id="register-email" type="email" name="email" required placeholder="Enter your college email"/>
           <button type="submit">REGISTER AS STUDENT</button>

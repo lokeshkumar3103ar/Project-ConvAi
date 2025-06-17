@@ -1,8 +1,8 @@
 # models.py
 
 from sqlalchemy import Column, Integer, String, create_engine, ForeignKey, DateTime, Text
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
+#from sqlalchemy.ext.declarative import declarative_base (- deprecated)
+from sqlalchemy.orm import sessionmaker, relationship ,declarative_base
 from datetime import datetime, timedelta
 
 DATABASE_URL = "sqlite:///./users.db"
@@ -25,6 +25,7 @@ class User(Base):
     hashed_password = Column(String)
     name = Column(String, nullable=True)
     email = Column(String, nullable=False)
+    classname = Column(String(20), nullable=True)
 
 class Teacher(Base):
     __tablename__ = "teachers"

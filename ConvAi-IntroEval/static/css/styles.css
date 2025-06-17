@@ -773,7 +773,7 @@ body {
     background-size: 18px 18px;
     border: 2.5px solid var(--outer-frame-border);
     border-radius: 20px;
-    width: 92vw;
+    width: 95vw;
     height: 92vh;
     display: flex;
     align-items: center;
@@ -814,7 +814,7 @@ body {
     overflow: auto;
     padding: 20px;
     box-sizing: border-box;
-    width: 92vw; /* Increased responsive fallback */
+    width: 95vw; /* Increased responsive fallback */
     height: 92vh; /* Increased responsive fallback */
     transition: var(--transition);
 }

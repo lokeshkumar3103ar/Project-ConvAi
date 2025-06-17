@@ -21,6 +21,43 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeTheme();
     initializeEventListeners();
     loadStudents();
+
+    //class filter
+    const classFilter = document.getElementById('classFilter');
+    if (classFilter) {
+        classFilter.addEventListener('input', function() {
+            loadStudents(classFilter.value);
+        });
+    }
+
+    //logout
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', async function(e) {
+            e.preventDefault(); // Prevent default link behavior
+            
+            try {
+                const response = await fetch('/logout', {
+                    method: 'POST',
+                    credentials: 'include', // Include cookies
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                });
+                
+                // Clear any stored data
+                localStorage.removeItem('showFluidTransition');
+                
+                // Always redirect to login page regardless of response
+                window.location.href = '/login';
+                
+            } catch (error) {
+                console.error('Error during logout:', error);
+                // Force redirect anyway
+                window.location.href = '/login';
+            }
+        });
+    }
 });
 
 /**
@@ -88,12 +125,18 @@ function closeSearchModal() {
 /**
  * Student Management
  */
-async function loadStudents() {
+async function loadStudents(classname='') {
     try {
         const studentList = document.getElementById('studentList');
         studentList.innerHTML = '<div class="student-item loading">Loading students...</div>';
 
-        const response = await fetch(`/api/teacher/students/${teacherUsername}`);
+        // Encoding the filter
+        let url = `/api/teacher/students/${teacherUsername}`;
+        if (classname) {
+            url += `?classname=${encodeURIComponent(classname)}`;
+        }
+
+        const response = await fetch(url);
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

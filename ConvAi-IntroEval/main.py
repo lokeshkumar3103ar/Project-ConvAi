@@ -74,6 +74,23 @@ EMAIL_PASSWORD = ""
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
+#class sanitization
+import re
+def sanitize_classname(raw_class: str) -> str:
+    """Sanitize and enforce CSE4A-like format: 3+ letters, 1 digit, 1 letter."""
+    if not raw_class:
+        return ""
+    
+    # Remove all non-alphanumeric characters and uppercase everything
+    cleaned = re.sub(r'[^A-Za-z0-9]', '', raw_class.upper())
+    
+    # Match pattern: DEPT (3-5 letters), SEM (1 digit), SEC (1 letter)
+    match = re.match(r'^([A-Z]{3,5})(\d)([A-Z])$', cleaned)
+    if not match:
+        raise HTTPException(400, "Invalid class format. Use format like CSE4A.")
+    
+    dept, sem, sec = match.groups()
+    return f"{dept}{sem}{sec}"
 
 # Import project modules
 from stt import transcribe_file, SUPPORTED_EXTENSIONS
@@ -1133,6 +1150,7 @@ async def register(
     username: str = Form(...),
     password: str = Form(...),
     name: str = Form(None),
+    classname: str =Form(...),
     email: str = Form(...),
     db: Session = Depends(get_db)
 ):
@@ -1146,12 +1164,14 @@ async def register(
             raise HTTPException(status_code=400, detail="Roll number already registered")
     
     hashed_password = ph.hash(password)
+    clean_classname = sanitize_classname(classname)
     new_user = User(
         username=username,
         hashed_password=hashed_password,
         roll_number=username,
         name=name,
-        email=email
+        email=email,
+        classname=clean_classname
     )
     db.add(new_user)
     db.commit()
@@ -1256,7 +1276,7 @@ async def reset_password_form():
         return html_file.read()
 
 @app.get("/profile", response_class=HTMLResponse)
-async def reset_password_form():
+async def profile():
     html_path = TEMPLATES_DIR / "profile.html"
     with open(html_path, "r", encoding="utf-8") as html_file:
         return html_file.read()
@@ -1271,7 +1291,8 @@ async def get_user_profile(current_user: Optional[Union[User, Teacher]] = Depend
         user_info = {
             "username": current_user.username,
             "name": getattr(current_user, "name", None),
-            "email": getattr(current_user, "email", None)
+            "email": getattr(current_user, "email", None),
+            "classname": getattr(current_user, "classname",None)
         }
         return JSONResponse(content=user_info)
         

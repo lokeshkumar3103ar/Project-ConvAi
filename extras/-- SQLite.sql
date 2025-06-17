@@ -49,3 +49,17 @@ WHERE roll_number=23112067;
 SELECT * FROM users;
 
 SELECT * FROM password_reset_tokens;
+
+ALTER TABLE users
+ADD COLUMN classname Varchar(20);
+
+DELETE FROM users
+WHERE roll_number=23112001;
+
+UPDATE users 
+SET classname="CSE5A"
+WHERE roll_number LIKE '2311%';
+
+UPDATE users
+SET classname="CSE4A"
+WHERE roll_number=23112023;

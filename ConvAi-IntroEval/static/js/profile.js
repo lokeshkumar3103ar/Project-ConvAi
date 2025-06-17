@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const profileUsername = document.getElementById('profile-username');
     const profileName = document.getElementById('profile-name');
     const profileEmail = document.getElementById('profile-email');
+    const profileClassname = document.getElementById('profile-class');
     const logoutBtn = document.getElementById('logout-btn');
     
     // Load user profile information
@@ -65,6 +66,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (profileEmail) {
                     profileEmail.textContent = userInfo.email || 'N/A';
                 }
+                if (profileClassname){
+                    profileClassname.textContent = userInfo.classname || 'N/A';
+                }
             } 
             else if (response.status === 401) {
                 console.log('User not authenticated, redirecting to login');
@@ -76,6 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (profileUsername) profileUsername.textContent = 'Not logged in';
                 if (profileName) profileName.textContent = 'N/A';
                 if (profileEmail) profileEmail.textContent = 'N/A';
+                if (profileClassname) profileClassname.textContent = 'N/A';
             }
         } catch (error) {
             console.error('Error loading user profile:', error);
@@ -83,6 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (profileUsername) profileUsername.textContent = 'Error';
             if (profileName) profileName.textContent = 'Error';
             if (profileEmail) profileEmail.textContent = 'Error';
+            if(profileClassname) profileClassname.textContent = 'Error';
             // On network error, also redirect to login after a delay
             setTimeout(() => {
                 window.location.href = '/login';

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, Query
 from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -22,6 +22,7 @@ templates = Jinja2Templates(directory="templates")
 async def get_teacher_students(
     request: Request,
     teacher_username: str,
+    classname: str = Query(None),
     current_teacher: dict = Depends(get_current_teacher),
     db: Session = Depends(get_db)
 ):
@@ -37,9 +38,12 @@ async def get_teacher_students(
     # Get student details
     students = []
     for mapping in student_mappings:
-        student = db.query(User).filter(
+        student_query = db.query(User).filter(
             User.roll_number == mapping.student_roll
-        ).first()
+        )
+        if classname:
+            student_query = student_query.filter(User.classname == classname)
+        student = student_query.first()
         if student:
             students.append({
                 "name": student.name,
