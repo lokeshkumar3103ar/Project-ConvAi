@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Khand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/analytics.css">
+    <link rel="stylesheet" href="../static/css/teacher_dashbaord.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+</head>
+
+<body>
+    <div class="outer-frame">
+        <!-- Left Taskbar for Toggle Switches -->
+        <div class="left-taskbar">
+            <div class="theme-toggle-container">
+                <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
+            </div>
+            <!-- Future switches can be added here -->
+            <div class="theme-toggle-container">
+                <a href="./profile" id="home" class="theme-toggle-btn" aria-label="Go to Home">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+            </div>
+        </div>
+
+
+
+        <div class="main-content">
+            <div id="studentDetails" style="display: none;" class="student-details"></div>
+        </div>
+
+    </div>
+    <script src="../static/js/analytics.js"></script>
+</body>
+
+</html>

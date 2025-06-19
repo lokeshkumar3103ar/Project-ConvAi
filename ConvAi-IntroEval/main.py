@@ -21,6 +21,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
+
 import uvicorn
 from fastapi import (
     FastAPI,
@@ -67,6 +68,7 @@ import smtplib
 from email.message import EmailMessage
 from fastapi import BackgroundTasks
 import random
+import statistics
 
 # Email config (set these as env vars or hardcode for local dev)
 EMAIL_SENDER = "qritiq.00@gmail.com"
@@ -1301,6 +1303,148 @@ async def get_user_profile(current_user: Optional[Union[User, Teacher]] = Depend
     except Exception as e:
         log_error("❌ Failed to get user profile", e)
         raise HTTPException(status_code=500, detail="Failed to retrieve user information")
+    
+@app.get("/analytics", response_class=HTMLResponse)
+async def profile():
+    html_path = TEMPLATES_DIR / "analytics.html"
+    with open(html_path, "r", encoding="utf-8") as html_file:
+        return html_file.read()
+
+@app.get("/api/student/profile_analytics/{roll_number}")
+async def get_student_analytics(
+    request: Request,
+    roll_number: str,
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Get comprehensive analytics for a student including all ratings, trends, and insights
+    """
+    
+    # Verify teacher has access to this student
+    if current_user.roll_number != roll_number:
+            raise HTTPException(status_code=403, detail="Not authorized to view other students' data")
+
+    # Get all JSON files from student's rating directory
+    student_ratings_dir = Path(f"ratings/{roll_number}")
+    analytics_data = {
+        "roll_number": roll_number,
+        "total_evaluations": 0,
+        "intro_ratings": [],
+        "profile_ratings": [],
+        "score_trends": [],
+        "performance_summary": {},
+        "latest_feedback": {},
+        "improvement_areas": [],
+        "strengths": []
+    }
+    
+    if not student_ratings_dir.exists():
+        return analytics_data
+    
+    # Collect all rating files
+    intro_files = []
+    profile_files = []
+    
+    for file in student_ratings_dir.glob("*.json"):
+        try:
+            with open(file, "r") as f:
+                data = json.load(f)
+                timestamp = data.get("evaluation_timestamp", "")
+                
+                if "intro_rating" in file.name:
+                    intro_files.append({
+                        "file": file.name,
+                        "data": data,
+                        "timestamp": timestamp,
+                        "score": float(data.get("intro_rating", 0))
+                    })
+                elif "profile_rating" in file.name:
+                    profile_files.append({
+                        "file": file.name,
+                        "data": data,
+                        "timestamp": timestamp,
+                        "score": float(data.get("profile_rating", 0))
+                    })
+        except (json.JSONDecodeError, ValueError):
+            continue
+    
+    # Sort by timestamp
+    intro_files.sort(key=lambda x: x["timestamp"])
+    profile_files.sort(key=lambda x: x["timestamp"])
+    
+    analytics_data["intro_ratings"] = intro_files
+    analytics_data["profile_ratings"] = profile_files
+    analytics_data["total_evaluations"] = len(intro_files) + len(profile_files)
+    
+    # Create score trends for charts
+    if intro_files:
+        analytics_data["score_trends"].append({
+            "type": "intro",
+            "scores": [item["score"] for item in intro_files],
+            "timestamps": [item["timestamp"][:10] for item in intro_files],  # Date only
+            "average": round(statistics.mean([item["score"] for item in intro_files]), 2),
+            "latest": intro_files[-1]["score"],
+            "improvement": round(intro_files[-1]["score"] - intro_files[0]["score"], 2) if len(intro_files) > 1 else 0
+        })
+    
+    if profile_files:
+        analytics_data["score_trends"].append({
+            "type": "profile",
+            "scores": [item["score"] for item in profile_files],
+            "timestamps": [item["timestamp"][:10] for item in profile_files],  # Date only
+            "average": round(statistics.mean([item["score"] for item in profile_files]), 2),
+            "latest": profile_files[-1]["score"],
+            "improvement": round(profile_files[-1]["score"] - profile_files[0]["score"], 2) if len(profile_files) > 1 else 0
+        })
+    
+    # Performance summary
+    all_scores = []
+    if intro_files:
+        all_scores.extend([item["score"] for item in intro_files])
+    if profile_files:
+        all_scores.extend([item["score"] for item in profile_files])
+    
+    if all_scores:
+        analytics_data["performance_summary"] = {
+            "overall_average": round(statistics.mean(all_scores), 2),
+            "highest_score": max(all_scores),
+            "lowest_score": min(all_scores),
+            "total_assessments": len(all_scores),
+            "score_variance": round(statistics.variance(all_scores) if len(all_scores) > 1 else 0, 2)
+        }
+    
+    # Latest feedback and areas for improvement
+    if intro_files and intro_files[-1]["data"].get("feedback"):
+        analytics_data["latest_feedback"]["intro"] = intro_files[-1]["data"]["feedback"]
+    if profile_files and profile_files[-1]["data"].get("grading_explanation"):
+        analytics_data["latest_feedback"]["profile"] = profile_files[-1]["data"]["grading_explanation"]
+    
+    # Extract improvement areas and strengths from latest evaluations
+    improvement_areas = set()
+    strengths = set()
+    
+    if intro_files:
+        latest_intro = intro_files[-1]["data"]
+        if latest_intro.get("feedback"):
+            improvement_areas.update(latest_intro["feedback"])
+        if latest_intro.get("insights"):
+            strengths.update(latest_intro["insights"])
+    
+    if profile_files:
+        latest_profile = profile_files[-1]["data"]
+        grading = latest_profile.get("grading_explanation", {})
+        for key, value in grading.items():
+            if "weak" in value.lower() or "needs" in value.lower() or "could" in value.lower():
+                improvement_areas.add(f"{key.replace('_', ' ').title()}: {value}")
+            elif "excellent" in value.lower() or "strong" in value.lower() or "good" in value.lower():
+                strengths.add(f"{key.replace('_', ' ').title()}: {value}")
+    
+    analytics_data["improvement_areas"] = list(improvement_areas)[:5]  # Limit to top 5
+    analytics_data["strengths"] = list(strengths)[:5]  # Limit to top 5
+    
+    return analytics_data
+
 
 # ==================== TEACHER AUTHENTICATION ====================
 
