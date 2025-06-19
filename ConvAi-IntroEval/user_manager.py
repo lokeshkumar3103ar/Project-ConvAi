@@ -27,8 +27,12 @@ Commands:
 
 Author: ConvAi Team
 Date: June 2025
-"""
 
+(19-06-2025)
+Note: Change Update_user to show existing details first, then ask for which field to update and proceed with updating.
+for now, we can only  update username and roll number
+"""
+import re
 import argparse
 import getpass
 import sys
@@ -43,6 +47,12 @@ from models import User, Teacher, TeacherStudentMap, Note, SessionLocal, get_db
 from auth import get_password_hash, verify_password
 
 ph = PasswordHasher()
+
+def validate_classname(classname: str) -> str:
+        pattern = r'^[A-Z]{3,5}\d[A-Z]$'
+        if not re.match(pattern, classname.upper()):
+            raise ValueError("Invalid class format. Format should be like CSE4A.")
+        return classname.upper()
 
 class UserManager:
     def __init__(self):
@@ -63,7 +73,7 @@ class UserManager:
             return
         
         if detailed:
-            headers = ["Username", "Roll Number", "Assigned Teachers"]
+            headers = ["Username", "Name", "Assigned Teachers"]
             data = []
             for user in users:
                 # Get assigned teachers
@@ -74,12 +84,12 @@ class UserManager:
                 
                 data.append([
                     user.username,
-                    user.roll_number or "Not Set",
+                    user.name,
                     ", ".join(teachers) if teachers else "None"
                 ])
         else:
-            headers = ["ID", "Username", "Roll Number"]
-            data = [[user.id, user.username, user.roll_number or "Not Set"] for user in users]
+            headers = [ "Username", "Roll Number", "Name", "Email", "Classname"]
+            data = [[ user.username, user.roll_number , user.name , user.email , user.classname] for user in users]
         
         print(f"\n=== Users ({len(users)} total) ===")
         print(tabulate(data, headers=headers, tablefmt="grid"))
@@ -100,13 +110,15 @@ class UserManager:
         notes_count = self.db.query(Note).filter(Note.student_roll == user.roll_number).count()
         
         print(f"\n=== User Details ===")
-        print(f"ID: {user.id}")
         print(f"Username: {user.username}")
-        print(f"Roll Number: {user.roll_number or 'Not Set'}")
+        print(f"Roll Number: {user.roll_number}")
+        print(f"Name: {user.name}")
+        print(f"Email: {user.email}")
+        print(f"Classname: {user.classname}")
         print(f"Assigned Teachers: {', '.join(teachers) if teachers else 'None'}")
         print(f"Notes Count: {notes_count}")
     
-    def create_user(self, username: str, password: str = None, roll_number: str = None) -> None:
+    def create_user(self, username: str, roll_number: str ,password: str = None) -> None:
         """Create a new user"""
         # Check if username already exists
         existing_user = self.db.query(User).filter(User.username == username).first()
@@ -115,11 +127,10 @@ class UserManager:
             return
         
         # Check if roll number already exists
-        if roll_number:
-            existing_roll = self.db.query(User).filter(User.roll_number == roll_number).first()
-            if existing_roll:
-                print(f"Error: User with roll number '{roll_number}' already exists.")
-                return
+        existing_roll = self.db.query(User).filter(User.roll_number == roll_number).first()
+        if existing_roll:
+            print(f"Error: User with roll number '{roll_number}' already exists.")
+            return
         
         # Get password if not provided
         if not password:
@@ -128,13 +139,24 @@ class UserManager:
             if password != confirm_password:
                 print("Error: Passwords do not match.")
                 return
-        
+        name= input("Enter Name : ").strip()
+        email = input("Enter the email_id : ").strip().lower()
+        while True:
+            classname = input("Enter User Class name (e.g., CSE4A): ").strip().upper()
+            try:
+                validate_classname(classname)
+                break  # Exit the loop if valid
+            except ValueError as e:
+                print(f"Error: {e}. Please try again.")
         # Create user
         hashed_password = get_password_hash(password)
         new_user = User(
             username=username,
             hashed_password=hashed_password,
-            roll_number=roll_number
+            roll_number=roll_number,
+            name=name,
+            email=email,
+            classname=classname
         )
         
         try:
@@ -145,7 +167,7 @@ class UserManager:
             self.db.rollback()
             print(f"Error creating user: {e}")
     
-    def update_user(self, identifier: str, new_username: str = None, new_roll_number: str = None) -> None:
+    def update_user(self, identifier: str, new_username: str , new_roll_number: str ) -> None:
         """Update user information"""
         user = self._get_user(identifier)
         if not user:
@@ -155,7 +177,7 @@ class UserManager:
             if new_username:
                 # Check if new username already exists
                 existing = self.db.query(User).filter(
-                    User.username == new_username, User.id != user.id
+                    User.username == new_username, User.roll_number != user.roll_number
                 ).first()
                 if existing:
                     print(f"Error: Username '{new_username}' already exists.")
@@ -165,7 +187,7 @@ class UserManager:
             if new_roll_number:
                 # Check if new roll number already exists
                 existing = self.db.query(User).filter(
-                    User.roll_number == new_roll_number, User.id != user.id
+                    User.roll_number == new_roll_number, User.roll_number != user.roll_number
                 ).first()
                 if existing:
                     print(f"Error: Roll number '{new_roll_number}' already exists.")
@@ -174,7 +196,7 @@ class UserManager:
             
             self.db.commit()
             print(f"User updated successfully.")
-            self.view_user(str(user.id))
+            self.view_user(str(user.roll_number))
         except Exception as e:
             self.db.rollback()
             print(f"Error updating user: {e}")
@@ -472,11 +494,6 @@ class UserManager:
     def _get_user(self, identifier: str) -> Optional[User]:
         """Get user by ID, username, or roll number"""
         try:
-            # Try by ID first
-            if identifier.isdigit():
-                user = self.db.query(User).filter(User.id == int(identifier)).first()
-                if user:
-                    return user
             
             # Try by username
             user = self.db.query(User).filter(User.username == identifier).first()
@@ -553,23 +570,23 @@ class UserManager:
                     detailed = input("Show detailed view? (y/N): ").lower() == 'y'
                     self.list_teachers(detailed)
                 elif choice == "3":
-                    identifier = input("Enter user ID, username, or roll number: ").strip()
+                    identifier = input("Enter  username or roll number: ").strip()
                     self.view_user(identifier)
                 elif choice == "4":
                     identifier = input("Enter teacher ID or username: ").strip()
                     self.view_teacher(identifier)
                 elif choice == "5":
                     username = input("Enter username: ").strip()
-                    roll_number = input("Enter roll number (optional): ").strip() or None
-                    self.create_user(username, roll_number=roll_number)
+                    roll_number = input("Enter roll number : ").strip()
+                    
+                    self.create_user(username, roll_number)
                 elif choice == "6":
                     username = input("Enter username: ").strip()
                     self.create_teacher(username)
                 elif choice == "7":
-                    identifier = input("Enter user ID, username, or roll number: ").strip()
-                    new_username = input("Enter new username (or press Enter to skip): ").strip() or None
-                    new_roll_number = input("Enter new roll number (or press Enter to skip): ").strip() or None
-                    self.update_user(identifier, new_username, new_roll_number)
+                    identifier = input("Enter  username or roll number: ").strip()
+                    new_username = input("Enter new username (or press Enter to skip): ").strip()                     
+                    self.update_user(identifier, new_username, new_username)
                 elif choice == "8":
                     identifier = input("Enter teacher ID or username: ").strip()
                     new_username = input("Enter new username (or press Enter to skip): ").strip() or None
@@ -579,7 +596,7 @@ class UserManager:
                     identifier = input("Enter ID or username: ").strip()
                     self.reset_password(user_type, identifier)
                 elif choice == "10":
-                    identifier = input("Enter user ID, username, or roll number: ").strip()
+                    identifier = input("Enter  username or roll number: ").strip()
                     self.delete_user(identifier)
                 elif choice == "11":
                     identifier = input("Enter teacher ID or username: ").strip()
@@ -631,7 +648,7 @@ def main():
             manager.list_teachers(args.detailed)
         elif args.command == "view-user":
             if not args.identifier:
-                args.identifier = input("Enter user ID, username, or roll number: ").strip()
+                args.identifier = input("Enter  username or roll number: ").strip()
             manager.view_user(args.identifier)
         elif args.command == "view-teacher":
             if not args.identifier:
@@ -647,7 +664,7 @@ def main():
             manager.create_teacher(args.username, args.password)
         elif args.command == "update-user":
             if not args.identifier:
-                args.identifier = input("Enter user ID, username, or roll number: ").strip()
+                args.identifier = input("Enter  username or roll number: ").strip()
             manager.update_user(args.identifier, args.new_username, args.new_roll_number)
         elif args.command == "update-teacher":
             if not args.identifier:
@@ -661,7 +678,7 @@ def main():
             manager.reset_password(args.user_type, args.identifier, args.password)
         elif args.command == "delete-user":
             if not args.identifier:
-                args.identifier = input("Enter user ID, username, or roll number: ").strip()
+                args.identifier = input("Enter  username or roll number: ").strip()
             manager.delete_user(args.identifier, args.confirm)
         elif args.command == "delete-teacher":
             if not args.identifier:
