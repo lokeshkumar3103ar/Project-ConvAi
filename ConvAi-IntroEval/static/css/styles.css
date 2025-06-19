@@ -1528,6 +1528,9 @@ input[type="reset"],
     cursor: pointer !important;
 }
 
+a{
+  text-decoration: none !important;
+}
 /* Input fields should have text cursor only when focused */
 input[type="text"],
 input[type="email"],

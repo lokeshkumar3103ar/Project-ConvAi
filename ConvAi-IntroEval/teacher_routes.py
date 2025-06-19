@@ -42,6 +42,7 @@ async def get_teacher_students(
             User.roll_number == mapping.student_roll
         )
         if classname:
+            classname=classname.upper()
             student_query = student_query.filter(User.classname == classname)
         student = student_query.first()
         if student:

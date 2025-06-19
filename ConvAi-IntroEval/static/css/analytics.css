@@ -222,6 +222,7 @@ a{
   color: var(--text-primary);
   font-family: 'Oswald', Arial, sans-serif;
   max-width: 100% !important ;
+  width: 100% !important;
 }
 
 /*.inner-frame{
