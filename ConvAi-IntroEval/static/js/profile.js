@@ -95,7 +95,83 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 2000);
         }
     }
-    
+    const editBtn = document.getElementById('edit-btn');
+    let inEditMode = false;
+    let originalData = {};
+
+    editBtn.addEventListener('click', function () {
+        if (!inEditMode) {
+            // Switch to edit mode
+            originalData = {
+                name: profileName.textContent,
+                email: profileEmail.textContent,
+                classname: profileClassname.textContent,
+            };
+
+            replaceWithInput(profileName, 'input-name', originalData.name);
+            replaceWithInput(profileEmail, 'input-email', originalData.email);
+            replaceWithInput(profileClassname, 'input-classname', originalData.classname);
+
+            editBtn.innerHTML = '<i class="fas fa-save"></i>';
+            inEditMode = true;
+        } else {
+            // Save changes
+            const updatedData = {};
+
+            const inputName = document.getElementById('input-name');
+            const inputEmail = document.getElementById('input-email');
+            const inputClass = document.getElementById('input-classname');
+
+            if (inputName.value !== originalData.name) updatedData.name = inputName.value;
+            if (inputEmail.value !== originalData.email) updatedData.email = inputEmail.value;
+            if (inputClass.value !== originalData.classname) updatedData.classname = inputClass.value;
+
+            if (Object.keys(updatedData).length === 0) {
+                alert('No changes detected.');
+                return;
+            }
+
+            fetch('/api/auth/profile', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify(updatedData)
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('Update failed');
+                return res.json();
+            })
+            .then(data => {
+                alert('Profile updated successfully!');
+                location.reload(); // Reload to reflect changes
+            })
+            .catch(err => {
+                console.error('Error updating profile:', err);
+                alert('Failed to update profile.');
+            });
+        }
+    });
+
+    function replaceWithInput(spanElement, inputId, value) {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.id = inputId;
+    input.name = inputId.replace("input-", ""); // e.g., "classname"
+    input.value = value;
+    input.classList.add('profile-input');
+
+    // Add pattern for class validation if this is the classname field
+    if (input.name === 'classname') {
+        input.pattern = '^[A-Z]{3,5}\\d[A-Z]$';
+        input.title = 'Format must be like CSE4A';
+    }
+
+    spanElement.replaceWith(input);
+}
+
+
     // Logout functionality
     if (logoutBtn) {
         logoutBtn.addEventListener('click', async function(e) {

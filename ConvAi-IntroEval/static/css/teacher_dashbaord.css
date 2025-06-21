@@ -471,6 +471,15 @@ input:focus, button:focus {
 h4, h5, h6 {
     margin: 0.5rem 0;
 }
+h4{
+    font-size: 1rem;
+}
+h5{
+    font-size: 0.95rem;
+}
+h6{
+    font-size: 0.8rem;
+}
 
 .chart-container {
     margin-top: 1.5rem;
@@ -498,6 +507,9 @@ h4, h5, h6 {
     align-items: center;
 }
 
+.detail-card{
+    align-items: start !important;
+}
 
 .score-excellent {
     background-color: var(--badge-excellent);
