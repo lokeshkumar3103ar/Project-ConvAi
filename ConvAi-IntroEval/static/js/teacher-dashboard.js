@@ -398,7 +398,7 @@ function createDetailedRatingsHTML(analytics) {
         intro_ratings.forEach(rating => {
             const data = rating.data;
             html += `
-                <div class="analytics-card" style="margin-bottom: 1rem;">
+                <div class="analytics-card detail-card" style="margin-bottom: 1rem;">
                     <h6>Score: ${data.intro_rating} <span class="${getScoreBadgeClass(parseFloat(data.intro_rating))}">${getScoreLabel(parseFloat(data.intro_rating))}</span></h6>
                     <p><strong>Date:</strong> ${new Date(rating.timestamp).toLocaleDateString()}</p>
                     ${data.grading_explanation ? `
@@ -426,7 +426,7 @@ function createDetailedRatingsHTML(analytics) {
         profile_ratings.forEach(rating => {
             const data = rating.data;
             html += `
-                <div class="analytics-card" style="margin-bottom: 1rem;">
+                <div class="analytics-card detail-card" style="margin-bottom: 1rem;">
                     <h6>Score: ${data.profile_rating} <span class="${getScoreBadgeClass(parseFloat(data.profile_rating))}">${getScoreLabel(parseFloat(data.profile_rating))}</span></h6>
                     <p><strong>Date:</strong> ${new Date(rating.timestamp).toLocaleDateString()}</p>
                     ${data.grading_explanation ? `

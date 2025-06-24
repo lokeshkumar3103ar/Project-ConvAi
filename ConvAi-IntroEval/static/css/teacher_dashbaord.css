@@ -179,7 +179,7 @@ body {
     height: 92vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: end;
     justify-content: center;
     box-sizing: border-box;
     position: relative;
@@ -187,6 +187,8 @@ body {
     overflow: auto;
 }
 .mainframe {
+    display: flex;
+    justify-content: center;
     position: relative;
     width: 95vw; /*match main-content-box width*/
     height: 92vh; /*match main-content-box height*/
@@ -302,7 +304,10 @@ input:focus, button:focus {
     gap: 25px;
     width: 95%;
     padding: 20px;
-    margin: 3rem 0;
+    padding-right: 40px;
+    padding-left: 0px;
+    /* margin: 2rem 0; */
+    margin-top: 4.25rem;
     color: var(--text-primary);
     font-family: 'Oswald', Arial, sans-serif;
     min-height: 400px;
@@ -471,6 +476,15 @@ input:focus, button:focus {
 h4, h5, h6 {
     margin: 0.5rem 0;
 }
+h4{
+    font-size: 1rem;
+}
+h5{
+    font-size: 0.95rem;
+}
+h6{
+    font-size: 0.8rem;
+}
 
 .chart-container {
     margin-top: 1.5rem;
@@ -498,6 +512,9 @@ h4, h5, h6 {
     align-items: center;
 }
 
+.detail-card{
+    align-items: start !important;
+}
 
 .score-excellent {
     background-color: var(--badge-excellent);

@@ -303,7 +303,8 @@ a{
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: end;
+  padding-right: 20px;
 }
 
 .profile-info{
@@ -326,4 +327,53 @@ a{
 
 .classname{
   grid-area: 2 / 3 / 3 / 4;
+}
+
+.edit{
+  grid-area: 3 / 3 / 4 / 4;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  justify-content: center;
+  padding-right: 20px;
+}
+
+.btn-edit {
+  background: var(--secondary-color);
+  color: var(--primary-color);
+  border: 2px solid var(--content-box-border);
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Oswald', Helvetica, sans-serif;
+  box-shadow: 0 4px 12px rgba(14, 224, 84, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.btn-edit:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  box-shadow: 0 6px 20px rgba(30, 230, 96, 0.4);
+}
+
+input[type="text"], input[type="password"], input[type="email"] {
+  width: 100%;
+  padding: 9px 8px;
+  margin-bottom: 20px;
+  border: 2px solid var(--input-border);
+  border-radius: 10px;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s;
+}    
+
+input[type="text"]:focus, input[type="password"]:focus {
+  border-color: var(--primary-color);
 }

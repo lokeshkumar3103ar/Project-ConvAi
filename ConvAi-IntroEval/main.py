@@ -76,7 +76,7 @@ EMAIL_PASSWORD = ""
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 
-#class sanitization
+#classname sanitization
 import re
 def sanitize_classname(raw_class: str) -> str:
     """Sanitize and enforce CSE4A-like format: 3+ letters, 1 digit, 1 letter."""
@@ -1499,6 +1499,48 @@ async def get_current_user_info(current_user: Optional[Union[User, Teacher]] = D
     except Exception as e:
         log_error("❌ Failed to get user info", e)
         raise HTTPException(status_code=500, detail="Failed to retrieve user information")
+    
+@app.patch("/api/auth/profile")
+async def update_user_profile(
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    data = await request.json()
+    allowed_fields = {"name", "email", "classname"}
+
+    updated_fields = {
+        field: value for field, value in data.items() if field in allowed_fields
+    }
+
+    if not updated_fields:
+        raise HTTPException(status_code=400, detail="No valid fields provided for update")
+
+    try:
+        db_user = db.query(User).filter(User.roll_number == current_user.roll_number).first()
+        #if we want to use teacher and user tables at the same time
+        '''if hasattr(current_user, "roll_number"):
+            db_user = db.query(User).filter(User.roll_number == current_user.roll_number).first()
+        else:
+            db_user = db.query(Teacher).filter(Teacher.id == current_user.id).first()'''
+        if not db_user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        for key, value in updated_fields.items():
+            if key=="classname":
+                value=sanitize_classname(value)
+            setattr(db_user, key, value)
+
+        db.commit()
+        db.refresh(db_user)
+        return {"message": "Profile updated successfully"}
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        db.rollback()
+        print(f"❌ Error updating profile: {e}")  # <-- ADD THIS LINE
+        raise HTTPException(status_code=500, detail="Failed to update profile")
+
 
 # ==================== TEACHER MANAGEMENT ====================
 
