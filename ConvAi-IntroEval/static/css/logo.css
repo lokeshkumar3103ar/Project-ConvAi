@@ -1,9 +1,15 @@
 :root{
     --logo-weight: 600;
+    /* Stick with primary theme colors (black/white) */
+    --logo-primary: var(--primary-color);
+    /* Reflection color for eyes - white in light mode */
+    --reflection-color: rgba(255, 255, 255, 0.95);
 }
 
 [data-theme="dark"] {
     --logo-weight: 400;
+    /* Reflection color for eyes - dark gray in dark mode */
+    --reflection-color: rgba(180, 180, 180, 0.95);
 }
 
 .logo {
@@ -20,6 +26,31 @@
       padding-bottom: 15px;
       font-family: 'Fredoka', sans-serif;
       /* font-variation-settings: "wdth" 10px; */
+      overflow: visible;
+      transition: transform 0.3s ease;
+    }
+    
+    .logo:hover {
+      transform: translateY(-3px);
+    }
+    
+    /* Subtle shadow effect */
+    .logo::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: inherit;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+    
+    .logo:hover::before {
+      opacity: 1;
     }
     
     .logo-container {
@@ -28,13 +59,17 @@
       justify-content: center;
       flex-direction: column;
       cursor: pointer;
-      
+      position: relative;
+      /* Variables for eye tracking */
+      --eye-x: 0px;
+      --eye-y: 0px;
     }
 
     .logo-face {
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
     }
 
     .letter {
@@ -43,6 +78,175 @@
       color: var(--primary-color);
       /* margin: 0 4px; */
       transition: transform 0.4s ease, margin 0.4s ease;
+      position: relative;
+    }
+    
+    /* First Q gets a winking eye */
+    .letter:first-child {
+      position: relative;
+      overflow: hidden; /* Contain the eyelid */
+      display: inline-block;
+      /* Variables for individual eye movement */
+      --eye-move-x: 0px;
+      --eye-move-y: 0px;
+    }
+    
+    /* Right Q also gets an eye */
+    .letter.q-right {
+      position: relative;
+      overflow: hidden; /* Contain the eyelid */
+      display: inline-block;
+      /* Variables for individual eye movement */
+      --eye-move-x: 0px;
+      --eye-move-y: 0px;
+    }
+    
+    /* Eye (always visible) for first Q */
+    .letter:first-child::before {
+      content: '';
+      position: absolute;
+      width: 14px; /* Slightly larger */
+      height: 14px; /* Slightly larger */
+      background: var(--primary-color);
+      border-radius: 50%;
+      top: 16px; /* Better centered position */
+      right: 12px; /* Better centered position */
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.1s ease;
+      /* Add a subtle shine effect to mimic The Sphere in Las Vegas */
+      box-shadow: 
+        inset -1px -1px 3px rgba(255,255,255,0.2),
+        0 0 2px rgba(255,255,255,0.3);
+      z-index: 3; /* Ensure proper stacking order */
+      /* Eye tracking movement */
+      transform: translate(var(--eye-move-x), var(--eye-move-y));
+    }
+    
+    /* Eye (always visible) for right Q */
+    .letter.q-right::before {
+      content: '';
+      position: absolute;
+      width: 14px; /* Slightly larger */
+      height: 14px; /* Slightly larger */
+      background: var(--primary-color);
+      border-radius: 50%;
+      top: 16px; /* Better centered position */
+      left: 12px; /* Better centered position */
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.1s ease;
+      /* Add a subtle shine effect to mimic The Sphere in Las Vegas */
+      box-shadow: 
+        inset -1px -1px 3px rgba(255,255,255,0.2),
+        0 0 2px rgba(255,255,255,0.3);
+      z-index: 3; /* Ensure proper stacking order */
+      /* Eye tracking movement */
+      transform: translate(var(--eye-move-x), var(--eye-move-y));
+    }
+    
+    /* Always show the eyes (not just on hover) for a more adorable look */
+    .letter:first-child::before,
+    .letter.q-right::before {
+      opacity: 1;
+    }
+    
+    /* Add cute reflection to the eyes (like The Sphere in Las Vegas) */
+    .letter:first-child::after,
+    .letter.q-right::after {
+      content: '';
+      position: absolute;
+      width: 6px; /* Increased size */
+      height: 6px; /* Increased size */
+      background: var(--reflection-color); /* Use theme variable instead of hardcoded white */
+      border-radius: 50%;
+      z-index: 4; /* Ensure visibility */
+      pointer-events: none;
+      transition: transform 0.1s ease, background 0.3s ease; /* Add transition for color change */
+      opacity: 0.9; /* Slightly more visible */
+    }
+    
+    /* Position the reflection for left eye */
+    .letter:first-child::after {
+      top: 13px; /* Moved inside the eyeball */
+      right: 12px; /* Centered inside the eyeball */
+      transform: translate(var(--eye-move-x), var(--eye-move-y));
+    }
+    
+    /* Position the reflection for right eye */
+    .letter.q-right::after {
+      top: 13px; /* Moved inside the eyeball */
+      left: 12px; /* Centered inside the eyeball */
+      transform: translate(var(--eye-move-x), var(--eye-move-y));
+    }
+    
+    /* Cursor tracking replaces eye bounce animation */
+    /* Removed eye-bounce animation in favor of cursor tracking */
+    
+    /* Eyes should grow slightly larger on hover for adorable effect */
+    .logo-container:hover .letter:first-child::before,
+    .logo-container:hover .letter.q-right::before {
+      width: 16px;
+      height: 16px;
+      transition: width 0.3s ease, height 0.3s ease;
+    }
+    
+    /* Make reflections also grow on hover */
+    .logo-container:hover .letter:first-child::after,
+    .logo-container:hover .letter.q-right::after {
+      width: 7px; /* Slightly larger on hover */
+      height: 7px; /* Slightly larger on hover */
+      transition: width 0.3s ease, height 0.3s ease;
+    }
+
+    /* Alternate winking method - add a separate eyelid element */
+    .winking-eyelid {
+      position: absolute;
+      width: 100%;
+      height: 0%;
+      background-color: var(--content-box-bg);
+      top: 0;
+      left: 0;
+      z-index: 10; /* Increased z-index to ensure it covers the eye and reflection */
+      border-bottom: 4px solid var(--primary-color);
+      border-radius: 50% 50% 0 0;
+      animation: left-eye-sequence 8s infinite;
+      opacity: 1; /* Always visible, not just on hover */
+    }
+    
+    /* Right eyelid for symmetry */
+    .right-eyelid {
+      position: absolute;
+      width: 100%;
+      height: 0%;
+      background-color: var(--content-box-bg);
+      top: 0;
+      left: 0;
+      z-index: 10; /* Increased z-index to ensure it covers the eye and reflection */
+      border-bottom: 4px solid var(--primary-color);
+      border-radius: 50% 50% 0 0;
+      animation: right-eye-sequence 8s infinite;
+      opacity: 1; /* Always visible, not just on hover */
+    }
+
+    /* Left eye winks first, then right, then both together */
+    @keyframes left-eye-sequence {
+      /* First wink of left eye */
+      0%, 15%, 25%, 100% { height: 0%; }
+      20% { height: 100%; }
+      
+      /* Both eyes blink together after individual winks */
+      70%, 74% { height: 0%; }
+      72% { height: 100%; }
+    }
+    
+    /* Right eye winks second, then both together */
+    @keyframes right-eye-sequence {
+      /* Second wink of right eye */
+      0%, 40%, 50%, 100% { height: 0%; }
+      45% { height: 100%; }
+      
+      /* Both eyes blink together after individual winks */
+      70%, 74% { height: 0%; }
+      72% { height: 100%; }
     }
 
     .hidden-part {
@@ -59,16 +263,23 @@
 
     .smile {
       width: 50px;
-      height: 7px;
+      height: 10px;
       border: 6px solid var(--primary-color);
       border-top: 0;
       border-radius: 0 0 60px 60px;
       margin-top: 8px;
-      transition: width 0.4s ease;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy transition */
+      position: relative;
+      overflow: visible;
     }
+    
+    /* Removed dimple dots for cleaner look */
+
+    /* Removed eyebrows for cleaner look */
 
     .logo-container:hover .letter.q-right {
       margin-left: 0px;
+      /* Removed wiggle animation for cleaner look */
     }
 
     .logo-container:hover .hidden-part {
@@ -79,4 +290,95 @@
 
     .logo-container:hover .smile {
       width: 100px;
+      height: 14px;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy transition */
+    }
+
+    /* Removed eyebrow animations */
+    
+    /* Removed stars for cleaner look */
+
+    /* Click expressions for the logo */
+    .logo-container.surprised .letter:first-child::before,
+    .logo-container.surprised .letter.q-right::before {
+      width: 16px;
+      height: 16px;
+      transform: scale(1.3);
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    /* Surprised eyes reflection needs to be more visible */
+    .logo-container.surprised .letter:first-child::after,
+    .logo-container.surprised .letter.q-right::after {
+      width: 7px; /* Larger reflection */
+      height: 7px; /* Larger reflection */
+      background: var(--reflection-color); /* Use theme variable */
+      opacity: 0.9; /* Make more visible */
+    }
+    
+    .logo-container.surprised .smile {
+      height: 16px;
+      width: 80px;
+      border-radius: 50%;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    .logo-container.love .letter:first-child::before,
+    .logo-container.love .letter.q-right::before {
+      border-radius: 0;
+      width: 14px;
+      height: 14px;
+      transform: rotate(45deg) scale(0.8);
+      background: #ff3366; /* Softer pink-red */
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 0 5px #ff3366; /* Soft glow */
+    }
+    
+    /* Heart-shaped eyes need white reflection in any theme mode */
+    .logo-container.love .letter:first-child::after,
+    .logo-container.love .letter.q-right::after {
+      background: white; /* Always white for love expression */
+      width: 6px; /* Larger reflection */
+      height: 6px; /* Larger reflection */
+      top: 14px; /* Adjusted position for heart-eyes */
+      opacity: 0.9; /* More visible */
+    }
+    
+    .logo-container.love .smile {
+      border-color: #ff3366; /* Matching color */
+      width: 70px;
+      height: 14px;
+      transition: all 0.2s ease;
+    }
+    
+    .logo-container.dizzy .letter:first-child::before,
+    .logo-container.dizzy .letter.q-right::before {
+      animation: dizzy-eyes 0.8s infinite linear;
+      background: #662d91; /* Purple for dizzy effect */
+    }
+    
+    /* Dizzy eyes also need a specific reflection */
+    .logo-container.dizzy .letter:first-child::after,
+    .logo-container.dizzy .letter.q-right::after {
+      background: #d4b3ff; /* Light purple reflection */
+      animation: dizzy-eyes 0.8s infinite linear;
+      width: 7px; /* Larger reflection */
+      height: 7px; /* Larger reflection */
+      opacity: 0.9; /* More visible */
+      top: 13px; /* Better centered */
+    }
+    
+    .logo-container.dizzy .smile {
+      animation: dizzy-smile 1.2s infinite;
+    }
+    
+    @keyframes dizzy-eyes {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @keyframes dizzy-smile {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
     }

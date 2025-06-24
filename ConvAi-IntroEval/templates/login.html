@@ -19,9 +19,15 @@
     <div class="logo">
       <div class="logo-container">
         <div class="logo-face">
-          <div class="letter">Q</div>
+          <div class="letter">
+            <div class="winking-eyelid"></div>
+            Q
+          </div>
           <div class="hidden-part">riti</div>
-          <div class="letter q-right">Q</div>
+          <div class="letter q-right">
+            <div class="right-eyelid"></div>
+            Q
+          </div>
         </div>
         <div class="smile"></div>
       </div>
@@ -33,7 +39,12 @@
           <i class="fas fa-moon" id="theme-icon"></i>
         </button>
       </div>
-      <!-- Future switches can be added here -->
+      <!-- QritiQ Info Button -->
+      <div class="theme-toggle-container">
+        <button class="qritiq-info-btn" onclick="toggleQritiQInfo()" title="About QritiQ" aria-label="About QritiQ">
+          Q
+        </button>
+      </div>
     </div>
     <div class="login-box">
       <div class="tabs">
@@ -90,7 +101,191 @@
       </div>
     </div>
   </div>
+
+  <!-- QritiQ Info Panel -->
+  <div id="qritiQInfoPanel" class="qritiq-info-panel">
+    <div class="qritiq-info-content">
+      <button class="qritiq-close-btn" onclick="toggleQritiQInfo()" aria-label="Close">&times;</button>
+      
+      <div class="qritiq-info-header">
+        <div class="qritiq-info-logo">QritiQ</div>
+        <div class="qritiq-info-tagline">Conversational AI Interview Platform</div>
+        <div class="qritiq-info-subtitle">Empowering Students for HR Interview Success</div>
+      </div>
+
+      <div class="qritiq-info-section">
+        <h3><i class="fas fa-question-circle"></i> What is QritiQ?</h3>
+        <p>QritiQ is an innovative AI-powered platform designed specifically for students to improve their HR interview skills through conversational AI technology. Our platform simulates real interview scenarios and provides comprehensive feedback to help you succeed in your career journey.</p>
+      </div>
+
+      <div class="qritiq-info-section">
+        <h3><i class="fas fa-bullseye"></i> Why QritiQ?</h3>
+        <p>In today's competitive job market, interview skills are crucial for landing your dream job. QritiQ addresses this challenge by providing:</p>
+        
+        <div class="qritiq-feature-grid">
+          <div class="qritiq-feature-box">
+            <div class="qritiq-feature-icon">
+              <i class="fas fa-microphone-alt"></i>
+              <span class="qritiq-feature-title">Speech Recognition</span>
+            </div>
+            <p class="qritiq-feature-desc">Advanced speech recognition converts your spoken responses into text for analysis</p>
+          </div>
+          
+          <div class="qritiq-feature-box">
+            <div class="qritiq-feature-icon">
+              <i class="fas fa-brain"></i>
+              <span class="qritiq-feature-title">AI Evaluation</span>
+            </div>
+            <p class="qritiq-feature-desc">Intelligent evaluation of your communication style, content, and professional presentation</p>
+          </div>
+          
+          <div class="qritiq-feature-box">
+            <div class="qritiq-feature-icon">
+              <i class="fas fa-chart-line"></i>
+              <span class="qritiq-feature-title">Analytics</span>
+            </div>
+            <p class="qritiq-feature-desc">Monitor your improvement over time with detailed performance analytics</p>
+          </div>
+          
+          <div class="qritiq-feature-box">
+            <div class="qritiq-feature-icon">
+              <i class="fas fa-lightbulb"></i>
+              <span class="qritiq-feature-title">Improvement Tips</span>
+            </div>
+            <p class="qritiq-feature-desc">Receive constructive suggestions and tips for interview enhancement</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="qritiq-info-section">
+        <h3><i class="fas fa-cogs"></i> How It Works</h3>
+        <p>Our platform uses cutting-edge technology to provide a comprehensive interview preparation experience:</p>
+        
+        <div class="qritiq-process-flow">
+          <div class="qritiq-process-step">
+            <div class="qritiq-process-title">Record Your Response</div>
+            <p class="qritiq-process-desc">Record your self-introduction or answer specific interview questions</p>
+          </div>
+          
+          <div class="qritiq-arrow-connector">
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          
+          <div class="qritiq-process-step">
+            <div class="qritiq-process-title">AI Transcription & Analysis</div>
+            <p class="qritiq-process-desc">Advanced speech recognition converts your spoken responses into text while AI analyzes your communication</p>
+          </div>
+          
+          <div class="qritiq-arrow-connector">
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          
+          <div class="qritiq-process-step">
+            <div class="qritiq-process-title">Receive Detailed Feedback</div>
+            <p class="qritiq-process-desc">Get comprehensive ratings on content quality, delivery, and professional presentation</p>
+          </div>
+          
+          <div class="qritiq-arrow-connector">
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          
+          <div class="qritiq-process-step">
+            <div class="qritiq-process-title">Implement Improvements</div>
+            <p class="qritiq-process-desc">Apply the personalized suggestions to enhance your interview skills</p>
+          </div>
+          
+          <div class="qritiq-arrow-connector">
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          
+          <div class="qritiq-process-step">
+            <div class="qritiq-process-title">Track Your Progress</div>
+            <p class="qritiq-process-desc">Monitor your improvement over time with detailed performance analytics</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="qritiq-info-section">
+        <h3><i class="fas fa-users"></i> For Students</h3>
+        <p>QritiQ is specifically designed for students who want to:</p>
+        
+        <div class="qritiq-student-benefits">
+          <div class="qritiq-benefit-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Build confidence for upcoming job interviews</span>
+          </div>
+          <div class="qritiq-benefit-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Improve communication and presentation skills</span>
+          </div>
+          <div class="qritiq-benefit-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Get objective feedback on interview performance</span>
+          </div>
+          <div class="qritiq-benefit-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Practice in a stress-free environment</span>
+          </div>
+          <div class="qritiq-benefit-item">
+            <i class="fas fa-check-circle"></i>
+            <span>Prepare for campus placements and career opportunities</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="qritiq-cta">
+        <div class="qritiq-cta-icon">
+          <i class="fas fa-rocket"></i>
+        </div>
+        <div class="qritiq-cta-title">Ready to Ace Your Next Interview?</div>
+        <div class="qritiq-cta-subtitle">Join QritiQ today and transform your interview skills with AI-powered coaching!</div>
+        <div class="qritiq-cta-arrow">
+          <i class="fas fa-arrow-down"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleQritiQInfo() {
+      const panel = document.getElementById('qritiQInfoPanel');
+      const isVisible = panel.style.display === 'flex';
+      
+      if (isVisible) {
+        panel.classList.remove('active');
+        setTimeout(() => {
+          panel.style.display = 'none';
+          document.body.style.overflow = '';
+        }, 300); // Match with CSS transition time
+      } else {
+        panel.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        // Trigger reflow before adding the active class for animation
+        panel.offsetWidth;
+        panel.classList.add('active');
+      }
+    }
+
+    // Close panel when clicking outside content
+    document.getElementById('qritiQInfoPanel').addEventListener('click', function(e) {
+      if (e.target === this) {
+        toggleQritiQInfo();
+      }
+    });
+
+    // Close panel with Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        const panel = document.getElementById('qritiQInfoPanel');
+        if (panel.style.display === 'flex') {
+          toggleQritiQInfo();
+        }
+      }
+    });
+  </script>
+
   <script src="../static/js/login.js"></script>
+  <script src="../static/js/logo-animation.js"></script>
 </body>
 
 </html>

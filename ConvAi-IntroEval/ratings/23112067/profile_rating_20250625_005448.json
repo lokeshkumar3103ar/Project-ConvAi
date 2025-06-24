@@ -1,0 +1,31 @@
+{
+  "profile_rating": "6.9",
+  "employability_level": "MODERATE EMPLOYABILITY",
+  "grading_explanation": {
+    "practical_foundation": "2.96/3 – 25 of 35 fields filled (71% completion). Higher completion indicates better self-awareness and thoroughness.",
+    "technical_competency": "2.0/2 – Strong technical foundation with relevant skills for the target field (e.g., machine learning, deep learning algorithms such as CNN, linear regression, MTCNN)",
+    "hands_on_experience": "1.5/3 – Solid practical experience with 1+ substantial projects and internship at COTHON Solutions",
+    "growth_potential": "0.46/2 – Some leadership experience OR strong career direction OR demonstrated learning initiative"
+  },
+  "hiring_insights": {
+    "strongest_assets": "[Strong technical skills, project experience at COTHON Solutions, active self-learning efforts and extra-curricular technical activities]",
+    "development_areas": [
+      "Improve the completion rate of profile fields for better self-awareness, increase hands-on experience by taking on more internships or projects, expand leadership roles to showcase potential"
+    ],
+    "industry_readiness": "[This candidate shows a solid technical foundation with practical experience, but there is room for growth in demonstrating leadership and continuous learning]"
+  },
+  "grading_debug": {
+    "practical_foundation_score": "2.96",
+    "technical_competency_score": "2.0",
+    "hands_on_experience_score": "1.5",
+    "growth_potential_score": "0.46",
+    "calculated_sum": "6.9",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "6.9"
+    },
+    "notes": "[The candidate's profile is moderately complete and shows a solid technical foundation with practical experience. However, the employability level can be improved by increasing hands-on experience, expanding leadership roles, and demonstrating continuous learning]"
+  },
+  "evaluated_file": "filled_forms\\23112067\\form_20250625_005415.json",
+  "evaluation_timestamp": "2025-06-25T00:54:31.849704"
+}
