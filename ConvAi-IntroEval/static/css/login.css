@@ -98,6 +98,8 @@ textarea:focus {
     --button-primary-color: #fff;
     --button-secondary-bg: #6c757d;
     --button-secondary-color: #fff;
+    --logo-weight: 600;
+    
 }
 
 /* Dark Theme */
@@ -123,6 +125,8 @@ textarea:focus {
     --button-primary-color: #111;
     --button-secondary-bg: #555;
     --button-secondary-color: #fff;
+    --logo-weight: 400;
+    
 }
 
 /* Left Taskbar for Switches */

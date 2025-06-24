@@ -64,6 +64,8 @@
 }
 .mainframe {
     position: relative;
+    display: flex;
+    justify-content: center;
     width: 95vw; /*match main-content-box width*/
     height: 92vh; /*match main-content-box height*/
 }
@@ -804,8 +806,8 @@ body {
     position: relative;
     background: var(--content-box-bg);
     /* Add dotted background pattern like login page */
-    background-image: radial-gradient(var(--outer-frame-dots) 1px, transparent 1px);
-    background-size: 15px 15px;
+    background-image: radial-gradient(var(--outer-frame-dots) 1.2px, transparent 1.2px);
+    background-size: 18px 18px;
     border: 2px solid var(--content-box-border);
     border-radius: 20px;    
     box-shadow: var(--box-shadow);

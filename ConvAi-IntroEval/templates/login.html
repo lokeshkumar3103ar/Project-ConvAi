@@ -10,10 +10,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Khand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../static/css/login.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wdth,wght@75..125,300..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../static/css/logo.css">
 </head>
 
 <body>
   <div class="outer-frame">
+    <div class="logo">
+      <div class="logo-container">
+        <div class="logo-face">
+          <div class="letter">Q</div>
+          <div class="hidden-part">riti</div>
+          <div class="letter q-right">Q</div>
+        </div>
+        <div class="smile"></div>
+      </div>
+    </div>
     <!-- Left Taskbar for Toggle Switches -->
     <div class="left-taskbar">
       <div class="theme-toggle-container">
@@ -55,11 +67,12 @@
           <label for="register-password">Password</label>
           <input id="register-password" type="password" name="password" required />
           <label for="register-name">Name</label>
-          <input id="register-name" type="text" name="name" required/>
+          <input id="register-name" type="text" name="name" required />
           <label for="register-classname">Class (e.g. CSE4A)</label>
-          <input id="register-classname" type="text" name="classname" pattern="^[A-Z]{3,5}\d[A-Z]$" title="Format: DEPT-SEM-SEC (e.g. CSE4A)">
+          <input id="register-classname" type="text" name="classname" pattern="^[A-Z]{3,5}\d[A-Z]$"
+            title="Format: DEPT-SEM-SEC (e.g. CSE4A)">
           <label for="register-email">Email</label>
-          <input id="register-email" type="email" name="email" required placeholder="Enter your college email"/>
+          <input id="register-email" type="email" name="email" required placeholder="Enter your college email" />
           <button type="submit">REGISTER AS STUDENT</button>
         </form>
         <div id="registerResult" class="form-message"></div>

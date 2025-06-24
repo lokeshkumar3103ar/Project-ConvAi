@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QritiQ Logo</title>
+  <style>
+    body {
+      background-color: #0B192C;
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .logo-container {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 48px;
+      font-weight: bold;
+    }
+
+    .logo-part {
+      color: #F3C623;
+      transition: transform 0.3s ease, margin 0.3s ease;
+    }
+
+    .second-q {
+      margin-left: 0;
+    }
+
+    .hidden-part {
+      color: #F4F6FF;
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+      display: inline-block;
+      transition: opacity 0.4s ease, width 0.4s ease, margin 0.4s ease;
+    }
+
+    .logo-container:hover .hidden-part {
+      opacity: 1;
+      width: auto;
+      margin: 0 4px;
+    }
+
+    
+  </style>
+</head>
+<body>
+  <div class="logo-container">
+    <span class="logo-part">Q</span>
+    <span class="hidden-part">riti</span>
+    <span class="logo-part second-q">Q</span>
+  </div>
+</body>
+</html>
