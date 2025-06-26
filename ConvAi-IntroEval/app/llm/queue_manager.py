@@ -5,13 +5,14 @@ Implements STT Queue → Evaluation Queue strategy with Mistral LLM
 Phase 1: STT processing (sequential)
 Phase 2: Form extraction and Rating (Mistral only)
 
-Author: RTX Analysis Implementation - Cleaned Version
-Date: June 10, 2025
+Author: RTX Analysis Implementation - Optimized Version
+Date: June 27, 2025
 """
 
 import json
 import threading
 import time
+import logging
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
@@ -19,6 +20,9 @@ from queue import Queue, Empty
 from typing import Dict, List, Optional
 from dataclasses import dataclass
 import requests
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 # Import existing modules
 from .utils import DISABLE_LLM
@@ -92,9 +96,9 @@ class TwoPhaseQueueManager:
         # Test mode configuration
         self.test_mode = test_mode
         
-        # Configuration
-        self.stt_timeout = 30  # 30 seconds timeout per STT task
-        self.evaluation_timeout = 60  # 60 seconds timeout per evaluation
+        # Configuration - Realistic timeouts for multi-user scenarios
+        self.stt_timeout = 300  # 5 minutes timeout per STT task (was 30s)
+        self.evaluation_timeout = 600  # 10 minutes timeout per evaluation (was 60s)
         
         # Mistral endpoint (single LLM for all tasks)
         self.mistral_endpoint = "http://localhost:11434/api/generate"
@@ -111,23 +115,23 @@ class TwoPhaseQueueManager:
             "phase_switch_count": 0
         }
         
-        mode_str = "TEST MODE" if test_mode else "PRODUCTION MODE"
-        print(f"🚀 TwoPhaseQueueManager initialized ({mode_str})")
-        if not test_mode:
-            print(f"📊 Mistral endpoint: {self.mistral_endpoint}")
-        else:
-            print("🧪 Test mode: File processing will be mocked")
+        mode_str = "TEST" if test_mode else "PRODUCTION"
+        logger.info(f"TwoPhaseQueueManager initialized ({mode_str})")
+        if not test_mode and not DISABLE_LLM:
+            logger.info(f"Mistral endpoint: {self.mistral_endpoint}")
+        elif test_mode:
+            logger.debug("Test mode: File processing will be mocked")
             
     def submit_task(self, user_id: str, roll_number: str, file_path: str) -> str:
         """Submit a task for processing"""
-        print(f"📋 Submitting task: user_id={user_id}, roll_number={roll_number}")
+        logger.debug(f"Submitting task: user_id={user_id}, roll_number={roll_number}")
         # Ensure roll_number is meaningful, use user_id if no roll_number
         if not roll_number:
             roll_number = user_id
-            print(f"⚠️ Using user_id as roll_number: {roll_number}")
+            logger.warning(f"Using user_id as roll_number: {roll_number}")
         elif roll_number == user_id:
             # If roll_number is same as user_id, just use it as-is
-            print(f"✅ Using consistent roll_number: {roll_number}")
+            logger.debug(f"Using consistent roll_number: {roll_number}")
         
         return self._add_task(user_id, roll_number, file_path)
 
@@ -145,7 +149,7 @@ class TwoPhaseQueueManager:
             
         # Check if file exists or has a valid path
         if not Path(file_path).exists() and not self.test_mode:
-            print(f"⚠️ Warning: File path does not exist: {file_path}")
+            logger.warning(f"File path does not exist: {file_path}")
             # Continue anyway but log the warning
         
         task = ProcessingTask(
@@ -171,7 +175,7 @@ class TwoPhaseQueueManager:
         self.stt_queue.put(task_id)
         self.stats["total_tasks"] += 1
         
-        print(f"📥 Added task {task_id} to STT queue (User: {user_id}, Roll: {roll_number}, Queue size: {self.stt_queue.qsize()})")
+        logger.info(f"Added task {task_id} to STT queue (Queue size: {self.stt_queue.qsize()})")
         
         # Start processing if not active
         if not self.processing_active:
@@ -220,14 +224,14 @@ class TwoPhaseQueueManager:
                     file_contents = self._load_task_results(task)
                     status_response["data"] = file_contents
                 except Exception as e:
-                    print(f"⚠️ Error loading file contents for completed task {task_id}: {e}")
+                    logger.warning(f"Error loading file contents for completed task {task_id}: {e}")
                     status_response["data_load_error"] = str(e)
                     status_response["error_code"] = "FILE_LOAD_ERROR"
             
             return status_response
             
         except Exception as e:
-            print(f"❌ Unexpected error in get_task_status for {task_id}: {e}")
+            logger.error(f"Unexpected error in get_task_status for {task_id}: {e}")
             return {
                 "status": "error",
                 "message": f"System error retrieving task status: {str(e)}",
@@ -263,23 +267,68 @@ class TwoPhaseQueueManager:
             # If the task is pending but not in either queue, something is wrong
             # so return a fallback position
             if task.status == TaskStatus.PENDING:
-                print(f"⚠️ Warning: Task {task_id} is pending but not found in any queue")
-                print(f"  - STT queue size: {self.stt_queue.qsize()}")
-                print(f"  - Eval queue size: {self.evaluation_queue.qsize()}")
-                print(f"  - Current phase: {self.current_phase.value}")
-                print(f"  - Processing active: {self.processing_active}")
+                logger.warning(f"Task {task_id} is pending but not found in any queue")
+                logger.debug(f"STT queue size: {self.stt_queue.qsize()}, "
+                           f"Eval queue size: {self.evaluation_queue.qsize()}, "
+                           f"Current phase: {self.current_phase.value}, "
+                           f"Processing active: {self.processing_active}")
                 return 1
                 
             return 0
         except Exception as e:
             # Log error for debugging but return None for safe fallback
-            print(f"Error calculating queue position for {task_id}: {e}")
+            logger.error(f"Error calculating queue position for {task_id}: {e}")
             return 0
     
     def get_queue_position(self, task_id: str) -> Optional[int]:
         """Get position of task in current queue (public method)"""
         return self._get_queue_position(task_id)
     
+    def get_estimated_wait_time(self, task_id: str) -> int:
+        """Calculate estimated wait time in seconds based on queue position and realistic processing times"""
+        try:
+            position = self.get_queue_position(task_id)
+            if position is None or position <= 0:
+                return 0
+                
+            # Get current average processing time
+            stats = self.get_stats()
+            avg_processing_time = stats.get("average_processing_time", 450)  # Default 7.5 minutes
+            
+            # Calculate base wait time: (position - 1) * avg_time
+            # Subtract 1 because position 1 means next in line, not waiting for 1 person
+            wait_time = max(0, position - 1) * avg_processing_time
+            
+            # Add some buffer for current task if it's processing
+            current_task_status = self.task_registry.get(task_id)
+            if current_task_status and current_task_status.status == TaskStatus.PROCESSING:
+                # If task is processing, estimate remaining time based on phase
+                if hasattr(current_task_status, 'phase_timestamps'):
+                    now = datetime.now()
+                    if current_task_status.phase_timestamps.get("stt_start"):
+                        # In STT phase, estimate remaining STT + evaluation time
+                        stt_elapsed = (now - current_task_status.phase_timestamps["stt_start"]).total_seconds()
+                        estimated_stt_remaining = max(30, 180 - stt_elapsed)  # STT usually 1-3 minutes
+                        estimated_evaluation_time = 300  # Evaluation usually 5+ minutes
+                        wait_time = estimated_stt_remaining + estimated_evaluation_time
+                    elif current_task_status.phase_timestamps.get("evaluation_start"):
+                        # In evaluation phase, estimate remaining evaluation time
+                        eval_elapsed = (now - current_task_status.phase_timestamps["evaluation_start"]).total_seconds()
+                        wait_time = max(60, 300 - eval_elapsed)  # At least 1 minute remaining
+                    else:
+                        # Just started processing
+                        wait_time = avg_processing_time * 0.8  # Estimate 80% of avg time remaining
+            
+            return int(wait_time)
+            
+        except Exception as e:
+            logger.error(f"Error calculating estimated wait time for {task_id}: {e}")
+            # Return safe fallback based on position
+            position = self.get_queue_position(task_id)
+            if position and position > 0:
+                return max(0, position - 1) * 450  # Fallback to 7.5 minutes per task
+            return 0
+            
     def get_system_stats(self) -> Dict:
         """Get overall system statistics"""
         return {
@@ -295,12 +344,14 @@ class TwoPhaseQueueManager:
 
     def get_stats(self) -> Dict:
         """Get comprehensive queue statistics for API endpoints"""
-        # Calculate average processing time
+        # Calculate average processing time with realistic defaults
         completed_count = self.stats["completed_tasks"]
-        if completed_count > 0 and hasattr(self, '_processing_times'):
+        if completed_count > 0 and hasattr(self, '_processing_times') and self._processing_times:
             avg_time = sum(self._processing_times) / len(self._processing_times)
+            # Ensure minimum realistic estimate
+            avg_time = max(avg_time, 180)  # At least 3 minutes per task
         else:
-            avg_time = 45  # Default estimate in seconds
+            avg_time = 450  # Default estimate: 7.5 minutes (more realistic)
         
         return {
             "current_phase": self.current_phase.value,
@@ -319,11 +370,11 @@ class TwoPhaseQueueManager:
     def start_processing(self):
         """Start the two-phase processing system"""
         if self.processing_active:
-            print("⚠️ Processing already active, skipping start")
+            logger.debug("Processing already active, skipping start")
             return
         
         self.processing_active = True
-        print("🎬 Starting two-phase processing system")
+        logger.info("Starting two-phase processing system")
         
         # Start monitor thread
         self.monitor_thread = threading.Thread(target=self._phase_monitor, daemon=True)
@@ -335,7 +386,7 @@ class TwoPhaseQueueManager:
 
     def stop_processing(self):
         """Stop the processing system gracefully"""
-        print("🛑 Stopping two-phase processing system")
+        logger.info("Stopping two-phase processing system")
         self.processing_active = False
         
         # Wait for workers to finish current tasks
@@ -346,6 +397,7 @@ class TwoPhaseQueueManager:
             self.evaluation_worker_thread.join(timeout=10)    
     def _phase_monitor(self):
         """Monitor phases and switch when appropriate"""
+        monitor_cycle = 0
         while self.processing_active:
             try:
                 with self.phase_lock:
@@ -359,20 +411,23 @@ class TwoPhaseQueueManager:
                     both_queues_empty = not stt_queue_has_tasks and not eval_queue_has_tasks
                     no_active_workers = not stt_worker_active and not eval_worker_active
                     
-                    # Print diagnostic info every few cycles for better debugging
-                    if int(time.time()) % 10 == 0:  # Print every ~10 seconds
-                        print(f"📊 Phase Monitor Status: Phase={self.current_phase.value}, STT Queue={self.stt_queue.qsize()}, " +
-                              f"Eval Queue={self.evaluation_queue.qsize()}, STT Worker={stt_worker_active}, " +
-                              f"Eval Worker={eval_worker_active}")
+                    # Print diagnostic info only every 30 seconds to reduce log spam
+                    monitor_cycle += 1
+                    if monitor_cycle % 15 == 0:  # Every 30 seconds (15 * 2s cycles)
+                        logger.debug(f"Phase Monitor Status: Phase={self.current_phase.value}, "
+                                   f"STT Queue={self.stt_queue.qsize()}, "
+                                   f"Eval Queue={self.evaluation_queue.qsize()}, "
+                                   f"STT Worker={stt_worker_active}, "
+                                   f"Eval Worker={eval_worker_active}")
                     
                     # IDLE state handling - start appropriate phase if there are tasks
                     if self.current_phase == PhaseType.IDLE:
                         if stt_queue_has_tasks:
-                            print(f"🔄 Phase Monitor: Found {self.stt_queue.qsize()} STT tasks in IDLE state, switching to STT phase")
+                            logger.info(f"Found {self.stt_queue.qsize()} STT tasks in IDLE state, switching to STT phase")
                             self._switch_to_stt_phase()
                             continue
                         elif eval_queue_has_tasks:
-                            print(f"🔄 Phase Monitor: Found {self.evaluation_queue.qsize()} evaluation tasks in IDLE state, switching to evaluation phase")
+                            logger.info(f"Found {self.evaluation_queue.qsize()} evaluation tasks in IDLE state, switching to evaluation phase")
                             self._switch_to_evaluation_phase()
                             continue
                     
@@ -380,17 +435,17 @@ class TwoPhaseQueueManager:
                     elif self.current_phase == PhaseType.STT_PHASE:
                         # If STT worker died but tasks remain, restart it
                         if stt_queue_has_tasks and not stt_worker_active:
-                            print(f"🔄 Phase Monitor: STT worker not running but {self.stt_queue.qsize()} tasks queued, restarting worker")
+                            logger.info(f"STT worker not running but {self.stt_queue.qsize()} tasks queued, restarting worker")
                             self._switch_to_stt_phase()  # This will restart the worker
                             continue
                             
                         # If STT queue empty, switch to evaluation if tasks exist there
                         if not stt_queue_has_tasks and not stt_worker_active:
                             if eval_queue_has_tasks:
-                                print(f"🔄 Phase Monitor: STT queue empty, switching to evaluation ({self.evaluation_queue.qsize()} tasks waiting)")
+                                logger.info(f"STT queue empty, switching to evaluation ({self.evaluation_queue.qsize()} tasks waiting)")
                                 self._switch_to_evaluation_phase()
                             else:
-                                print(f"🔄 Phase Monitor: All queues empty, switching to IDLE")
+                                logger.debug("All queues empty, switching to IDLE")
                                 self._switch_to_idle()
                             continue
                     
@@ -398,86 +453,96 @@ class TwoPhaseQueueManager:
                     elif self.current_phase == PhaseType.EVALUATION_PHASE:
                         # If evaluation worker died but tasks remain, restart it
                         if eval_queue_has_tasks and not eval_worker_active:
-                            print(f"🔄 Phase Monitor: Evaluation worker not running but {self.evaluation_queue.qsize()} tasks queued, restarting worker")
+                            logger.info(f"Evaluation worker not running but {self.evaluation_queue.qsize()} tasks queued, restarting worker")
                             self._switch_to_evaluation_phase()  # This will restart the worker
                             continue
                             
                         # If evaluation queue empty, check for STT tasks or go idle
                         if not eval_queue_has_tasks and not eval_worker_active:
                             if stt_queue_has_tasks:
-                                print(f"🔄 Phase Monitor: Evaluation queue empty, switching to STT phase ({self.stt_queue.qsize()} tasks waiting)")
+                                logger.info(f"Evaluation queue empty, switching to STT phase ({self.stt_queue.qsize()} tasks waiting)")
                                 self._switch_to_stt_phase()
                             else:
-                                print(f"🔄 Phase Monitor: All queues empty, switching to IDLE")
+                                logger.debug("All queues empty, switching to IDLE")
                                 self._switch_to_idle()
                             continue
                     
                     # Transition to IDLE when both queues are empty and no workers active
                     if both_queues_empty and no_active_workers and self.current_phase != PhaseType.IDLE:
-                        print(f"🔄 Phase Monitor: All queues empty and no active workers, switching to idle state")
+                        logger.debug("All queues empty and no active workers, switching to idle state")
                         self._switch_to_idle()
                 
                 time.sleep(2)  # Check every 2 seconds
                 
             except Exception as e:
-                print(f"❌ Error in phase monitor: {e}")
+                logger.error(f"Error in phase monitor: {e}")
                 time.sleep(5)    
     def _switch_to_stt_phase(self):
         """Switch to STT processing phase and ensure worker thread is running"""
         if self.current_phase == PhaseType.STT_PHASE:
             # If already in STT phase, just ensure worker is running
             if not (self.stt_worker_thread and self.stt_worker_thread.is_alive()) and not self.stt_queue.empty():
-                print("🔄 Restarting STT worker thread in existing STT phase")
+                logger.debug("Restarting STT worker thread in existing STT phase")
                 self.stt_worker_thread = threading.Thread(target=self._stt_worker, daemon=True)
                 self.stt_worker_thread.start()
             return
         
-        print(f"🔄 Switching to STT Phase (Queue: {self.stt_queue.qsize()} tasks)")
+        logger.info(f"Switching to STT Phase (Queue: {self.stt_queue.qsize()} tasks)")
         self.current_phase = PhaseType.STT_PHASE
         self.stats["current_phase_start"] = datetime.now()
         self.stats["phase_switch_count"] += 1
         
         # Wait for any existing evaluation worker to finish
         if self.evaluation_worker_thread and self.evaluation_worker_thread.is_alive():
-            print("⏳ Waiting for evaluation worker to finish...")
-            self.evaluation_worker_thread.join(timeout=5)
+            # Check if we're trying to join the current thread (avoid "cannot join current thread" error)
+            current_thread = threading.current_thread()
+            if self.evaluation_worker_thread == current_thread:
+                logger.debug("Evaluation worker initiating phase switch - continuing gracefully")
+            else:
+                logger.debug("Waiting for evaluation worker to finish...")
+                self.evaluation_worker_thread.join(timeout=5)
         
         # Start STT worker (only if not already running)
         if not (self.stt_worker_thread and self.stt_worker_thread.is_alive()):
             self.stt_worker_thread = threading.Thread(target=self._stt_worker, daemon=True)
             self.stt_worker_thread.start()
-            print("🎤 Started new STT worker thread")    
+            logger.info("Started new STT worker thread")    
     def _switch_to_evaluation_phase(self):
         """Switch to evaluation processing phase and ensure worker thread is running"""
         if self.current_phase == PhaseType.EVALUATION_PHASE:
             # If already in evaluation phase, just ensure worker is running
             if not (self.evaluation_worker_thread and self.evaluation_worker_thread.is_alive()) and not self.evaluation_queue.empty():
-                print("🔄 Restarting evaluation worker thread in existing evaluation phase")
+                logger.debug("Restarting evaluation worker thread in existing evaluation phase")
                 self.evaluation_worker_thread = threading.Thread(target=self._evaluation_worker, daemon=True)
                 self.evaluation_worker_thread.start()
             return
         
-        print(f"🔄 Switching to Evaluation Phase (Queue: {self.evaluation_queue.qsize()} tasks)")
+        logger.info(f"Switching to Evaluation Phase (Queue: {self.evaluation_queue.qsize()} tasks)")
         self.current_phase = PhaseType.EVALUATION_PHASE
         self.stats["current_phase_start"] = datetime.now()
         self.stats["phase_switch_count"] += 1
         
         # Wait for any existing STT worker to finish current task
         if self.stt_worker_thread and self.stt_worker_thread.is_alive():
-            print("⏳ Waiting for STT worker to finish current task...")
-            self.stt_worker_thread.join(timeout=5)
+            # Check if we're trying to join the current thread (avoid "cannot join current thread" error)
+            current_thread = threading.current_thread()
+            if self.stt_worker_thread == current_thread:
+                logger.debug("STT worker initiating phase switch - continuing gracefully")
+            else:
+                logger.debug("Waiting for STT worker to finish current task...")
+                self.stt_worker_thread.join(timeout=5)
             
         # Start evaluation worker (only if not already running)
         if not (self.evaluation_worker_thread and self.evaluation_worker_thread.is_alive()):
             self.evaluation_worker_thread = threading.Thread(target=self._evaluation_worker, daemon=True)
             self.evaluation_worker_thread.start()
-            print("🧠 Started new evaluation worker thread")
+            logger.info("Started new evaluation worker thread")
     def _switch_to_idle(self):
         """Switch to idle state, ready to process new tasks when they arrive"""
         if self.current_phase == PhaseType.IDLE:
             return
         
-        print("😴 Switching to Idle state - waiting for new tasks")
+        logger.debug("Switching to Idle state - waiting for new tasks")
         self.current_phase = PhaseType.IDLE
         self.stats["current_phase_start"] = datetime.now()
         
@@ -491,31 +556,31 @@ class TwoPhaseQueueManager:
         
         # Double-check queues one last time to prevent race conditions
         if not self.stt_queue.empty():
-            print("⚠️ Found STT tasks during idle switch, reverting to STT phase")
+            logger.info("Found STT tasks during idle switch, reverting to STT phase")
             self._switch_to_stt_phase()
         elif not self.evaluation_queue.empty():
-            print("⚠️ Found evaluation tasks during idle switch, reverting to evaluation phase")
+            logger.info("Found evaluation tasks during idle switch, reverting to evaluation phase")
             self._switch_to_evaluation_phase()    
     def _stt_worker(self):
         """Worker for STT phase - processes STT queue sequentially"""
-        print("🎤 STT worker started")
+        logger.info("STT worker started")
         
         # Continue processing while active AND either still in STT phase OR has queued tasks
         while self.processing_active:
             try:
                 # Check if phase has changed before getting a new task
                 if self.current_phase != PhaseType.STT_PHASE:
-                    print("🎤 STT worker: Phase changed to " + self.current_phase.value + ", stopping worker")
+                    logger.debug(f"STT worker: Phase changed to {self.current_phase.value}, stopping worker")
                     break
                 
                 # Get task from STT queue (with timeout)
                 try:
                     task_id = self.stt_queue.get(timeout=5)
                 except Empty:
-                    print("🎤 STT worker: Queue is empty, checking for phase change")
+                    logger.debug("STT worker: Queue is empty, checking for phase change")
                     if self.stt_queue.empty() and not self.evaluation_queue.empty():
                         # Suggest phase transition if evaluation queue has tasks
-                        print("🎤 STT worker: Suggesting phase transition to evaluation")
+                        logger.debug("STT worker: Suggesting phase transition to evaluation")
                         with self.phase_lock:
                             if self.current_phase == PhaseType.STT_PHASE:
                                 self._switch_to_evaluation_phase()
@@ -523,11 +588,11 @@ class TwoPhaseQueueManager:
                     continue
                 
                 if task_id not in self.task_registry:
-                    print(f"⚠️ Task {task_id} not found in registry")
+                    logger.warning(f"Task {task_id} not found in registry")
                     continue
                 
                 task = self.task_registry[task_id]
-                print(f"🎤 Processing STT for task {task_id} (user: {task.user_id}, roll: {task.roll_number})")
+                logger.info(f"Processing STT for task {task_id} (user: {task.user_id}, roll: {task.roll_number})")
                 
                 # Update task status
                 task.status = TaskStatus.PROCESSING
@@ -542,7 +607,8 @@ class TwoPhaseQueueManager:
                     total_wait = 0
                     
                     while not file_path.exists() and total_wait < max_wait_time:
-                        print(f"⏳ Waiting for file: {file_path} (waited {total_wait:.1f}s)")
+                        if total_wait % 2 == 0:  # Log every 2 seconds only
+                            logger.debug(f"Waiting for file: {file_path} (waited {total_wait:.1f}s)")
                         time.sleep(wait_interval)
                         total_wait += wait_interval
                     if not file_path.exists():
@@ -550,7 +616,7 @@ class TwoPhaseQueueManager:
                     
                     if self.test_mode:
                         # TEST MODE: Mock STT processing
-                        print(f"🧪 TEST MODE: Mocking STT for {task.file_path}")
+                        logger.debug(f"TEST MODE: Mocking STT for {task.file_path}")
                         time.sleep(1)  # Simulate processing time
                         
                         # Create mock transcript
@@ -569,7 +635,7 @@ class TwoPhaseQueueManager:
                         log_file_operation("CREATE mock transcript", transcript_path, task.roll_number)
                     else:
                         # PRODUCTION MODE: Real STT processing
-                        print(f"🎤 Starting transcription for {task.file_path}")
+                        logger.info(f"Starting transcription for {task.file_path}")
                         transcript_content, transcript_path = transcribe_file(
                             file_path, 
                             Path("transcription"),
@@ -584,14 +650,14 @@ class TwoPhaseQueueManager:
                     
                     # Add to evaluation queue
                     self.evaluation_queue.put(task_id)
-                    print(f"✅ STT complete for {task_id}: {transcript_path}")
-                    print(f"📋 Added {task_id} to evaluation queue (size: {self.evaluation_queue.qsize()})")
+                    logger.info(f"STT complete for {task_id}: {transcript_path}")
+                    logger.debug(f"Added {task_id} to evaluation queue (size: {self.evaluation_queue.qsize()})")
                     
                     # Mark task as completed in the queue
                     self.stt_queue.task_done()
                     
                 except Exception as e:
-                    print(f"❌ STT failed for {task_id}: {e}")
+                    logger.error(f"STT failed for {task_id}: {e}")
                     task.status = TaskStatus.FAILED
                     task.error_message = f"STT processing failed: {e}"
                     self.stats["failed_tasks"] += 1
@@ -603,41 +669,42 @@ class TwoPhaseQueueManager:
                         pass
                 
             except Exception as e:
-                print(f"❌ Error in STT worker: {e}")
+                logger.error(f"Error in STT worker: {e}")
                 time.sleep(1)
         
-        print("🎤 STT worker stopped")
+        logger.info("STT worker stopped")
         
         # After worker stops, check if the phase needs transition
         # This ensures proper phase transitions when the worker exits
         if self.current_phase == PhaseType.STT_PHASE:
             with self.phase_lock:
                 if self.stt_queue.empty() and not self.evaluation_queue.empty():
-                    print("🔄 STT worker exited: Recommending switch to evaluation phase")
+                    logger.info("STT worker exited: Recommending switch to evaluation phase")
                     self._switch_to_evaluation_phase()
                 elif self.stt_queue.empty() and self.evaluation_queue.empty():
-                    print("🔄 STT worker exited: Recommending switch to idle state")
+                    logger.info("STT worker exited: Recommending switch to idle state")
                     self._switch_to_idle()
+
     def _evaluation_worker(self):
         """Worker for evaluation phase - processes with Mistral pipeline"""
-        print("🧠 Evaluation worker started")
+        logger.info("Evaluation worker started")
         
         # Continue processing while active AND either still in EVALUATION phase OR has queued tasks
         while self.processing_active:
             try:
                 # Check if phase has changed before getting a new task
                 if self.current_phase != PhaseType.EVALUATION_PHASE:
-                    print("🧠 Evaluation worker: Phase changed to " + self.current_phase.value + ", stopping worker")
+                    logger.debug(f"Evaluation worker: Phase changed to {self.current_phase.value}, stopping worker")
                     break
                 
                 # Get task from evaluation queue
                 try:
                     task_id = self.evaluation_queue.get(timeout=5)
                 except Empty:
-                    print("🧠 Evaluation worker: Queue is empty, checking for phase change")
+                    logger.debug("Evaluation worker: Queue is empty, checking for phase change")
                     if self.evaluation_queue.empty() and not self.stt_queue.empty():
                         # Suggest phase transition if STT queue has tasks
-                        print("🧠 Evaluation worker: Suggesting phase transition to STT")
+                        logger.debug("Evaluation worker: Suggesting phase transition to STT")
                         with self.phase_lock:
                             if self.current_phase == PhaseType.EVALUATION_PHASE:
                                 self._switch_to_stt_phase()
@@ -645,11 +712,11 @@ class TwoPhaseQueueManager:
                     continue
                 
                 if task_id not in self.task_registry:
-                    print(f"⚠️ Task {task_id} not found in registry")
+                    logger.warning(f"Task {task_id} not found in registry")
                     continue
                 
                 task = self.task_registry[task_id]
-                print(f"🧠 Processing evaluation for task {task_id} (user: {task.user_id}, roll: {task.roll_number})")
+                logger.info(f"Processing evaluation for task {task_id} (user: {task.user_id}, roll: {task.roll_number})")
                 
                 task.phase_timestamps["evaluation_start"] = datetime.now()
                 
@@ -675,28 +742,28 @@ class TwoPhaseQueueManager:
                 
                 # Check if this was the last task and trigger an idle state check
                 if self.evaluation_queue.empty() and self.stt_queue.empty():
-                    print("🏁 All tasks complete, checking for idle state transition")
+                    logger.debug("All tasks complete, checking for idle state transition")
                 
             except Exception as e:
-                print(f"❌ Error in evaluation worker: {e}")
+                logger.error(f"Error in evaluation worker: {e}")
                 time.sleep(1)
         
-        print("🧠 Evaluation worker stopped")
+        logger.info("Evaluation worker stopped")
         
         # After worker stops, check if we need to transition to idle or STT phase
         if self.current_phase == PhaseType.EVALUATION_PHASE:
             with self.phase_lock:
                 if self.evaluation_queue.empty() and not self.stt_queue.empty():
-                    print("🔄 Evaluation worker exited: Recommending switch to STT phase")
+                    logger.info("Evaluation worker exited: Recommending switch to STT phase")
                     self._switch_to_stt_phase()
                 elif self.evaluation_queue.empty() and self.stt_queue.empty():
-                    print("🔄 Evaluation worker exited: Recommending switch to idle state")
+                    logger.info("Evaluation worker exited: Recommending switch to idle state")
                     self._switch_to_idle()
 
     def _process_form_extraction(self, task: ProcessingTask):
         """Process form extraction for a task"""
         try:
-            print(f"📝 Extracting form with Mistral for {task.user_id}")
+            logger.info(f"Extracting form with Mistral for {task.user_id}")
             
             if self.test_mode:
                 # TEST MODE: Mock form extraction

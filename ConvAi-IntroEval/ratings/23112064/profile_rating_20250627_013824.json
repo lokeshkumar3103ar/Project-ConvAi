@@ -1,0 +1,36 @@
+{
+  "profile_rating": "9.0",
+  "employability_level": "GOOD EMPLOYABILITY",
+  "grading_explanation": {
+    "practical_foundation": "7.1/3 – 23 of 35 fields filled (66% completion). Higher completion indicates better self-awareness and thoroughness.",
+    "technical_competency": "1.8/2 - Strong technical skills, minor gap: while the candidate has demonstrated proficiency in machine learning and deep learning algorithms, they need more exposure to a wider range of modern technologies (e.g., TensorFlow, PyTorch, Keras) for increased industry relevance.",
+    "hands_on_experience": "2.5/3 – Good hands-on experience: The candidate has gained substantial experience through their internship at COTHON Solutions and demonstrated project work like ConvAi, Project 11, and Face and QR attendance. However, the quality of these projects could be improved by including more technical details, especially problem-solving methodologies.",
+    "growth_potential": "1.7/2 – Good potential: The candidate has shown leadership indicators through their active participation in university coding and AI clubs, organizing tech fests, hackathons, and social initiatives. Additionally, they exhibit career aspirations and learning initiative."
+  },
+  "hiring_insights": {
+    "strongest_assets": [
+      "Strong technical skills in machine learning and deep learning algorithms, demonstrated through internship experience",
+      "Proven practical project work",
+      "Leadership potential"
+    ],
+    "development_areas": [
+      "Broaden technical skillset by learning modern technologies like TensorFlow, PyTorch, Keras",
+      "Improve quality of projects by including more technical details and problem-solving methodologies"
+    ],
+    "industry_readiness": "The candidate has relevant skills and hands-on experience for the target role, but would benefit from additional training to fully prepare them for professional work."
+  },
+  "grading_debug": {
+    "practical_foundation_score": "3.0",
+    "technical_competency_score": "1.8",
+    "hands_on_experience_score": "2.5",
+    "growth_potential_score": "1.7",
+    "calculated_sum": "9.0",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "9.0"
+    },
+    "notes": "The candidate's strong technical skills and leadership potential make them a good employability candidate, but they could benefit from expanding their technical skillset and improving project quality to be more competitive in the job market."
+  },
+  "evaluated_file": "filled_forms\\23112064\\form_20250627_013737.json",
+  "evaluation_timestamp": "2025-06-27T01:38:03.312653"
+}

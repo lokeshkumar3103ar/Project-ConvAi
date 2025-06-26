@@ -1,0 +1,29 @@
+{
+  "profile_rating": "7.0",
+  "employability_level": "GOOD EMPLOYABILITY",
+  "grading_explanation": {
+    "practical_foundation": "18/35 – 51% completion. Good self-awareness and thoroughness.",
+    "technical_competency": "2.0/2 – Strong technical foundation with relevant skills for target field (e.g., machine learning, deep learning)",
+    "hands_on_experience": "2.5/3 – 1 solid internship + projects OR 2+ well-described projects with real-world applications",
+    "growth_potential": "1.5/2 – Some leadership experience and demonstrated learning initiative"
+  },
+  "hiring_insights": {
+    "strongest_assets": "[Relevant technical skills, proven practical experience, demonstrated learning initiative]",
+    "development_areas": "[Age not mentioned, no research projects or applied learning experiences, no specific key responsibilities from internship or work experience]",
+    "industry_readiness": "[Candidate has strong hands-on experience and technical skills but lacks depth in some areas such as research, real-world project management, and leadership roles]"
+  },
+  "grading_debug": {
+    "practical_foundation_score": "1.0",
+    "technical_competency_score": "2.0",
+    "hands_on_experience_score": "2.5",
+    "growth_potential_score": "1.5",
+    "calculated_sum": "7.0",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "7.0"
+    },
+    "notes": "[Candidate demonstrates a solid foundation for employability with relevant technical skills and practical experience but lacks some depth in key areas such as research projects or leadership roles.]"
+  },
+  "evaluated_file": "filled_forms\\23112047\\form_20250627_020757.json",
+  "evaluation_timestamp": "2025-06-27T02:08:09.942391"
+}

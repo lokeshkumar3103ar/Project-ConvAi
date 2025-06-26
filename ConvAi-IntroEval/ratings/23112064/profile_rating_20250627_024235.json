@@ -1,0 +1,34 @@
+{
+  "profile_rating": "6.0",
+  "employability_level": "GOOD EMPLOYABILITY",
+  "grading_explanation": {
+    "practical_foundation": "15/35 – 43.7% completion. Lower completion indicates less thoroughness and self-awareness.",
+    "technical_competency": "2.0/2 – Strong technical foundation with relevant skills for target field (e.g., machine learning, prompt engineering, data analysis).",
+    "hands_on_experience": "2.5/3 – 1 solid internship + projects OR 2+ well-described projects with real-world applications.",
+    "growth_potential": "0.5/2 – Limited indicators of leadership or professional development."
+  },
+  "hiring_insights": {
+    "strongest_assets": [
+      "Solid technical skills demonstrated through certifications, academic projects and internships.",
+      "Relevant hobbies and interests in AI technologies."
+    ],
+    "development_areas": [
+      "Expanding the range of programming languages and tools, improving leadership roles and extra-curricular activities."
+    ],
+    "industry_readiness": "The candidate shows moderate to good industry readiness but may require additional training in some technical areas to ensure optimal performance."
+  },
+  "grading_debug": {
+    "practical_foundation_score": "1.0",
+    "technical_competency_score": "2.0",
+    "hands_on_experience_score": "2.5",
+    "growth_potential_score": "0.5",
+    "calculated_sum": "6.0",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "6.0"
+    },
+    "notes": "The candidate demonstrates a solid technical foundation and hands-on experience, but limited leadership potential and growth indicators. With some additional development in those areas, this candidate could become an attractive hire."
+  },
+  "evaluated_file": "filled_forms\\23112064\\form_20250627_024205.json",
+  "evaluation_timestamp": "2025-06-27T02:42:20.075997"
+}

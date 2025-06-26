@@ -1,0 +1,29 @@
+{
+  "profile_rating": "7.2",
+  "employability_level": "MODERATE EMPLOYABILITY",
+  "grading_explanation": {
+    "practical_foundation": "2.67/10 – 20 of 35 fields filled (57% completion). Higher completion indicates better self-awareness and thoroughness.",
+    "technical_competency": "1.5/2 – Proficient in Python, AI model interaction, Docker, SQL, which are relevant to the target field. However, there is a need for more depth in technical skills beyond programming languages.",
+    "hands_on_experience": "2.0/3 – Has completed an internship at Python Solutions (limited details provided). Also, has attended workshops and obtained GitHub Foundation certification, Data Literacy, and Data Chem certifications. The AI project mentioned could be considered a practical experience, but more details about its implementation are needed to fully assess its quality.",
+    "growth_potential": "1.0/2 – Demonstrates some level of leadership potential through taking courses on Google, IBM, Coursera, EdX and mentions career aspirations in data science and AI fields. However, lacks clear indicators of career direction or learning initiative."
+  },
+  "hiring_insights": {
+    "strongest_assets": "[Practical experience (internship + workshops) and continuous learning initiative through online courses]",
+    "development_areas": "[Detailed practical experience description, technical skills depth, leadership roles, career direction]",
+    "industry_readiness": "[Needs significant skill development to become industry-ready]"
+  },
+  "grading_debug": {
+    "practical_foundation_score": "2.67",
+    "technical_competency_score": "1.5",
+    "hands_on_experience_score": "2.0",
+    "growth_potential_score": "1.0",
+    "calculated_sum": "7.2",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "7.2"
+    },
+    "notes": "[Candidate requires significant development in several areas to become more employable, including providing more detail about practical experience, expanding technical skills, and demonstrating leadership roles or career direction.]"
+  },
+  "evaluated_file": "filled_forms\\23112067\\form_20250626_155619.json",
+  "evaluation_timestamp": "2025-06-26T15:56:59.188764"
+}

@@ -38,7 +38,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 #login 
 from sqlalchemy.orm import Session
 from argon2 import PasswordHasher #argon2 for password hashing
-from auth import get_current_teacher, create_access_token, get_current_user
+from auth import get_current_teacher, create_access_token, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES
 from argon2.exceptions import VerifyMismatchError
 
 import secrets
@@ -233,24 +233,30 @@ async def shutdown_event():
 
 # ==================== UTILITY FUNCTIONS ====================
 
+# Import optimized logging configuration
+import logging
+from logging_config_optimized import setup_production_logging, get_optimized_logger
+
+# Setup production logging with minimal overhead
+setup_production_logging(debug_mode=DEBUG_MODE, console_level=logging.WARNING)
+logger = get_optimized_logger(__name__)
+
 def log_info(message: str):
-    """Log information with timestamp."""
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(f"[{timestamp}] INFO: {message}")
+    """Log information with optimized logger (reduced frequency)."""
+    # Only log truly important info to reduce overhead
+    if any(keyword in message.lower() for keyword in ['error', 'failed', 'complete', 'started', 'stopped']):
+        logger.info(message)
 
 def log_warning(message: str):
-    """Log warning with timestamp."""
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(f"[{timestamp}] WARNING: {message}")
+    """Log warning with optimized logger."""
+    logger.warning(message)
 
 def log_error(message: str, error: Exception = None):
-    """Log error with timestamp and optional exception details."""
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(f"[{timestamp}] ERROR: {message}")
-    if error:
-        print(f"[{timestamp}] ERROR DETAILS: {str(error)}")
-        if DEBUG_MODE:
-            traceback.print_exc()
+    """Log error with optimized logger."""
+    logger.error(message)
+    if error and DEBUG_MODE:
+        logger.error(f"Error details: {str(error)}")
+        logger.debug("Full traceback:", exc_info=True)
 
 def get_safe_filename(filename: str) -> str:
     """Generate a safe filename for uploaded files."""
@@ -739,7 +745,7 @@ async def submit_to_queue(
 ):
     """
     Submit a file to the two-phase queue system for processing.
-    This is the new optimized endpoint that uses the dual LLM setup.
+    This endpoint uses Mistral for both form extraction and rating.
     """
     try:
         # Check if user is authenticated
@@ -807,34 +813,35 @@ async def submit_to_queue(
         raise HTTPException(status_code=500, detail=f"Queue submission failed: {str(e)}")
 
 @app.get("/queue/status/{task_id}")
-
-async def get_task_status(task_id: str):
+async def get_task_status(task_id: str, current_user: Optional[Union[User, Teacher]] = Depends(get_current_user)):
     """Get the current status of a task in the queue with enhanced queue information."""
     try:
+        # Require authentication for task status
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Authentication required")
+        
         status = queue_manager.get_task_status(task_id)
         if not status:
             raise HTTPException(status_code=404, detail="Task not found")
         
+        # Verify user has access to this task
+        task_registry = queue_manager.task_registry
+        if task_id in task_registry:
+            task = task_registry[task_id]
+            user_id = current_user.username
+            # Only allow access if the task belongs to the current user
+            if task.user_id != user_id:
+                raise HTTPException(status_code=403, detail="Access denied to this task")
+        
         # Add queue position information
         task_position = queue_manager.get_queue_position(task_id) or 0
         
-        # Get queue stats for better estimates
+        # Get queue stats for system status information
         queue_stats = queue_manager.get_stats()
         current_phase = queue_stats.get("current_phase", "idle")
         
-        # Calculate more accurate average processing time based on recent completions
-        recent_avg_time = queue_stats.get("average_processing_time", 45)  # seconds per task
-        avg_processing_time = recent_avg_time if recent_avg_time > 0 else 45
-        
-        # Calculate estimated wait time based on queue position and phase
-        estimated_wait_time = task_position * avg_processing_time
-        
-        # Add phase-specific time if this task is in the first position
-        if task_position == 0 and status.get("status") == "processing":
-            # Task is currently processing, use phase-specific progress to estimate remaining time
-            phase_progress = queue_stats.get("phase_progress", 0) 
-            remaining_phase_time = avg_processing_time * (1 - (phase_progress / 100))
-            estimated_wait_time = max(5, int(remaining_phase_time))  # At least 5 seconds
+        # Use improved wait time calculation
+        estimated_wait_time = queue_manager.get_estimated_wait_time(task_id)
         
         # Create detailed user-friendly message based on status
         task_status = status.get("status")
@@ -921,9 +928,22 @@ async def get_queue_stats():
         raise HTTPException(status_code=500, detail=f"Failed to get queue stats: {str(e)}")
 
 @app.get("/queue/results/{task_id}")
-async def get_task_results(task_id: str):
+async def get_task_results(task_id: str, current_user: Optional[Union[User, Teacher]] = Depends(get_current_user)):
     """Get the complete results for a finished task."""
     try:
+        # Require authentication for task results
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Authentication required")
+        
+        # Verify user has access to this task
+        task_registry = queue_manager.task_registry
+        if task_id in task_registry:
+            task = task_registry[task_id]
+            user_id = current_user.username
+            # Only allow access if the task belongs to the current user
+            if task.user_id != user_id:
+                raise HTTPException(status_code=403, detail="Access denied to this task")
+        
         results = queue_manager.get_task_results(task_id)
         if not results:
             raise HTTPException(status_code=404, detail="Task results not found")
@@ -1095,7 +1115,12 @@ async def login(username: str = Form(...), password: str = Form(...), db: Sessio
     if teacher:
         try:
             ph.verify(teacher.hashed_password, password)
-            access_token = create_access_token(data={"sub": teacher.username})
+            # Create token with proper expiration
+            access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+            access_token = create_access_token(
+                data={"sub": teacher.username}, 
+                expires_delta=access_token_expires
+            )
             response = RedirectResponse(url="/teacher/dashboard", status_code=status.HTTP_303_SEE_OTHER)
             response.set_cookie(
                 key="access_token",
@@ -1103,7 +1128,7 @@ async def login(username: str = Form(...), password: str = Form(...), db: Sessio
                 httponly=True,
                 secure=False,  # Set to False for local development
                 samesite='lax',  # Allow proper session isolation while maintaining security
-                max_age=1800,  # 30 minutes
+                max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,  # Convert minutes to seconds
                 path="/"  # Ensure cookie is scoped properly
             )
             return response
@@ -1117,7 +1142,12 @@ async def login(username: str = Form(...), password: str = Form(...), db: Sessio
     
     try:
         ph.verify(user.hashed_password, password)
-        access_token = create_access_token(data={"sub": user.username})
+        # Create token with proper expiration
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(
+            data={"sub": user.username}, 
+            expires_delta=access_token_expires
+        )
         response = RedirectResponse(url="/index", status_code=status.HTTP_303_SEE_OTHER)
         response.set_cookie(
             key="access_token",
@@ -1125,7 +1155,7 @@ async def login(username: str = Form(...), password: str = Form(...), db: Sessio
             httponly=True,
             secure=False,  # Set to False for local development
             samesite='lax',  # Allow proper session isolation while maintaining security
-            max_age=1800,  # 30 minutes
+            max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,  # Convert minutes to seconds
             path="/"  # Ensure cookie is scoped properly
         )
         return response
@@ -1199,7 +1229,7 @@ async def send_reset_email(email_to: str, token: str):
             server.login(EMAIL_SENDER, EMAIL_PASSWORD)
             server.send_message(msg)
     except Exception as e:
-        print(f"Error sending email: {e}")
+        logger.error(f"Error sending email: {e}")
 
 @app.post("/request-password-reset")
 async def request_password_reset(
@@ -1538,7 +1568,7 @@ async def update_user_profile(
         raise e
     except Exception as e:
         db.rollback()
-        print(f"❌ Error updating profile: {e}")  # <-- ADD THIS LINE
+        logger.error(f"Error updating profile: {e}")  # <-- FIXED LINE
         raise HTTPException(status_code=500, detail="Failed to update profile")
 
 

@@ -1,0 +1,31 @@
+{
+  "profile_rating": "4.2",
+  "employability_level": "DEVELOPING POTENTIAL",
+  "grading_explanation": {
+    "practical_foundation": "2.7/3 – 9 of 35 fields filled (26% completion). Lower completion indicates lack of self-awareness and thoroughness.",
+    "technical_competency": "0.0/2 – No relevant technical competencies demonstrated",
+    "hands_on_experience": "1.0/3 – Basic project experience or academic assignments with minimal industry relevance",
+    "growth_potential": "0.5/2 – Minimal evidence of leadership or professional development"
+  },
+  "hiring_insights": {
+    "strongest_assets": "[No notable strengths that make this candidate attractive to employers]",
+    "development_areas": [
+      "Technical skills development, hands-on experience and project portfolio, growth potential indicators"
+    ],
+    "industry_readiness": "[Requires significant skill development before industry readiness]"
+  },
+  "grading_debug": {
+    "practical_foundation_score": "2.7",
+    "technical_competency_score": "0.0",
+    "hands_on_experience_score": "1.0",
+    "growth_potential_score": "0.5",
+    "calculated_sum": "4.2",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "4.2"
+    },
+    "notes": "[No relevant technical skills demonstrated, limited practical experience, minimal evidence of leadership or professional development]"
+  },
+  "evaluated_file": "filled_forms\\23112048\\form_20250627_031913.json",
+  "evaluation_timestamp": "2025-06-27T03:19:24.967784"
+}

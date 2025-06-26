@@ -1,0 +1,33 @@
+{
+  "intro_rating": "8.7",
+  "grading_explanation": {
+    "grammar_and_clarity": "2.7/3.0 – The introduction is mostly fluent and clear, with a few minor grammatical errors such as inconsistent verb tenses and awkward phrasing.",
+    "structure": "1.5/1.5 – The speaker effectively organizes their thoughts in a logical progression, although the transition between some points could be smoother.",
+    "info_coverage": "3.2/3.5 – The introduction covers all key areas extensively, with ample detail on academic background, practical experience and projects, technical skills, and career direction.",
+    "relevance_to_role": "2.0/2.0 – The speaker demonstrates practical readiness by connecting their experiences, skills, and projects to professional roles."
+  },
+  "insights": [
+    "Tone: Confident and enthusiastic",
+    "Style: Structured yet conversational",
+    "Fluency: Well-paced with occasional hesitations"
+  ],
+  "feedback": [
+    "Consistently use correct verb tenses to maintain clarity.",
+    "Smoothen transitions between different sections for a more seamless flow.",
+    "Add specific examples of projects when possible to further emphasize practical experience."
+  ],
+  "grading_debug": {
+    "grammar_clarity_score": "2.7",
+    "structure_score": "1.5",
+    "info_coverage_score": 2.5,
+    "relevance_score": "2.0",
+    "calculated_sum": "8.7",
+    "sum_check": {
+      "intro_expected": 10.0,
+      "intro_reported": "8.7"
+    },
+    "notes": "The speaker demonstrates strong academic background and practical experience, effectively showcasing readiness for professional roles in AI and ML."
+  },
+  "evaluated_file": "transcription\\23112011\\20250627_014103_my_intro_transcription_turbo.txt",
+  "evaluation_timestamp": "2025-06-27T01:43:20.641012"
+}

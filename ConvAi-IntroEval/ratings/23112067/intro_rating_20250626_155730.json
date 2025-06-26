@@ -1,0 +1,33 @@
+{
+  "intro_rating": "7.3",
+  "grading_explanation": {
+    "grammar_and_clarity": "2.8/3.0 – Grammatical errors in sentence structure and punctuation, repetition of phrases",
+    "structure": "1.5/1.5 – Coherent introduction, but lacking flow and clarity between sections",
+    "info_coverage": "3.4/3.5 – Comprehensive academic background, mention of project, skills but limited practical experience or specific career goals",
+    "relevance_to_role": "0.5/2.0 – Mentioned relevance to role and skills, but lacks clear connection to professional context"
+  },
+  "insights": [
+    "Tone: Confident but repetitive",
+    "Style: Structured with a focus on presenting information",
+    "Fluency: Well-paced but slightly halting"
+  ],
+  "feedback": [
+    "Consider revising sentence structure for clarity and concision",
+    "Provide specific examples or cases that demonstrate your practical experience and project's impact",
+    "Connect your skills and projects to real-world professional scenarios, explaining how you can bring value to employers"
+  ],
+  "grading_debug": {
+    "grammar_clarity_score": "2.8",
+    "structure_score": "1.5",
+    "info_coverage_score": 2.5,
+    "relevance_score": "0.5",
+    "calculated_sum": "7.3",
+    "sum_check": {
+      "intro_expected": 10.0,
+      "intro_reported": "7.3"
+    },
+    "notes": "The introduction is strong in some areas, but needs to focus more on practical experience and demonstrating readiness for professional work."
+  },
+  "evaluated_file": "transcription\\23112067\\20250626_155226_recording_1750933346276_transcription_turbo.txt",
+  "evaluation_timestamp": "2025-06-26T15:57:30.238505"
+}

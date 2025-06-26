@@ -1,0 +1,33 @@
+{
+  "intro_rating": "7.5",
+  "grading_explanation": {
+    "grammar_and_clarity": "2.5/3.0 – Clarity is mostly maintained, but some awkward phrasing ('my academic journey has given me') and minor grammatical errors ('Excellence in Academia Award', 'ranked second at Hindustan University for my academic performance', 'I am comfortable with tools like Git, GitHub, Jupyter, agentic AIs') are present.",
+    "structure": "1.5/1.5 – Effective organization that creates a coherent impression, logical flow throughout.",
+    "info_coverage": "3.0/3.5 – Covers 4 key areas thoroughly, with good balance of academic and practical elements.",
+    "relevance_to_role": "1.0/2.0 – Shows some practical preparation and makes connections to professional roles but could be more specific."
+  },
+  "insights": [
+    "Tone: Confident",
+    "Style: Formal, structured",
+    "Fluency: Smooth, well-paced"
+  ],
+  "feedback": [
+    "Specific actionable suggestion for delivery improvement: Maintain clarity and avoid minor grammatical errors.",
+    "Specific actionable suggestion for content enhancement: Provide specific examples or case studies to demonstrate practical applications of skills in a professional context.",
+    "Specific actionable suggestion for structure improvement: Consider focusing on one key project or experience and its impact, rather than listing multiple projects."
+  ],
+  "grading_debug": {
+    "grammar_clarity_score": "2.5",
+    "structure_score": "1.5",
+    "info_coverage_score": 2.5,
+    "relevance_score": "1.0",
+    "calculated_sum": "7.5",
+    "sum_check": {
+      "intro_expected": 10.0,
+      "intro_reported": "7.5"
+    },
+    "notes": "Strengths: Confident delivery, strong academic background, relevant technical skills. Areas for improvement: Make connections to professional context more specific and provide examples of practical applications."
+  },
+  "evaluated_file": "transcription\\23112047\\20250627_023444_my_intro_transcription_turbo.txt",
+  "evaluation_timestamp": "2025-06-27T02:41:34.695900"
+}

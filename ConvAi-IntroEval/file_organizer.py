@@ -10,9 +10,14 @@ Date: June 8, 2025
 
 import re
 import json
+import logging
 from pathlib import Path
 from typing import Optional, Tuple, Union, List
 from datetime import datetime
+
+# Setup optimized logging for file operations
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.WARNING)  # Only log warnings and errors to reduce I/O
 
 
 def extract_roll_number_from_path(path: Union[str, Path]) -> Optional[str]:
@@ -87,7 +92,7 @@ def get_user_directory(base_dir: Path, roll_number: Optional[str]) -> Path:
     
     # Create directory if it doesn't exist
     user_dir.mkdir(parents=True, exist_ok=True)
-    print(f"📁 Created/verified user directory: {user_dir}")
+    logger.debug(f"Created/verified user directory: {user_dir}")
     
     return user_dir
 

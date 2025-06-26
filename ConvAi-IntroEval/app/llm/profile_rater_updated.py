@@ -180,7 +180,8 @@ def evaluate_profile_rating(form_path=None) -> dict:
                 "top_k": 40,         # Limit token selection to top 40 tokens
                 "seed": 42,          # Fixed seed for reproducible results
                 "stop": ["\n\n"]     # Stop token for clean output termination
-            }
+            },
+            timeout=300  # 5 minutes timeout for LLM API call
         )
         
         if response.status_code == 200:

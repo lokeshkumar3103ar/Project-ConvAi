@@ -36,11 +36,16 @@ import re
 import argparse
 import getpass
 import sys
+import logging
 from datetime import datetime
 from typing import Optional, List
 from sqlalchemy.orm import Session
 from argon2 import PasswordHasher
 from tabulate import tabulate
+
+# Setup logging for user management operations
+logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+logger = logging.getLogger(__name__)
 
 # Import models and database setup
 from models import User, Teacher, TeacherStudentMap, Note, SessionLocal, get_db
@@ -69,7 +74,7 @@ class UserManager:
         users = self.db.query(User).all()
         
         if not users:
-            print("No users found in the system.")
+            logger.warning("No users found in the system.")
             return
         
         if detailed:

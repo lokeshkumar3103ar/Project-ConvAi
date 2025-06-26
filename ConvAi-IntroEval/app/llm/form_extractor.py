@@ -130,7 +130,8 @@ def extract_fields_from_transcript(transcript_text: str, roll_number: str = None
                 "top_k": 40,         # Limit token selection to top 40 tokens
                 "seed": 42,          # Fixed seed for reproducible results                
                 "stop": ["\n\n"]     # Stop token for clean output termination
-            }
+            },
+            timeout=300  # 5 minutes timeout for LLM API call
         )
         
         if response.status_code == 200:

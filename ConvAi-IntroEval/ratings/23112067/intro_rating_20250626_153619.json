@@ -1,0 +1,33 @@
+{
+  "intro_rating": "2.7",
+  "grading_explanation": {
+    "grammar_and_clarity": "1.0/3.0 – Incoherent phrases, misuse of punctuation and grammatical errors",
+    "structure": "0.5/1.5 – Lack of coherent structure, disjointed sentences",
+    "info_coverage": "1.2/3.5 – Minimal information about academic background, no practical experience or technical skills mentioned, lack of career direction",
+    "relevance_to_role": "0.0/2.0 – No indication of practical readiness or professional context"
+  },
+  "insights": [
+    "Tone: Playful and casual",
+    "Style: Informal, disorganized",
+    "Fluency: Rapid-paced, hesitant"
+  ],
+  "feedback": [
+    "Revise the introduction to clearly identify yourself and provide essential academic information.",
+    "Include your major, degree, university, and year of study in your introduction.",
+    "Add details about practical experience, projects, internships, or competitions you have participated in."
+  ],
+  "grading_debug": {
+    "grammar_clarity_score": "1.0",
+    "structure_score": "0.5",
+    "info_coverage_score": 1.2,
+    "relevance_score": "0.0",
+    "calculated_sum": "2.7",
+    "sum_check": {
+      "intro_expected": "10.0",
+      "intro_reported": "2.7"
+    },
+    "notes": "The introduction lacks clarity, coherence, and essential information for college students preparing for interviews."
+  },
+  "evaluated_file": "transcription\\23112067\\20250626_153248_20250626_152912_recording_1750931947233_transcription_turbo.txt",
+  "evaluation_timestamp": "2025-06-26T15:36:19.201814"
+}

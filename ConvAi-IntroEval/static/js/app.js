@@ -1568,25 +1568,71 @@ document.addEventListener('DOMContentLoaded', function() {
         
         taskStatusInterval = setInterval(async () => {
             try {
-                const response = await fetch(`/queue/status/${taskId}`);
-                if (!response.ok) return;
+                const response = await fetch(`/queue/status/${taskId}`, {
+                    credentials: 'include' // Include cookies for authentication
+                });
+                
+                if (response.status === 401) {
+                    // Authentication failed - redirect to login
+                    console.error('Authentication expired during status polling');
+                    clearInterval(taskStatusInterval);
+                    taskStatusInterval = null;
+                    showError('Your session has expired. Don\'t worry - your file is still processing in the background! Please log in again to check your results.');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+                    return;
+                }
+                
+                if (response.status === 403) {
+                    // Access denied to this task
+                    console.error('Access denied to task');
+                    clearInterval(taskStatusInterval);
+                    taskStatusInterval = null;
+                    showError('Access denied to this task.');
+                    return;
+                }
+                
+                if (!response.ok) {
+                    console.warn(`Status polling returned ${response.status}: ${response.statusText}`);
+                    // Don't stop polling for temporary server errors, but log them
+                    if (response.status >= 500) {
+                        console.warn('Server error during status polling, will retry...');
+                        return;
+                    }
+                    // For client errors other than auth, stop polling
+                    if (response.status >= 400) {
+                        clearInterval(taskStatusInterval);
+                        taskStatusInterval = null;
+                        showError(`Failed to get task status: ${response.statusText}`);
+                        return;
+                    }
+                    return;
+                }
                 
                 const status = await response.json();
                 handleTaskStatusUpdate(status);
                 
             } catch (error) {
                 console.error('Status polling error:', error);
+                // Check if it's a network error
+                if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    console.warn('Network error during status polling, will retry...');
+                    return; // Continue polling for network errors
+                }
+                // For other errors, show user message but continue polling
+                console.warn('Unexpected error during status polling, continuing...');
             }
         }, 2000); // Poll every 2 seconds
         
-        // Stop polling after 5 minutes to prevent infinite polling
+        // Stop polling after 80 minutes to match backend session timeout exactly
         setTimeout(() => {
             if (taskStatusInterval) {
                 clearInterval(taskStatusInterval);
                 taskStatusInterval = null;
                 console.log('Task status polling stopped after timeout');
             }
-        }, 300000); // 5 minutes
+        }, 4800000); // 80 minutes
     }
       function handleTaskStatusUpdate(status) {
         const taskStatus = status.status;
@@ -1860,13 +1906,31 @@ document.addEventListener('DOMContentLoaded', function() {
             let userRollNumber = null;
             try {
                 const userResponse = await fetch('/api/auth/me', { credentials: 'include' });
+                if (userResponse.status === 401) {
+                    console.error('Authentication expired while loading results');
+                    showError('Your session has expired. Don\'t worry - your file processing is complete! Please log in again to view your results.');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+                    return;
+                }
                 if (userResponse.ok) {
                     const userInfo = await userResponse.json();
                     userRollNumber = userInfo.roll_number;
                     console.log('Current user roll number:', userRollNumber);
+                } else {
+                    console.warn('Could not get user info for result loading:', userResponse.status);
+                    showError('Failed to load user information. Please refresh the page.');
+                    return;
                 }
             } catch (error) {
-                console.warn('Could not get user roll number:', error);
+                console.error('Error getting user roll number:', error);
+                if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    showError('Network error. Please check your connection and try again.');
+                } else {
+                    showError('Failed to verify user session. Please refresh the page.');
+                }
+                return;
             }
             
             // Load transcript if available
@@ -1958,9 +2022,19 @@ document.addEventListener('DOMContentLoaded', function() {
             if (status.profile_rating_path || status.intro_rating_path) {
                 try {
                     const [profileResponse, introResponse] = await Promise.all([
-                        fetch('/profile-rating-status'),
-                        fetch('/intro-rating-status')
+                        fetch('/profile-rating-status', { credentials: 'include' }),
+                        fetch('/intro-rating-status', { credentials: 'include' })
                     ]);
+                    
+                    // Check for authentication errors
+                    if (profileResponse.status === 401 || introResponse.status === 401) {
+                        console.error('Authentication expired while loading ratings');
+                        showError('Your session has expired. Your ratings have been generated! Please log in again to view them.');
+                        setTimeout(() => {
+                            window.location.href = '/login';
+                        }, 2000);
+                        return;
+                    }
                     
                     if (profileResponse.ok) {
                         const profileStatus = await profileResponse.json();
@@ -1969,6 +2043,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             displayRating(profileStatus.data, profileRatingContent);
                             console.log('Loaded profile rating successfully');
                         }
+                    } else {
+                        console.warn('Failed to load profile rating:', profileResponse.status);
                     }
                     
                     if (introResponse.ok) {
@@ -1978,9 +2054,16 @@ document.addEventListener('DOMContentLoaded', function() {
                             displayRating(introStatus.data, introRatingContent);
                             console.log('Loaded intro rating successfully');
                         }
+                    } else {
+                        console.warn('Failed to load intro rating:', introResponse.status);
                     }
                 } catch (error) {
                     console.error('Error loading ratings:', error);
+                    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                        console.warn('Network error loading ratings, will continue without them');
+                    } else {
+                        console.warn('Unexpected error loading ratings:', error);
+                    }
                 }
             }
             

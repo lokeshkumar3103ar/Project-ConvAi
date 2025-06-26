@@ -1,0 +1,31 @@
+{
+  "profile_rating": "8.2",
+  "employability_level": "MODERATE EMPLOYABILITY",
+  "grading_explanation": {
+    "practical_foundation": "2.9/3 – 26 of 35 fields filled (74% completion). Higher completion indicates better self-awareness and thoroughness.",
+    "technical_competency": "1.8/2 – Strong technical skills with minor gaps that can be quickly filled; programming languages: Python, machine learning, deep learning, prompt engineering, data analysis, Git, GitHub, Jupyter, Aden; tools: Excel",
+    "hands_on_experience": "2.0/3 – Good potential: 1+ internships OR 2+ projects with decent technical detail and problem-solving evidence (COTHON Solutions internship and ConvAi project)",
+    "growth_potential": "1.5/2 – Some leadership experience OR strong career direction OR demonstrated learning initiative (university coding and AI clubs, participating in tech fests, hackathons, and social initiatives)"
+  },
+  "hiring_insights": {
+    "strongest_assets": "[COTHON Solutions internship, ConvAi project, solid technical skills with minor gaps]",
+    "development_areas": [
+      "academic fields not explicitly stated, more hands-on experience in industry-specific projects"
+    ],
+    "industry_readiness": "[Limited practical experience in the target field (Data Science), requires significant training to build stronger industry readiness]"
+  },
+  "grading_debug": {
+    "practical_foundation_score": "2.9",
+    "technical_competency_score": "1.8",
+    "hands_on_experience_score": "2.0",
+    "growth_potential_score": "1.5",
+    "calculated_sum": "8.2",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.2"
+    },
+    "notes": "[The candidate has a solid technical foundation with good practical experience and growth potential. However, the limited academic details and lack of specific industry-specific projects may impact employability in competitive job markets.]"
+  },
+  "evaluated_file": "filled_forms\\23112067\\form_20250627_014626.json",
+  "evaluation_timestamp": "2025-06-27T01:46:46.411399"
+}

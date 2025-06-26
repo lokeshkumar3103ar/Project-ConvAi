@@ -1,0 +1,33 @@
+{
+  "intro_rating": "4.5",
+  "grading_explanation": {
+    "grammar_and_clarity": "1.5/3.0 – Some errors in grammar and clarity make it somewhat difficult to follow.",
+    "structure": "1.0/1.5 – Generally logical flow, but lacks clear organization or is difficult to follow.",
+    "info_coverage": "1.0/3.5 – Mentions academic details, but no practical experience, technical skills, or career direction are discussed.",
+    "relevance_to_role": "1.0/2.0 – Minimal indication of practical skills or professional preparation."
+  },
+  "insights": [
+    "Tone: Confident",
+    "Style: Direct and concise",
+    "Fluency: Smooth"
+  ],
+  "feedback": [
+    "Specifically mention your full name, academic background, practical experience, technical skills, and career goals.",
+    "Improve the structure of your introduction by organizing your thoughts logically and clearly.",
+    "Connect your academic experience with relevant examples of practical work or projects."
+  ],
+  "grading_debug": {
+    "grammar_clarity_score": "1.5",
+    "structure_score": "1.0",
+    "info_coverage_score": 1.0,
+    "relevance_score": "1.0",
+    "calculated_sum": "4.5",
+    "sum_check": {
+      "intro_expected": 10.0,
+      "intro_reported": "4.5"
+    },
+    "notes": "Focus on demonstrating practical readiness and technical skills to increase chances of success in interviews."
+  },
+  "evaluated_file": "transcription\\23112048\\20250627_031759_recording_1750974479881_transcription_turbo.txt",
+  "evaluation_timestamp": "2025-06-27T03:19:36.285001"
+}

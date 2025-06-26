@@ -1,0 +1,29 @@
+{
+  "profile_rating": "8.1",
+  "employability_level": "MODERATE EMPLOYABILITY",
+  "grading_explanation": {
+    "practical_foundation": "2.8/3 – 27 of 35 fields filled (77% completion). Higher completion indicates better self-awareness and thoroughness.",
+    "technical_competency": "1.8/2 – The candidate has a good understanding of machine learning, deep learning algorithms, programming skills, and AI technologies, however the specific languages or tools used are not mentioned.",
+    "hands_on_experience": "2.0/3 – The candidate has an internship experience at COTHON Solutions but the details about the role, duration, and responsibilities are not provided, limiting the assessment of its quality.",
+    "growth_potential": "1.5/2 – The candidate shows leadership potential through participation in university coding and AI clubs, tech fests, hackathons, and social initiatives. However, there is no explicit mention of career aspirations or learning initiative."
+  },
+  "hiring_insights": {
+    "strongest_assets": "[AI, ML experience, problem-solving skills demonstrated in projects]",
+    "development_areas": "[Specific technical skills (e.g., programming languages), role and duration of internships, detailed practical experience description]",
+    "industry_readiness": "[The candidate has relevant academic and project experiences, but more details about their roles and responsibilities are needed to assess industry readiness.]"
+  },
+  "grading_debug": {
+    "practical_foundation_score": "2.8",
+    "technical_competency_score": "1.8",
+    "hands_on_experience_score": "2.0",
+    "growth_potential_score": "1.5",
+    "calculated_sum": "8.1",
+    "sum_check": {
+      "profile_expected": 10,
+      "profile_reported": "8.1"
+    },
+    "notes": "[The candidate has a moderate employability potential with relevant technical skills and project experiences. However, more details about their practical experience, specific skills, and leadership roles are needed to fully evaluate their industry readiness.]"
+  },
+  "evaluated_file": "filled_forms\\23112047\\form_20250627_024103.json",
+  "evaluation_timestamp": "2025-06-27T02:41:18.943178"
+}
