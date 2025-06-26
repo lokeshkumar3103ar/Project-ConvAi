@@ -2044,29 +2044,18 @@ document.addEventListener('DOMContentLoaded', function() {
         fileInfo.classList.add('d-none');
     });
 
-    // Upload form submit handler - prevent page reload and use queue system
-    if (uploadForm) {
-        uploadForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent default form submission
-            console.log('Form submit prevented, calling uploadAndProcess()');
-            
-            // Prevent multiple submissions
-            if (window.isSubmitting) {
-                console.log('Upload already in progress, ignoring duplicate submit');
-                return;
-            }
-            
-            window.isSubmitting = true;
-            uploadAndProcess().finally(() => {
-                window.isSubmitting = false;
-            });
-        });
-    }
-
     // Start new button
     startNewButton.addEventListener('click', function() {
         resetApp();
     });
+
+    // Form submit handler - prevent default and handle upload via JavaScript
+    if (uploadForm) {
+        uploadForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+            uploadAndProcess(); // Call the upload function
+        });
+    }
     
     // Tips modal functionality
     if (tipsToggle) {
